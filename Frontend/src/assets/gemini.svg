@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="url(#geminiGradient)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+  <defs>
+    <linearGradient id="geminiGradient" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ff5f6d" />
+      <stop offset="22%" stop-color="#ffb86b" />
+      <stop offset="45%" stop-color="#ffe66d" />
+      <stop offset="65%" stop-color="#66f2c1" />
+      <stop offset="82%" stop-color="#4da6ff" />
+      <stop offset="100%" stop-color="#b066ff" />
+    </linearGradient>
+
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <path
+    d="M3 12C7.97056 12 12 7.97056 12 3C12 7.97056 16.0294 12 21 12C16.0294 12 12 16.0294 12 21C12 16.0294 7.97056 12 3 12Z"
+    filter="url(#glow)"
+  />
+</svg>
