@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
-require('dotenv').config(); // Load environment variables from a .env file
 
-// Use the cloud URI if available, otherwise fallback to local for safety
-const dbURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/crypto';
-
-mongoose.connect(dbURI)
-  .then(() => console.log('Successfully connected to MongoDB Cloud!'))
-  .catch((err) => console.error('Database connection error:', err));
+mongoose.connect("mongodb://127.0.0.1:27017/crypto")
 
 const userSchema = new mongoose.Schema({
     firstname: String,

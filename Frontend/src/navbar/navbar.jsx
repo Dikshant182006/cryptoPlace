@@ -8,8 +8,6 @@ import logo from "../assets/logo.svg";
 import setting from "../assets/setting.svg";
 import { useLocation } from "react-router-dom";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
 function Navbar({ light, setLight }) {
   const { setCurrency } = useContext(CoinContext);
   // set the menu in the mobile
@@ -22,7 +20,7 @@ function Navbar({ light, setLight }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/profile`, {
+    axios.get("http://localhost:3000/api/profile", {
       withCredentials: true,
     }).then((res) => {
       setUser(res.data);
@@ -60,12 +58,12 @@ function Navbar({ light, setLight }) {
 
   const handleLogout = async () => {
     try{
-      await axios.get(`${BACKEND_URL}/api/logout`, {
+      await axios.get("http://localhost:3000/api/logout", {
         withCredentials: true,
       });
       navigate('/login');
     } catch(error) {
-      console.log(err);
+      console.log(error);
     }
   }
 

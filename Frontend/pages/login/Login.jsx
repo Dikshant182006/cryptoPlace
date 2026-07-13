@@ -30,12 +30,12 @@ const login = ({light}) => {
     e.preventDefault();
     
     try{
-      const res = await axios.post('http://localhost:3000/login', formData, {
+      const res = await axios.post("http://localhost:3000/login", formData, {
         withCredentials: true,
       });
       navigate('/');
     } catch(error) {
-      console.log(error.response.data);
+      console.log(error);
     }
   }
 

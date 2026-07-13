@@ -1,6 +1,3 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-console.log("Backend URL:", BACKEND_URL);
 import { createContext, useState, useEffect } from "react";
 
 export const CoinContext = createContext();
@@ -16,7 +13,7 @@ const CoinContextProvider = (props) => {
 
   const fetchAllCoin = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/coins?currency=${currency.name}`);
+      const response = await fetch(`http://localhost:3000/api/coins?currency=${currency.name}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -29,7 +26,7 @@ const CoinContextProvider = (props) => {
 
   const globalData = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/global`);
+      const response = await fetch("http://localhost:3000/api/global");
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
