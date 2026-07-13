@@ -8,9 +8,9 @@ const authMiddleware = (req, res, next) => {
       return res.status(401).json({ message: "Not logged In" });
     }
 
-    const decorded = jwt.verify(token, "secretKey");
+    const decoded = jwt.verify(token, "secretKey");
     
-    req.user = decorded;
+    req.user = decoded;
     next();
   } catch (error) {
     return res.status(400).json( {message: 'Invalid token'} )

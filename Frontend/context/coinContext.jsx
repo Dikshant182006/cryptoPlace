@@ -1,4 +1,6 @@
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+console.log("Backend URL:", BACKEND_URL);
 import { createContext, useState, useEffect } from "react";
 
 export const CoinContext = createContext();

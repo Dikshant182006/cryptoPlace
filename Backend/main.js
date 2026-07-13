@@ -116,8 +116,8 @@ app.post('/login', async (req, res) => {
   // Store the JWT token in a cookie.
   res.cookie("token", token , {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
   })
 
   const userData = await userModel.findOne({email}).select("-password");
@@ -140,9 +140,14 @@ app.get('/api/profile', authMiddleware, async  (req, res) => {
 });
 
 app.get('/api/logout', (req, res) => {
-  res.cookie('token', "");
-  res.send("cookie cleared")
-})
+  res.cookie('token', "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    expires: new Date(0),
+  });
+  res.send("cookie cleared");
+});
 
 app.listen(port, () => {
   console.log(`Server is running at the ${port}`);
