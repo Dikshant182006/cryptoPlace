@@ -21,6 +21,13 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
+app.get('/', (req, res) => {
+  res.json({
+    status: "success",
+    message: "CryptoPlace Backend API is running successfully! 🚀",
+  })
+})
+
 app.use(
   cors({
     origin: function (origin, callback) {
