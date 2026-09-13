@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const axios = require("axios");
@@ -9,15 +10,26 @@ const cors = require("cors");
 const userModel = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // middleware
 app.use(express.json());
 app.use(cookieParser());
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Allow during transition/deployment
+      }
+    },
     credentials: true,
   }),
 );
@@ -124,13 +136,15 @@ app.post("/login", async (req, res) => {
       {
         id: user._id,
       },
-      "secretKey",
+      process.env.JWT_SECRET || "secretKey",
     );
+
+    const isProduction = process.env.NODE_ENV === "production";
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     });
 
     const userData = await userModel.findById(user._id).select("-password");
@@ -156,10 +170,11 @@ app.get("/api/profile", authMiddleware, async (req, res) => {
 
 // Logout
 app.get("/api/logout", (req, res) => {
+  const isProduction = process.env.NODE_ENV === "production";
   res.cookie("token", "", {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     expires: new Date(0),
   });
 
@@ -169,6 +184,10 @@ app.get("/api/logout", (req, res) => {
 });
 
 // Server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+module.exports = app;
