@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
+import { API_URL } from "../../src/config";
 
 const login = ({light}) => {
 
@@ -30,7 +31,7 @@ const login = ({light}) => {
     e.preventDefault();
     
     try{
-      const res = await axios.post("http://localhost:3000/login", formData, {
+      const res = await axios.post(`${API_URL}/login`, formData, {
         withCredentials: true,
       });
       navigate('/');

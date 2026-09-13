@@ -7,6 +7,7 @@ import axios from "axios";
 import logo from "../assets/logo.svg";
 import setting from "../assets/setting.svg";
 import { useLocation } from "react-router-dom";
+import { API_URL } from "../config";
 
 function Navbar({ light, setLight }) {
   const { setCurrency } = useContext(CoinContext);
@@ -20,7 +21,7 @@ function Navbar({ light, setLight }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/profile", {
+    axios.get(`${API_URL}/api/profile`, {
       withCredentials: true,
     }).then((res) => {
       setUser(res.data);
@@ -58,7 +59,7 @@ function Navbar({ light, setLight }) {
 
   const handleLogout = async () => {
     try{
-      await axios.get("http://localhost:3000/api/logout", {
+      await axios.get(`${API_URL}/api/logout`, {
         withCredentials: true,
       });
       navigate('/login');
