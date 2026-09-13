@@ -4,7 +4,7 @@ Cryptoplace is a responsive cryptocurrency price dashboard built with React. It 
 
 ## Live Demo
 
-https://cryptoplace-dashboard-mk54.vercel.app/
+https://crypto-place-ten-gamma.vercel.app/
 
 ### Main UI
 <img src="./Frontend/mainUI.png" width="900" alt="GitHub User Finder UI">
