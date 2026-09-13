@@ -1,16 +1,25 @@
 const mongoose = require('mongoose');
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/crypto";
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
+  const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/crypto";
+  await mongoose.connect(uri, {
+    serverSelectionTimeoutMS: 5000,
+  });
+};
 
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log("Connected to MongoDB successfully"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+// Initial connection attempt
+connectDB().catch((err) => console.log("MongoDB initial connect:", err.message));
 
 const userSchema = new mongoose.Schema({
-    firstname: String,
-    lastname: String,
-    email: String,
-    password: String,
+  firstname: { type: String, required: true },
+  lastname: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.models.User || mongoose.model('User', userSchema);
+
+module.exports = { User, connectDB };

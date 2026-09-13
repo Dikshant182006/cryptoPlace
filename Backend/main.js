@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
-const userModel = require("./models/user");
+const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
 
 const port = process.env.PORT || 3000;
@@ -21,13 +21,6 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-app.get('/', (req, res) => {
-  res.json({
-    status: "success",
-    message: "CryptoPlace Backend API is running successfully! 🚀",
-  })
-})
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -40,6 +33,14 @@ app.use(
     credentials: true,
   }),
 );
+
+// Root route
+app.get("/", (req, res) => {
+  res.json({
+    status: "success",
+    message: "CryptoPlace Backend API is running successfully! 🚀",
+  });
+});
 
 // Coins API
 app.get("/api/coins", async (req, res) => {
@@ -59,8 +60,7 @@ app.get("/api/coins", async (req, res) => {
 
     res.json(response.data);
   } catch (error) {
-    console.log(error.message);
-
+    console.error("Coins API error:", error.message);
     res.status(500).json({
       message: "Coins API error",
     });
@@ -71,11 +71,9 @@ app.get("/api/coins", async (req, res) => {
 app.get("/api/global", async (req, res) => {
   try {
     const response = await axios.get("https://api.coingecko.com/api/v3/global");
-
     res.json(response.data);
   } catch (error) {
-    console.log(error.message);
-
+    console.error("Global API error:", error.message);
     res.status(500).json({
       message: "Global API error",
     });
@@ -85,11 +83,16 @@ app.get("/api/global", async (req, res) => {
 // Register
 app.post("/register", async (req, res) => {
   try {
+    await connectDB();
     const { firstname, lastname, email, password } = req.body;
 
-    const existingUser = await userModel.findOne({
-      email,
-    });
+    if (!firstname || !lastname || !email || !password) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return res.status(400).json({
@@ -99,7 +102,7 @@ app.post("/register", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await userModel.create({
+    await User.create({
       firstname,
       lastname,
       email,
@@ -110,8 +113,9 @@ app.post("/register", async (req, res) => {
       message: "User created successfully",
     });
   } catch (error) {
+    console.error("Register error:", error);
     res.status(500).json({
-      message: "Server error",
+      message: error.message || "Server error",
     });
   }
 });
@@ -119,11 +123,16 @@ app.post("/register", async (req, res) => {
 // Login
 app.post("/login", async (req, res) => {
   try {
+    await connectDB();
     const { email, password } = req.body;
 
-    const user = await userModel.findOne({
-      email,
-    });
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
+
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({
@@ -140,10 +149,9 @@ app.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      {
-        id: user._id,
-      },
+      { id: user._id },
       process.env.JWT_SECRET || "secretKey",
+      { expiresIn: "7d" }
     );
 
     const isProduction = process.env.NODE_ENV === "production";
@@ -152,27 +160,32 @@ app.post("/login", async (req, res) => {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    const userData = await userModel.findById(user._id).select("-password");
+    const userData = await User.findById(user._id).select("-password");
 
     res.json({
       message: "Login successful",
       userData,
     });
   } catch (error) {
-    console.log(error);
-
+    console.error("Login error:", error);
     res.status(500).json({
-      message: "Server error",
+      message: error.message || "Server error",
     });
   }
 });
 
-// 
+// Profile
 app.get("/api/profile", authMiddleware, async (req, res) => {
-  const user = await userModel.findById(req.user.id).select("-password");
-  res.json(user);
+  try {
+    await connectDB();
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 // Logout
