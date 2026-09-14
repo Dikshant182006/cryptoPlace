@@ -156,7 +156,7 @@ const login = ({ light }) => {
                     <p className="mt-1 text-sm text-red-500">
                       {error.login}
                     </p>
-                  )}
+                  )} 
 
                 </div>
 
