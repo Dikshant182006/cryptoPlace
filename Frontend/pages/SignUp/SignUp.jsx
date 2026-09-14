@@ -50,6 +50,8 @@ const SignUp = ({ light }) => {
     if(!emailRegex.test(email.trim())) {
       return "Enter a valid email Address";
     }
+
+    return "";
   }
 
   const [showPassword, setShowPassword] = useState(false);

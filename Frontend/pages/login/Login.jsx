@@ -6,13 +6,14 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { API_URL } from "../../src/config";
 
-const login = ({light}) => {
+const login = ({ light }) => {
 
   const color = light ? "bg-white text-black" : "bg-[#0f0f0f] text-white";
-  const textMain = light? "text-black/70": "text-white/60";
-  const textSet = light? "text-white/60 placeholder:text-black/70": "text-white/60 placeholder:placeholder:text-white/70";
-  const background = light? "bg-black/5" : "bg-white/5";
+  const textMain = light ? "text-black/70" : "text-white/60";
+  const textSet = light ? "text-white/60 placeholder:text-black/70" : "text-white/60 placeholder:placeholder:text-white/70";
+  const background = light ? "bg-black/5" : "bg-white/5";
 
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -20,28 +21,59 @@ const login = ({light}) => {
     password: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+  const [error, setError] = useState({
+    email: "",
+    login: "",
+  })
+
+  const validationEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email.trim()) {
+      return "Email is required";
+    }
+
+    if (!emailRegex.test(email.trim())) {
+      return "Enter a valid email Address";
+    }
+
+    return "";
   }
-  
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev, [name]: value
+    }))
+
+    if (name === "email") {
+      const validationError = validationEmail(value);
+
+      setError((prev) => ({
+        ...prev, [name]: validationError
+      }))
+    }
+  }
+
   const submitData = async (e) => {
     e.preventDefault();
-    
-    try{
+    try {
       const res = await axios.post(`${API_URL}/login`, formData, {
         withCredentials: true,
       });
       navigate('/');
-    } catch(error) {
+    } catch (error) {
       console.log(error);
+
+      setError((prev) => ({
+        ...prev, login: "Invalid crendentials"
+      }))
     }
   }
 
   return (
-    <div className={`min-h-[85vh] px-4 py-16 mt-20 sm:mt-0 ${light? "bg-white": "bg-black"}`}>
+    <div className={`min-h-[85vh] px-4 py-16 mt-20 sm:mt-0 ${light ? "bg-white" : "bg-black"}`}>
       <div className="mx-auto w-full max-w-6xl overflow-hidden rounded-[32px] border border-white/10 shadow-[0_0_60px_rgba(255,140,0,0.08)]">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Left Side */}
@@ -103,35 +135,57 @@ const login = ({light}) => {
                   Login your account and get started.
                 </p>
               </div>
-              
-              <form onSubmit={submitData} className="space-y-4">
-                <input
-                onChange={handleChange}
-                value={formData.email}
-                name="email"
-                  type="email"
-                  placeholder="📧 Email Address"
-                  className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
-                />
 
-                <input
-                onChange={handleChange}
-                value={formData.password}
-                name="password"
-                  type="text"
-                  placeholder="🔒 Password"
-                  className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
-                />
+              <form onSubmit={submitData} className="space-y-4">
+                <div>
+                  <input
+                    onChange={handleChange}
+                    value={formData.email}
+                    name="email"
+                    type="email"
+                    placeholder="📧 Email Address"
+                    className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
+                  />
+                  {error.email && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {error.email}
+                    </p>
+                  )}
+
+                  {error.login && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {error.login}
+                    </p>
+                  )}
+
+                </div>
+
+                <div className="relative">
+                  <input
+                    onChange={handleChange}
+                    value={formData.password}
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="🔒 Password"
+                    className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
+                  />
+                  <span
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-4 top-1/3 cursor-pointer"
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
 
                 <button type="submit"
                   className="flex w-full justify-center cursor-pointer rounded-xl bg-orange-600 px-4 py-3 text-sm font-semibold shadow-[0_0_20px_rgba(255,115,0,0.28)] transition duration-300 hover:scale-[1.02] hover:bg-orange-500 hover:shadow-[0_0_25px_rgba(255,115,0,0.36)]"
                 >
-                Login
+                  Login
                 </button>
 
                 <div className="flex gap-5 pl-20 items-center">
-                <p>Does not have an account</p>
-                <Link className="underline" to={'/signup'}>SignUp</Link>
+                  <p>Does not have an account</p>
+                  <Link className="underline" to={'/signup'}>SignUp</Link>
                 </div>
 
               </form>
