@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -14,14 +14,70 @@ const SignUp = ({ light }) => {
     password: "",
   });
 
+  const [error, setError] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+  });
+
+  const validationName = (name) => {
+    if (!name.trim()) {
+      return "Name is required";
+    }
+
+    if (name.trim().length < 2) {
+      return "Name length is at least 2 characters";
+    }
+
+    if (name.trim().length > 20) {
+      return "Name must not exceed 20 characters";
+    }
+
+    if (!/^[A-Za-z]+(?:[ '-][A-Za-z]+)*$/.test(name.trim())) {
+      return "Name can contain only letters";
+    }
+
+    return "";
+  }
+
+  const validationEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(!email.trim()) {
+      return "Email is required";
+    }
+
+    if(!emailRegex.test(email.trim())) {
+      return "Enter a valid email Address";
+    }
+  }
+
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev, [name]: value,
+    }))
+
+    if(name === "firstname" || name === "lastname") {
+      const validationError = validationName(value);
+
+      setError((prev) => ({
+        ...prev, [name]: validationError
+      }))
+    }
+
+    if(name === "email") {
+      const validationError = validationEmail(value);
+
+      setError((prev) => ({
+        ...prev, [name]: validationError
+      }))
+    }
+
   };
 
   const submitData = async (e) => {
@@ -120,24 +176,44 @@ const SignUp = ({ light }) => {
 
               <form onSubmit={submitData} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <input
-                    onChange={handleChange}
-                    value={formData.firstname}
-                    name="firstname"
-                    type="text"
-                    placeholder="First Name"
-                    className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
-                  />
-                  <input
-                    onChange={handleChange}
-                    value={formData.lastname}
-                    name="lastname"
-                    type="text"
-                    placeholder="Last Name"
-                    className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
-                  />
+                  <div>
+                    <input
+                      onChange={handleChange}
+                      value={formData.firstname}
+                      maxLength={20}
+                      name="firstname"
+                      type="text"
+                      placeholder="First Name"
+                      className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
+                    />
+
+                    {error.firstname && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {error.firstname}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <input
+                      onChange={handleChange}
+                      value={formData.lastname}
+                      maxLength={10}
+                      name="lastname"
+                      type="text"
+                      placeholder="Last Name"
+                      className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
+                    />
+                    {error.lastname && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {error.lastname}
+                      </p>
+                    )}
+                  </div>
+
                 </div>
 
+                <div>
                 <input
                   onChange={handleChange}
                   value={formData.email}
@@ -146,6 +222,12 @@ const SignUp = ({ light }) => {
                   placeholder="📧 Email Address"
                   className={`w-full rounded-xl border border-white/10 px-4 py-3 text-sm outline-none transition focus:border-orange-500/60 focus:shadow-[0_0_12px_rgba(255,140,0,0.18)] ${textSet}`}
                 />
+                {error.email && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {error.email}
+                  </p>
+                )}
+                </div>
 
                 <div className="flex relative">
                   <input
@@ -158,7 +240,7 @@ const SignUp = ({ light }) => {
                   />
                   <span
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/3"
+                    className="absolute right-4 top-1/3 cursor-pointer"
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </span>
