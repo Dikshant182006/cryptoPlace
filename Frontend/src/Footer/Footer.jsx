@@ -44,7 +44,7 @@ const Footer = ({light, setlight}) => {
         </h2>
         {/* Copyright */}
         <p className="text-center text-gray-600 text-xs mt-4">
-          © 2025 CryptoPlace. All rights reserved. Built with ❤️ for crypto
+          © 2026 CryptoPlace. All rights reserved. Built with ❤️ for crypto
           enthusiasts.
         </p>
       </div>
