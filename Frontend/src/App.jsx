@@ -13,6 +13,7 @@ import AboutUs from "./Footer/AboutUs.jsx";
 import Features from "./Footer/Features.jsx";
 import Favourite from "../pages/Cryptocurrency/favourite.jsx";
 import TickerCoin from "../pages/tickerCoins/tickerCoin.jsx";
+import ScrollToTop from "../modules/shared/CommonSidebarForTop.jsx";
 import { useLocation } from "react-router-dom";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
 
   return (
      <div className={light ? "min-h-screen bg-white text-black" : "min-h-screen bg-black text-white"}>
+      <ScrollToTop />
       <Navbar light={light} setLight={setLight} />
       {location.pathname !== "/signup" &&
       location.pathname !== "/login" && <TickerCoin />}

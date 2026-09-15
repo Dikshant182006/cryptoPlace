@@ -21,7 +21,7 @@ const login = ({ light }) => {
     password: "",
   });
 
-  const [error, setError] = useState({
+  const [error, setError] = useState({ 
     email: "",
     login: "",
   })
