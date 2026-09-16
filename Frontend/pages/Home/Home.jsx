@@ -4,13 +4,16 @@ import { Link } from "react-router-dom";
 import chatgpt from "../../src/assets/chatgpt.svg";
 import gemini from "../../src/assets/gemini.svg";
 import claude from "../../src/assets/claude.svg";
+import useDebounce from "../../modules/shared/Hooks/useDebounceHook";
 
 const Home = ({light, setLight}) => {
   const {allCoin, currency } = useContext(CoinContext);
-  const [displayCoin, setDisplayCoin] = useState([]);
+  const [displayCoin, setDisplayCoin] = useState(allCoin);
   const [input, setInput] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
+
+  const debounceValue = useDebounce(input);
 
   const ANIMATED_WORDS = [
     "Real-Time Intelligence",
@@ -30,13 +33,25 @@ const Home = ({light, setLight}) => {
     return () => clearInterval(interval);
   }, [])
 
+  useEffect(() => {
+    if(debounceValue === "") {
+      setDisplayCoin(allCoin);
+      return;
+    }
+
+    const filteredCoins = allCoin.filter((coin) => 
+      coin.name.toLowerCase().includes(debounceValue.toLowerCase())
+    )
+
+    setDisplayCoin(filteredCoins);
+  }, [debounceValue, allCoin]);
+
+  // To handle the input
   const handleInput = (e) => {
     setInput(e.target.value);
-    if (e.target.value === "") {
-      setDisplayCoin(allCoin);
-    }
   };
 
+  // Open ChatGpt
   const handleChat = (e) => {
     const prompt = "Best crypto Tracker";
     const encoded = encodeURIComponent(prompt);
@@ -45,11 +60,13 @@ const Home = ({light, setLight}) => {
     window.open(url, "_blank");
   };
 
+  // Open Gemini
   const handleGemini = (e) => {
     const url = "https://aistudio.google.com/";
     window.open(url);
   };
 
+  // Open Claude
   const handleClaude = (e) => {
     const prompt = "Best crypto Tracker";
     const encoded = encodeURIComponent(prompt);
