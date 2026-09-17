@@ -14,7 +14,9 @@ const CoinContextProvider = (props) => {
 
   const fetchAllCoin = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/coins?currency=${currency.name}`);
+      const response = await fetch(
+        `${API_URL}/api/coins?currency=${currency.name}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -27,13 +29,14 @@ const CoinContextProvider = (props) => {
 
   const globalData = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/global`);
-
+      const response = await fetch(
+        `${API_URL}/api/global?currency=${currency.name}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setWholeData(data.data);
+      setWholeData(data.data || data);
     } catch (error) {
       console.log("Fetch Error:", error.message);
     }
@@ -41,7 +44,7 @@ const CoinContextProvider = (props) => {
 
   useEffect(() => {
     globalData();
-  }, []);
+  }, [currency.name]);
 
   useEffect(() => {
     fetchAllCoin();
@@ -53,7 +56,7 @@ const CoinContextProvider = (props) => {
     setCurrency,
     wholeData,
     favorites,
-    setFavorites
+    setFavorites,
   };
 
   return (

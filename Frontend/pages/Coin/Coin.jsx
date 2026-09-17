@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { CoinContext } from "../../context/coinContext";
 import LineChart from "../../src/linkChart/LineChart";
+import { API_URL } from "../../src/config";
 
 const Coin = () => {
   const { coinId } = useParams();
@@ -13,9 +14,7 @@ const Coin = () => {
 
   const displayCoinDetail = async () => {
     try {
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${coinId}`
-      );
+      const response = await fetch(`${API_URL}/api/coins/${coinId}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -31,7 +30,7 @@ const Coin = () => {
   const displayHistoricalData = async () => {
     try {
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=${currency.name}&days=10&interval=daily`
+        `${API_URL}/api/coins/${coinId}/chart?currency=${currency.name}&days=10&interval=daily`
       );
 
       if (!response.ok) {
@@ -69,7 +68,7 @@ const Coin = () => {
             </ul>
             <ul className="flex">
               <li>Current Price</li>
-              <li>{coinDetails.symbol} {coinDetails.market_data.current_price[currency.name].toLocaleString()}</li>
+              <li>{currency.symbol} {coinDetails.market_data.current_price[currency.name]?.toLocaleString()}</li>
             </ul>
           </div>
         </div>

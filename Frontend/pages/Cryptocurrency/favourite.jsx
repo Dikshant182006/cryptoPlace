@@ -57,7 +57,11 @@ const Favourite = () => {
 
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center mt-2">
               <h2 className="text-lg lg:text-xl font-bold text-white break-all">
-                ${wholeData.total_market_cap.usd.toLocaleString()}
+                {currency.symbol}
+                {(
+                  wholeData.total_market_cap[currency.name] ??
+                  wholeData.total_market_cap.usd
+                )?.toLocaleString()}
               </h2>
 
               <span
@@ -87,7 +91,11 @@ const Favourite = () => {
 
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center mt-2">
               <h2 className="text-lg lg:text-xl font-bold text-white break-all">
-                ${wholeData.total_volume.usd.toLocaleString()}
+                {currency.symbol}
+                {(
+                  wholeData.total_volume[currency.name] ??
+                  wholeData.total_volume.usd
+                )?.toLocaleString()}
               </h2>
 
               <span
@@ -226,10 +234,10 @@ const Favourite = () => {
                 </p>
                 <p>
                   {currency.symbol}
-                  {item.current_price}
+                  {item.current_price?.toLocaleString()}
                 </p>
-                <p>{formatNumber(item.market_cap)}</p>
-                <p>{formatNumber(item.total_volume)}</p>
+                <p>{currency.symbol}{formatNumber(item.market_cap)}</p>
+                <p>{currency.symbol}{formatNumber(item.total_volume)}</p>
               </div>)
             ))}
           </div>

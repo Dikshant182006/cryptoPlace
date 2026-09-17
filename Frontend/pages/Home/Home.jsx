@@ -6,8 +6,8 @@ import gemini from "../../src/assets/gemini.svg";
 import claude from "../../src/assets/claude.svg";
 import useDebounce from "../../modules/shared/Hooks/useDebounceHook";
 
-const Home = ({light, setLight}) => {
-  const {allCoin, currency } = useContext(CoinContext);
+const Home = ({ light, setLight }) => {
+  const { allCoin, currency } = useContext(CoinContext);
   const [displayCoin, setDisplayCoin] = useState(allCoin);
   const [input, setInput] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
@@ -23,7 +23,7 @@ const Home = ({light, setLight}) => {
   ]
 
   useEffect(() => {
-    const interval = setInterval(() => { 
+    const interval = setInterval(() => {
       setAnimating(true);
       setTimeout(() => {
         setWordIndex((prev) => (prev + 1) % ANIMATED_WORDS.length);
@@ -31,15 +31,15 @@ const Home = ({light, setLight}) => {
       }, 350);
     }, 2500);
     return () => clearInterval(interval);
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if(debounceValue === "") {
+    if (debounceValue === "") {
       setDisplayCoin(allCoin);
       return;
     }
 
-    const filteredCoins = allCoin.filter((coin) => 
+    const filteredCoins = allCoin.filter((coin) =>
       coin.name.toLowerCase().includes(debounceValue.toLowerCase())
     )
 
@@ -75,21 +75,9 @@ const Home = ({light, setLight}) => {
     window.open(url);
   };
 
-  const searchHandle = (e) => {
-    e.preventDefault();
-    const coins = allCoin.filter((item) => {
-      return item.name.toLowerCase().includes(input.toLowerCase());
-    });
-    setDisplayCoin(coins);
-  };
-
-  useEffect(() => {
-    setDisplayCoin(allCoin);
-  }, [allCoin]);
-
-  const textMain = light? "text-black/80": "text-white/50";
-  const textSub = light? "text-black": "text-white";
-  const changeBac = light? "bg-white text-black": "bg-black";
+  const textMain = light ? "text-black/80" : "text-white/50";
+  const textSub = light ? "text-black" : "text-white";
+  const changeBac = light ? "bg-white text-black" : "bg-black";
 
   return (
     <div className="home py-2 mt-18 ">
@@ -120,7 +108,6 @@ const Home = ({light, setLight}) => {
                 </p>
 
                 <form
-                  onSubmit={searchHandle}
                   className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-lg focus-within:ring-2 focus-within:ring-purple-400 transition-all"
                 >
                   <span className="pl-4 text-gray-400 text-lg ">🔍</span>
@@ -185,10 +172,10 @@ const Home = ({light, setLight}) => {
               </div>
               <p>
                 {currency.symbol}
-                {item.current_price.toLocaleString()}
+                {item.current_price?.toLocaleString()}
               </p>
               <p
-                className={ 
+                className={
                   item.price_change_percentage_24h > 0
                     ? "text-green-800"
                     : "text-red-800"
@@ -199,7 +186,7 @@ const Home = ({light, setLight}) => {
               </p>
               <p className="text-end">
                 {currency.symbol}
-                {item.market_cap.toLocaleString()}
+                {item.market_cap?.toLocaleString()}
               </p>
             </Link>
           ))}
@@ -220,64 +207,64 @@ const Home = ({light, setLight}) => {
         </div>
       </div>
 
-     <div className="cryptoAi my-15">
-  <div className="m-auto rounded-3xl w-[90vw] py-14 px-12 text-center relative overflow-hidden"
-    style={{ background: "linear-gradient(135deg, #13111c 0%, #0e0c18 60%, #161020 100%)" }}>
+      <div className="cryptoAi my-15">
+        <div className="m-auto rounded-3xl w-[90vw] py-14 px-12 text-center relative overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #13111c 0%, #0e0c18 60%, #161020 100%)" }}>
 
-    {/* Floating icons */}
-    {[
-      { emoji:"✅", bg:"rgba(16,185,129,0.18)", border:"rgba(16,185,129,0.3)",  top:"18%", left:"4%",  size:52, dur:3.8, delay:0   },
-      { emoji:"🔥", bg:"rgba(251,146,60,0.18)", border:"rgba(251,146,60,0.3)",  top:"48%", left:"3%",  size:48, dur:4.5, delay:0.6 },
-      { emoji:"❓", bg:"rgba(139,92,246,0.18)", border:"rgba(139,92,246,0.3)",  top:"72%", left:"5%",  size:46, dur:5.2, delay:1.2 },
-      { emoji:"⭐", bg:"rgba(234,179,8,0.18)",  border:"rgba(234,179,8,0.3)",   top:"18%", right:"4%", size:52, dur:4.1, delay:0.3 },
-      { emoji:"✨", bg:"rgba(139,92,246,0.18)", border:"rgba(139,92,246,0.3)",  top:"48%", right:"3%", size:48, dur:3.6, delay:0.9 },
-      { emoji:"🧡", bg:"rgba(251,146,60,0.18)", border:"rgba(251,146,60,0.3)",  top:"72%", right:"5%", size:46, dur:4.8, delay:1.5 },
-    ].map((item, index) => (
-      <div key={index} className="absolute flex items-center justify-center rounded-2xl"
-        style={{
-          width: item.size, height: item.size,
-          background: item.bg, border: `1px solid ${item.border}`,
-          fontSize: item.size * 0.45,
-          top: item.top, left: item.left, right: item.right,
-          animation: `aiFloat ${item.dur}s ease-in-out ${item.delay}s infinite`,
-        }}>
-        {item.emoji}
+          {/* Floating icons */}
+          {[
+            { emoji: "✅", bg: "rgba(16,185,129,0.18)", border: "rgba(16,185,129,0.3)", top: "18%", left: "4%", size: 52, dur: 3.8, delay: 0 },
+            { emoji: "🔥", bg: "rgba(251,146,60,0.18)", border: "rgba(251,146,60,0.3)", top: "48%", left: "3%", size: 48, dur: 4.5, delay: 0.6 },
+            { emoji: "❓", bg: "rgba(139,92,246,0.18)", border: "rgba(139,92,246,0.3)", top: "72%", left: "5%", size: 46, dur: 5.2, delay: 1.2 },
+            { emoji: "⭐", bg: "rgba(234,179,8,0.18)", border: "rgba(234,179,8,0.3)", top: "18%", right: "4%", size: 52, dur: 4.1, delay: 0.3 },
+            { emoji: "✨", bg: "rgba(139,92,246,0.18)", border: "rgba(139,92,246,0.3)", top: "48%", right: "3%", size: 48, dur: 3.6, delay: 0.9 },
+            { emoji: "🧡", bg: "rgba(251,146,60,0.18)", border: "rgba(251,146,60,0.3)", top: "72%", right: "5%", size: 46, dur: 4.8, delay: 1.5 },
+          ].map((item, index) => (
+            <div key={index} className="absolute flex items-center justify-center rounded-2xl"
+              style={{
+                width: item.size, height: item.size,
+                background: item.bg, border: `1px solid ${item.border}`,
+                fontSize: item.size * 0.45,
+                top: item.top, left: item.left, right: item.right,
+                animation: `aiFloat ${item.dur}s ease-in-out ${item.delay}s infinite`,
+              }}>
+              {item.emoji}
+            </div>
+          ))}
+
+          {/* Content */}
+          <div className="relative z-10">
+            <h2 className="font-bold text-4xl text-white mb-3 leading-tight">
+              Unsure What's the Best Crypto Tracker?
+            </h2>
+            <p className="text-white/45 text-base mb-8 leading-relaxed">
+              Don't take our word for it. Click a button to<br />
+              prompt "Best crypto tracker?".
+            </p>
+
+            <div className="flex flex-wrap gap-3 justify-center">
+              <div onClick={handleChat}
+                className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
+                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}>
+                <img src={chatgpt} alt="chatgpt" className="w-4 h-4 invert" />
+                <span className="text-white text-sm font-medium">Ask ChatGPT</span>
+              </div>
+              <div onClick={handleGemini}
+                className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
+                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}>
+                <img src={gemini} alt="gemini" className="w-4 h-4" />
+                <span className="text-white text-sm font-medium">Ask Gemini</span>
+              </div>
+              <div onClick={handleClaude}
+                className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
+                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}>
+                <img src={claude} alt="claude" className="w-4 h-4" />
+                <span className="text-white text-sm font-medium">Ask Claude</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    ))}
-
-    {/* Content */}
-    <div className="relative z-10">
-      <h2 className="font-bold text-4xl text-white mb-3 leading-tight">
-        Unsure What's the Best Crypto Tracker?
-      </h2>
-      <p className="text-white/45 text-base mb-8 leading-relaxed">
-        Don't take our word for it. Click a button to<br />
-        prompt "Best crypto tracker?".
-      </p>
-
-      <div className="flex flex-wrap gap-3 justify-center">
-        <div onClick={handleChat}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
-          style={{ background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.14)" }}>
-          <img src={chatgpt} alt="chatgpt" className="w-4 h-4 invert" />
-          <span className="text-white text-sm font-medium">Ask ChatGPT</span>
-        </div>
-        <div onClick={handleGemini}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
-          style={{ background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.14)" }}>
-          <img src={gemini} alt="gemini" className="w-4 h-4" />
-          <span className="text-white text-sm font-medium">Ask Gemini</span>
-        </div>
-        <div onClick={handleClaude}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
-          style={{ background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.14)" }}>
-          <img src={claude} alt="claude" className="w-4 h-4" />
-          <span className="text-white text-sm font-medium">Ask Claude</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
     </div>
   );
 };

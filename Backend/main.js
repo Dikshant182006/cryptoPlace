@@ -45,22 +45,28 @@ app.get("/", (req, res) => {
 // Coins API
 app.get("/api/coins", async (req, res) => {
   try {
+    const { currency = "usd" } = req.query;
+
     const response = await axios.get(
       "https://api.coingecko.com/api/v3/coins/markets",
       {
         params: {
-          vs_currency: "usd",
+          vs_currency: currency,
           order: "market_cap_desc",
           per_page: 50,
           page: 1,
           sparkline: false,
+          price_change_percentage: "1h,24h,7d",
         },
       },
     );
 
+    console.log("Bitcoin price:", response.data[0]?.current_price);
+
     res.json(response.data);
   } catch (error) {
     console.error("Coins API error:", error.message);
+
     res.status(500).json({
       message: "Coins API error",
     });
@@ -70,12 +76,59 @@ app.get("/api/coins", async (req, res) => {
 // Global API
 app.get("/api/global", async (req, res) => {
   try {
-    const response = await axios.get("https://api.coingecko.com/api/v3/global");
+    const { currency = "usd" } = req.query;
+
+    const response = await axios.get("https://api.coingecko.com/api/v3/global", 
+      {
+        params: {
+          vs_currency: currency
+        }
+      }
+    )
     res.json(response.data);
   } catch (error) {
     console.error("Global API error:", error.message);
     res.status(500).json({
       message: "Global API error",
+    });
+  }
+});
+
+// Coin Details API
+app.get("/api/coins/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${id}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Coin details API error:", error.message);
+    res.status(500).json({
+      message: "Coin details API error",
+    });
+  }
+});
+
+// Coin Historical Chart API
+app.get("/api/coins/:id/chart", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { currency = "usd", days = "10", interval = "daily" } = req.query;
+
+    const response = await axios.get(
+      `https://api.coingecko.com/api/v3/coins/${id}/market_chart`,
+      {
+        params: {
+          vs_currency: currency, // It dynamically passes usd, inr, eur
+          days,
+          interval,
+        },
+      }
+    );
+    res.json(response.data);
+  } catch (error) {
+    console.error("Coin chart API error:", error.message);
+    res.status(500).json({
+      message: "Coin chart API error",
     });
   }
 });

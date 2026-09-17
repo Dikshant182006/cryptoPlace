@@ -10,7 +10,7 @@ import { useLocation } from "react-router-dom";
 import { API_URL } from "../config";
 
 function Navbar({ light, setLight }) {
-  const { setCurrency } = useContext(CoinContext);
+  const { currency, setCurrency } = useContext(CoinContext);
   // set the menu in the mobile
   const [menuOpen, setMenuOpen] = useState(false);
   // set the toggle in the laptop and mobile black and dark color
@@ -79,7 +79,7 @@ function Navbar({ light, setLight }) {
 ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
       >
         <div className="flex justify-between w-[60vw]">
-          <div onClick={handleHandburg} className="md:hidden text-2xl">
+          <div onClick={handleHandburg} className="md:hidden text-2xl cursor-pointer">
             ☰
           </div>
           <div className="flex items-center gap-2 text-center">
@@ -124,10 +124,9 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
             </NavLink>
             <img
               onClick={handleSetting}
-              className="cursor-pointer w-6"
               src={setting}
               alt="setting"
-              className={`hover:scale-110 transition ${invert}`}
+              className={`cursor-pointer w-6 hover:scale-110 transition ${invert}`}
             />
           </div>
 
@@ -155,6 +154,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
             <select
               className={`cursor-pointer bg-[#1f1f1f] px-3 justify-center rounded-lg hover:bg-gray-900 ${navBg}`}
               onChange={currencyHandler}
+              value={currency?.name || "usd"}
             >
               <option value="usd" className="bg-black">
                 USD
@@ -227,10 +227,11 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               src={setting}
             />
 
-            <div className="currency-box md:flex gap-5 hidden">
+            <div className="currency-box flex gap-5">
               <select
-                className="cursor-pointer bg-[#1f1f1f] px-3 justify-center rounded-lg hover:bg-gray-900"
+                className="cursor-pointer bg-[#1f1f1f] px-3 py-2 justify-center rounded-lg hover:bg-gray-900 text-white"
                 onChange={currencyHandler}
+                value={currency?.name || "usd"}
               >
                 <option value="usd">USD</option>
                 <option value="inr">INR</option>

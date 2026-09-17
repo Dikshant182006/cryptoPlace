@@ -7,7 +7,7 @@ const TickerCoin = () => {
   const tickerCoins = [...allCoin.slice(0, 15), ...allCoin.slice(0, 15)];
 
   return (
-    <div className="w-full overflow-hidden border-y border-white/10 bg-white/10 py-2 mb-2 fixed top-14">
+    <div className="w-full overflow-hidden border-y border-white/10 bg-black/30 backdrop-blur-md py-2 fixed top-14 z-50">
       <div
         className="flex gap-10 w-max"
         style={{ animation: "tickerScroll 30s linear infinite" }}
