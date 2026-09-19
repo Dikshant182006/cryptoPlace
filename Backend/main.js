@@ -60,9 +60,7 @@ app.get("/api/coins", async (req, res) => {
         },
       },
     );
-
-    console.log("Bitcoin price:", response.data[0]?.current_price);
-
+    
     res.json(response.data);
   } catch (error) {
     console.error("Coins API error:", error.message);
