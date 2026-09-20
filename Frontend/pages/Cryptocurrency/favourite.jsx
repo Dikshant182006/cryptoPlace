@@ -2,10 +2,10 @@ import React, { useContext, useState } from "react";
 import { CoinContext } from "../../context/coinContext";
 import { NavLink } from "react-router-dom";
 import { useGlobal } from "../../src/hooks/UseGlobal";
+import { useCoins } from "../../src/hooks/UseCoin";
 
 const Favourite = () => {
   const { currency, favorites, setFavorites } = useContext(CoinContext);
-  const [rating, setrating] = useState(0);
 
   const {
     data: allCoin = [],
