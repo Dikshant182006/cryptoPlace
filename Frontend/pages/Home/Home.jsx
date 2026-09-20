@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { CoinContext } from "../../context/coinContext";
 import { Link } from "react-router-dom";
 import chatgpt from "../../src/assets/chatgpt.svg";

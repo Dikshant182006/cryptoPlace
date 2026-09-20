@@ -1,10 +1,22 @@
 import React, { useContext, useState } from "react";
 import { CoinContext } from "../../context/coinContext";
 import { NavLink } from "react-router-dom";
+import { useGlobal } from "../../src/hooks/UseGlobal";
 
 const Favourite = () => {
-  const { currency, wholeData, allCoin, favorites, setFavorites } = useContext(CoinContext);
+  const { currency, favorites, setFavorites } = useContext(CoinContext);
   const [rating, setrating] = useState(0);
+
+  const {
+    data: allCoin = [],
+    isLoading,
+    isError,
+    error,
+  } = useCoins(currency.name);
+
+  const {
+    data: wholeData,
+  } = useGlobal(currency.name);
 
   const toggleFavourites = (item) => {
     if (favorites.some((fav) => fav.id === item.id)) {
@@ -47,11 +59,10 @@ const Favourite = () => {
 
         <div className="market-cap flex flex-col md:flex-row gap-4 md:gap-7 justify-center mt-8 px-4">
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
                 ? "bg-green-950"
                 : "bg-red-950"
-            }`}
+              }`}
           >
             <p>Market Cap</p>
 
@@ -65,11 +76,10 @@ const Favourite = () => {
               </h2>
 
               <span
-                className={`w-fit py-1 px-1.5 rounded-lg text-white/50 text-sm ${
-                  wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
+                className={`w-fit py-1 px-1.5 rounded-lg text-white/50 text-sm ${wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
                     ? "bg-green-800"
                     : "bg-red-900"
-                }`}
+                  }`}
               >
                 {wholeData.market_cap_change_percentage_24h_usd > 0 ? "▲" : "▼"}
                 {Math.abs(
@@ -81,11 +91,10 @@ const Favourite = () => {
           </div>
 
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
                 ? "bg-green-950"
                 : "bg-red-950"
-            }`}
+              }`}
           >
             <p>Volume 24h</p>
 
@@ -99,11 +108,10 @@ const Favourite = () => {
               </h2>
 
               <span
-                className={`w-fit py-1 px-1.5 rounded-lg text-white/60 ${
-                  wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
+                className={`w-fit py-1 px-1.5 rounded-lg text-white/60 ${wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
                     ? "bg-green-800"
                     : "bg-red-900"
-                }`}
+                  }`}
               >
                 {wholeData.volume_change_percentage_24h_usd > 0 ? "▲" : "▼"}
                 {wholeData.volume_change_percentage_24h_usd.toFixed(2)}%
@@ -112,11 +120,10 @@ const Favourite = () => {
           </div>
 
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              wholeData.market_cap_percentage.btc.toFixed(1) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.market_cap_percentage.btc.toFixed(1) > 0
                 ? "bg-green-950"
                 : "bg-red-950"
-            }`}
+              }`}
           >
             <p>BTC Dominance</p>
 
@@ -167,79 +174,76 @@ const Favourite = () => {
               <p>Volume 24h</p>
             </div>
 
-            { favorites.length === 0? 
-            ( <div className="w-[80vw]">
-            <p className="flex w-[97vw] justify-center">You have no favorites yet ⭐</p>
-            </div>
-            ) :
-             (favorites.map((item) => (
-              <div 
-                key={item.id}
-                className="text-white grid grid-cols-[0.5fr_2fr_0.5fr_0.5fr_0.5fr_1fr_1fr_1fr] text-right min-w-[200vw] sm:min-w-[70vw] gap-10 mt-4"
-              >
-                <div className="flex justify-between ml-5">
-                  <input
-                    onChange={() => toggleFavourites(item)}
-                    type="checkbox"
-                    checked={favorites.some((fav) => fav.id === item.id)}
-                  />
-                  <p>{item.market_cap_rank}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <img src={item.image} className="w-7" />
-                  <p className="capitalize text-white font-bold">{item.id}</p>
-                  <span className="text-white/70">
-                    {item.symbol.toUpperCase()}
-                  </span>
-                </div>
-                <p
-                  className={`text-sm 
-                  ${
-                    item.price_change_percentage_1h_in_currency > 0
-                      ? "text-green-500"
-                      : "text-red-600"
-                  }
+            {favorites.length === 0 ?
+              (<div className="w-[80vw]">
+                <p className="flex w-[97vw] justify-center">You have no favorites yet ⭐</p>
+              </div>
+              ) :
+              (favorites.map((item) => (
+                <div
+                  key={item.id}
+                  className="text-white grid grid-cols-[0.5fr_2fr_0.5fr_0.5fr_0.5fr_1fr_1fr_1fr] text-right min-w-[200vw] sm:min-w-[70vw] gap-10 mt-4"
+                >
+                  <div className="flex justify-between ml-5">
+                    <input
+                      onChange={() => toggleFavourites(item)}
+                      type="checkbox"
+                      checked={favorites.some((fav) => fav.id === item.id)}
+                    />
+                    <p>{item.market_cap_rank}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img src={item.image} className="w-7" />
+                    <p className="capitalize text-white font-bold">{item.id}</p>
+                    <span className="text-white/70">
+                      {item.symbol.toUpperCase()}
+                    </span>
+                  </div>
+                  <p
+                    className={`text-sm 
+                  ${item.price_change_percentage_1h_in_currency > 0
+                        ? "text-green-500"
+                        : "text-red-600"
+                      }
                 `}
-                >
-                  {item.price_change_percentage_1h_in_currency > 0 ? "▲" : "▼"}
-                  {Math.abs(
-                    item.price_change_percentage_1h_in_currency?.toFixed(2),
-                  ) ?? "0.0"}
-                </p>
-                <p
-                  className={` text-sm
-                  ${
-                    item.price_change_percentage_24h_in_currency > 0
-                      ? "text-green-500"
-                      : "text-red-600"
-                  } `}
-                >
-                  {item.price_change_percentage_24h_in_currency > 0 ? "▲" : "▼"}
-                  {Math.abs(
-                    item.price_change_percentage_24h_in_currency?.toFixed(2),
-                  ) ?? "0.0"}
-                </p>
-                <p
-                  className={`text-sm
-                  ${
-                    item.price_change_percentage_7d_in_currency > 0
-                      ? "text-green-500"
-                      : "text-red-600"
-                  } `}
-                >
-                  {item.price_change_percentage_7d_in_currency > 0 ? "▲" : "▼"}
-                  {Math.abs(
-                    item.price_change_percentage_7d_in_currency?.toFixed(2),
-                  ) ?? "0.0"}
-                </p>
-                <p>
-                  {currency.symbol}
-                  {item.current_price?.toLocaleString()}
-                </p>
-                <p>{currency.symbol}{formatNumber(item.market_cap)}</p>
-                <p>{currency.symbol}{formatNumber(item.total_volume)}</p>
-              </div>)
-            ))}
+                  >
+                    {item.price_change_percentage_1h_in_currency > 0 ? "▲" : "▼"}
+                    {Math.abs(
+                      item.price_change_percentage_1h_in_currency?.toFixed(2),
+                    ) ?? "0.0"}
+                  </p>
+                  <p
+                    className={` text-sm
+                  ${item.price_change_percentage_24h_in_currency > 0
+                        ? "text-green-500"
+                        : "text-red-600"
+                      } `}
+                  >
+                    {item.price_change_percentage_24h_in_currency > 0 ? "▲" : "▼"}
+                    {Math.abs(
+                      item.price_change_percentage_24h_in_currency?.toFixed(2),
+                    ) ?? "0.0"}
+                  </p>
+                  <p
+                    className={`text-sm
+                  ${item.price_change_percentage_7d_in_currency > 0
+                        ? "text-green-500"
+                        : "text-red-600"
+                      } `}
+                  >
+                    {item.price_change_percentage_7d_in_currency > 0 ? "▲" : "▼"}
+                    {Math.abs(
+                      item.price_change_percentage_7d_in_currency?.toFixed(2),
+                    ) ?? "0.0"}
+                  </p>
+                  <p>
+                    {currency.symbol}
+                    {item.current_price?.toLocaleString()}
+                  </p>
+                  <p>{currency.symbol}{formatNumber(item.market_cap)}</p>
+                  <p>{currency.symbol}{formatNumber(item.total_volume)}</p>
+                </div>)
+              ))}
           </div>
         </div>
       </div>

@@ -11,3 +11,16 @@ export const fetchCoins = async (currency) => {
 
     return response.json();
 }
+
+export const fetchGlobal = async (currency) => {
+    const response = await fetch(
+        `${API_URL}/api/global?.currency=${currency}`
+    )
+
+    if(!response.ok) {
+        throw new Error("Failed to fetch global data: ${response.status}");
+    }
+
+    const data = await response.json();
+    return data.data || data;
+}

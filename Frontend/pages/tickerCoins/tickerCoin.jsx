@@ -1,10 +1,21 @@
 import React, { useContext } from "react";
 import { CoinContext } from "../../context/coinContext";
+import { useCoins } from "../../src/hooks/UseCoin";
 
 const TickerCoin = () => {
-  const { allCoin , currency } = useContext(CoinContext);
+  const { currency } = useContext(CoinContext);
+
+   const {
+      data: allCoin = [],
+      isLoading,
+      isError,
+      error,
+    } = useCoins(currency.name);
 
   const tickerCoins = [...allCoin.slice(0, 15), ...allCoin.slice(0, 15)];
+
+  if(isLoading) return <p>Loading...</p>
+  if(isError) return <p>Error: {error.message}</p>
 
   return (
     <div className="w-full overflow-hidden border-y border-white/10 bg-black/30 backdrop-blur-md py-2 fixed top-14 z-50">

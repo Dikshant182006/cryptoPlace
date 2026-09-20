@@ -2,17 +2,30 @@ import React, { useContext, useState } from "react";
 import { CoinContext } from "../../context/coinContext";
 import { NavLink } from "react-router-dom";
 import Favourite from "./favourite";
+import { useGlobal } from "../../src/hooks/UseGlobal";
+import { useCoins } from "../../src/hooks/UseCoin";
 
-const CryptoList = ({light}) => {
-  const { currency, wholeData, allCoin, favorites, setFavorites } = useContext(CoinContext);
+const CryptoList = ({ light }) => {
+  const { currency, favorites, setFavorites } = useContext(CoinContext);
 
   const toggleFavourites = (item) => {
-    if(favorites.some((fav) => fav.id === item.id)) {
+    if (favorites.some((fav) => fav.id === item.id)) {
       setFavorites(favorites.filter((fav) => fav.id !== item.id));
-    } else{
-      setFavorites([...favorites , item]);
+    } else {
+      setFavorites([...favorites, item]);
     }
   }
+
+  const {
+    data: allCoin = [],
+  } = useCoins(currency.name);
+
+  const {
+    data: wholeData = [],
+    isLoading,
+    isError,
+    error,
+  } = useGlobal(currency.name);
 
   const formatNumber = (num) => {
     if (num >= 1e12) return (num / 1e12).toFixed(0) + "T";
@@ -22,11 +35,15 @@ const CryptoList = ({light}) => {
     return num;
   };
 
-  if (!wholeData) {
-    return <div className="text-center mt-20">Loading...</div>;
+  if (isLoading) {
+    return <p>Loading...</p>;
   }
 
-  const textMain = light? "text-black/70": "text-white/60";
+  if (isError) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  const textMain = light ? "text-black/70" : "text-white/60";
 
   return (
     <>
@@ -49,11 +66,10 @@ const CryptoList = ({light}) => {
 
         <div className="market-cap flex flex-col md:flex-row gap-4 md:gap-7 justify-center mt-8 px-4">
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
                 ? "bg-green-950"
                 : "bg-red-950"
-            }`}
+              }`}
           >
             <p>Market Cap</p>
 
@@ -67,11 +83,10 @@ const CryptoList = ({light}) => {
               </h2>
 
               <span
-                className={`w-fit py-1 px-1.5 rounded-lg text-white/50 text-sm ${
-                  wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
+                className={`w-fit py-1 px-1.5 rounded-lg text-white/50 text-sm ${wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
                     ? "bg-green-800"
                     : "bg-red-900"
-                }`}
+                  }`}
               >
                 {wholeData.market_cap_change_percentage_24h_usd > 0 ? "▲" : "▼"}
                 {Math.abs(
@@ -83,11 +98,10 @@ const CryptoList = ({light}) => {
           </div>
 
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
                 ? "bg-green-950"
                 : "bg-red-950"
-            }`}
+              }`}
           >
             <p>Volume 24h</p>
 
@@ -101,11 +115,10 @@ const CryptoList = ({light}) => {
               </h2>
 
               <span
-                className={`w-fit py-1 px-1.5 rounded-lg text-white/60 ${
-                  wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
+                className={`w-fit py-1 px-1.5 rounded-lg text-white/60 ${wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
                     ? "bg-green-800"
                     : "bg-red-900"
-                }`}
+                  }`}
               >
                 {wholeData.volume_change_percentage_24h_usd > 0 ? "▲" : "▼"}
                 {wholeData.volume_change_percentage_24h_usd.toFixed(2)}%
@@ -114,11 +127,10 @@ const CryptoList = ({light}) => {
           </div>
 
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              wholeData.market_cap_percentage.btc.toFixed(1) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.market_cap_percentage.btc.toFixed(1) > 0
                 ? "bg-green-950"
                 : "bg-red-950"
-            }`}
+              }`}
           >
             <p>BTC Dominance</p>
 
@@ -187,11 +199,10 @@ const CryptoList = ({light}) => {
                 </div>
                 <p
                   className={`text-sm 
-                  ${
-                    item.price_change_percentage_1h_in_currency > 0
+                  ${item.price_change_percentage_1h_in_currency > 0
                       ? "text-green-500"
                       : "text-red-600"
-                  }
+                    }
                 `}
                 >
                   {item.price_change_percentage_1h_in_currency > 0 ? "▲" : "▼"}
@@ -201,11 +212,10 @@ const CryptoList = ({light}) => {
                 </p>
                 <p
                   className={`text-sm
-                  ${
-                    item.price_change_percentage_24h_in_currency > 0
+                  ${item.price_change_percentage_24h_in_currency > 0
                       ? "text-green-500"
                       : "text-red-600"
-                  } `}
+                    } `}
                 >
                   {item.price_change_percentage_24h_in_currency > 0 ? "▲" : "▼"}
                   {Math.abs(
@@ -214,11 +224,10 @@ const CryptoList = ({light}) => {
                 </p>
                 <p
                   className={`text-sm
-                  ${
-                    item.price_change_percentage_7d_in_currency > 0
+                  ${item.price_change_percentage_7d_in_currency > 0
                       ? "text-green-500"
                       : "text-red-600"
-                  } `}
+                    } `}
                 >
                   {item.price_change_percentage_7d_in_currency > 0 ? "▲" : "▼"}
                   {Math.abs(

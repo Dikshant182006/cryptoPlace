@@ -1,60 +1,16 @@
 import { createContext, useState, useEffect } from "react";
-import { API_URL } from "../src/config";
-
 export const CoinContext = createContext();
 
 const CoinContextProvider = (props) => {
-  const [allCoin, setAllCoin] = useState([]);
   const [currency, setCurrency] = useState({
     name: "usd",
     symbol: "$",
   });
-  const [wholeData, setWholeData] = useState();
   const [favorites, setFavorites] = useState([]);
 
-  const fetchAllCoin = async () => {
-    try {
-      const response = await fetch(
-        `${API_URL}/api/coins?currency=${currency.name}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      setAllCoin(data);
-    } catch (error) {
-      console.log("Fetch Error:", error.message);
-    }
-  };
-
-  const globalData = async () => {
-    try {
-      const response = await fetch(
-        `${API_URL}/api/global?currency=${currency.name}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      setWholeData(data.data || data);
-    } catch (error) {
-      console.log("Fetch Error:", error.message);
-    }
-  };
-
-  useEffect(() => {
-    globalData();
-  }, [currency.name]);
-
-  useEffect(() => {
-    fetchAllCoin();
-  }, [currency.name]);
-
   const contextValue = {
-    allCoin,
     currency,
     setCurrency,
-    wholeData,
     favorites,
     setFavorites,
   };
