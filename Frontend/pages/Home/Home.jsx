@@ -5,10 +5,19 @@ import chatgpt from "../../src/assets/chatgpt.svg";
 import gemini from "../../src/assets/gemini.svg";
 import claude from "../../src/assets/claude.svg";
 import useDebounce from "../../modules/shared/Hooks/useDebounceHook";
+import { useCoins } from "../../src/hooks/UseCoin";
 
 const Home = ({ light, setLight }) => {
-  const { allCoin, currency } = useContext(CoinContext);
-  const [displayCoin, setDisplayCoin] = useState(allCoin);
+  const { currency } = useContext(CoinContext);
+  
+  const {
+    data: allCoin = [],
+    isLoading,
+    isError,
+    error,
+  } = useCoins(currency.name);
+  
+  const [displayCoin, setDisplayCoin] = useState([]);
   const [input, setInput] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -45,6 +54,9 @@ const Home = ({ light, setLight }) => {
 
     setDisplayCoin(filteredCoins);
   }, [debounceValue, allCoin]);
+
+  if(isLoading) return <p>Loading...</p>;
+  if(isError) return <p>Error: {error.message} </p>
 
   // To handle the input
   const handleInput = (e) => {
