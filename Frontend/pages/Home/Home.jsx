@@ -120,7 +120,9 @@ const Home = ({ light, setLight }) => {
                 </p>
 
                 <form
-                  className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-lg focus-within:ring-2 focus-within:ring-purple-400 transition-all"
+                  className={`flex items-center backdrop-blur-md border rounded-full shadow-lg focus-within:ring-2 focus-within:ring-purple-400 transition-all ${
+                    light ? "bg-black/5 border-black/10" : "bg-white/10 border-white/20"
+                  }`}
                 >
                   <span className="pl-4 text-gray-400 text-lg ">🔍</span>
                   <input
@@ -134,24 +136,24 @@ const Home = ({ light, setLight }) => {
 
                   <button
                     type="submit"
-                    className="px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-full m-1 hover:opacity-90 transition"
+                    className="px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-full m-1 hover:opacity-90 transition cursor-pointer"
                   >
                     Search
                   </button>
                 </form>
 
                 <div className="flex flex-col gap-4 mt-10 sm:flex-row sm:gap-8 sm:mt-6 text-center">
-                  <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className={`px-6 py-3 rounded-xl ${light ? "bg-black/5 border border-black/10" : "bg-white/5 border border-white/10"}`}>
                     <p className="text-purple-400 font-bold text-xl">10,000+</p>
                     <p className="text-gray-400 text-xs mt-1">
                       Cryptocurrencies
                     </p>
                   </div>
-                  <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className={`px-6 py-3 rounded-xl ${light ? "bg-black/5 border border-black/10" : "bg-white/5 border border-white/10"}`}>
                     <p className="text-orange-400 font-bold text-xl">$2.5T+</p>
                     <p className="text-gray-400 text-xs mt-1">Market Cap</p>
                   </div>
-                  <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10">
+                  <div className={`px-6 py-3 rounded-xl ${light ? "bg-black/5 border border-black/10" : "bg-white/5 border border-white/10"}`}>
                     <p className="text-green-400 font-bold text-xl">Live</p>
                     <p className="text-gray-400 text-xs mt-1">Price Updates</p>
                   </div>
@@ -206,7 +208,7 @@ const Home = ({ light, setLight }) => {
       </div>
 
       <div className="mt-15">
-        <p className="border border-gray-900 w-[90vw] m-auto"></p>
+        <p className={`border w-[90vw] m-auto ${light ? "border-gray-200" : "border-gray-900"}`}></p>
         <div className="text-center w-full">
           <h2 className="text-3xl font-bold m-2">
             All-In-One Crypto Tracker to Manage Your <br /> Portfolio More
@@ -220,58 +222,94 @@ const Home = ({ light, setLight }) => {
       </div>
 
       <div className="cryptoAi my-15">
-        <div className="m-auto rounded-3xl w-[90vw] py-14 px-12 text-center relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #13111c 0%, #0e0c18 60%, #161020 100%)" }}>
-
+        <div
+          className={`m-auto rounded-3xl w-[90vw] py-14 px-12 text-center relative overflow-hidden ${
+            light ? "border border-purple-200/60 shadow-xl" : ""
+          }`}
+          style={{
+            background: light
+              ? "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #fdf4ff 100%)"
+              : "linear-gradient(135deg, #13111c 0%, #0e0c18 60%, #161020 100%)",
+          }}
+        >
           {/* Floating icons */}
           {[
-            { emoji: "✅", bg: "rgba(16,185,129,0.18)", border: "rgba(16,185,129,0.3)", top: "18%", left: "4%", size: 52, dur: 3.8, delay: 0 },
-            { emoji: "🔥", bg: "rgba(251,146,60,0.18)", border: "rgba(251,146,60,0.3)", top: "48%", left: "3%", size: 48, dur: 4.5, delay: 0.6 },
-            { emoji: "❓", bg: "rgba(139,92,246,0.18)", border: "rgba(139,92,246,0.3)", top: "72%", left: "5%", size: 46, dur: 5.2, delay: 1.2 },
-            { emoji: "⭐", bg: "rgba(234,179,8,0.18)", border: "rgba(234,179,8,0.3)", top: "18%", right: "4%", size: 52, dur: 4.1, delay: 0.3 },
-            { emoji: "✨", bg: "rgba(139,92,246,0.18)", border: "rgba(139,92,246,0.3)", top: "48%", right: "3%", size: 48, dur: 3.6, delay: 0.9 },
-            { emoji: "🧡", bg: "rgba(251,146,60,0.18)", border: "rgba(251,146,60,0.3)", top: "72%", right: "5%", size: 46, dur: 4.8, delay: 1.5 },
+            { emoji: "✅", bg: light ? "rgba(16,185,129,0.14)" : "rgba(16,185,129,0.18)", border: light ? "rgba(16,185,129,0.35)" : "rgba(16,185,129,0.3)", top: "18%", left: "4%", size: 52, dur: 3.8, delay: 0 },
+            { emoji: "🔥", bg: light ? "rgba(251,146,60,0.14)" : "rgba(251,146,60,0.18)", border: light ? "rgba(251,146,60,0.35)" : "rgba(251,146,60,0.3)", top: "48%", left: "3%", size: 48, dur: 4.5, delay: 0.6 },
+            { emoji: "❓", bg: light ? "rgba(139,92,246,0.14)" : "rgba(139,92,246,0.18)", border: light ? "rgba(139,92,246,0.35)" : "rgba(139,92,246,0.3)", top: "72%", left: "5%", size: 46, dur: 5.2, delay: 1.2 },
+            { emoji: "⭐", bg: light ? "rgba(234,179,8,0.14)" : "rgba(234,179,8,0.18)", border: light ? "rgba(234,179,8,0.35)" : "rgba(234,179,8,0.3)", top: "18%", right: "4%", size: 52, dur: 4.1, delay: 0.3 },
+            { emoji: "✨", bg: light ? "rgba(139,92,246,0.14)" : "rgba(139,92,246,0.35)", border: light ? "rgba(139,92,246,0.35)" : "rgba(139,92,246,0.3)", top: "48%", right: "3%", size: 48, dur: 3.6, delay: 0.9 },
+            { emoji: "🧡", bg: light ? "rgba(251,146,60,0.14)" : "rgba(251,146,60,0.18)", border: light ? "rgba(251,146,60,0.35)" : "rgba(251,146,60,0.3)", top: "72%", right: "5%", size: 46, dur: 4.8, delay: 1.5 },
           ].map((item, index) => (
-            <div key={index} className="absolute flex items-center justify-center rounded-2xl"
+            <div
+              key={index}
+              className="absolute flex items-center justify-center rounded-2xl"
               style={{
-                width: item.size, height: item.size,
-                background: item.bg, border: `1px solid ${item.border}`,
+                width: item.size,
+                height: item.size,
+                background: item.bg,
+                border: `1px solid ${item.border}`,
+                boxShadow: light ? "0 4px 12px rgba(0,0,0,0.06)" : "none",
                 fontSize: item.size * 0.45,
-                top: item.top, left: item.left, right: item.right,
+                top: item.top,
+                left: item.left,
+                right: item.right,
                 animation: `aiFloat ${item.dur}s ease-in-out ${item.delay}s infinite`,
-              }}>
+              }}
+            >
               {item.emoji}
             </div>
           ))}
 
           {/* Content */}
           <div className="relative z-10">
-            <h2 className="font-bold text-4xl text-white mb-3 leading-tight">
+            <h2 className={`font-bold text-4xl mb-3 leading-tight ${light ? "text-gray-900" : "text-white"}`}>
               Unsure What's the Best Crypto Tracker?
             </h2>
-            <p className="text-white/45 text-base mb-8 leading-relaxed">
+            <p className={`text-base mb-8 leading-relaxed ${light ? "text-gray-600" : "text-white/45"}`}>
               Don't take our word for it. Click a button to<br />
               prompt "Best crypto tracker?".
             </p>
 
             <div className="flex flex-wrap gap-3 justify-center">
-              <div onClick={handleChat}
-                className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}>
-                <img src={chatgpt} alt="chatgpt" className="w-4 h-4 invert" />
-                <span className="text-white text-sm font-medium">Ask ChatGPT</span>
+              <div
+                onClick={handleChat}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
+                  light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
+                }`}
+                style={{
+                  background: light ? "rgba(255, 255, 255, 0.9)" : "rgba(255,255,255,0.07)",
+                  border: light ? "1px solid rgba(139, 92, 246, 0.25)" : "1px solid rgba(255,255,255,0.14)",
+                }}
+              >
+                <img src={chatgpt} alt="chatgpt" className={`w-4 h-4 ${light ? "" : "invert"}`} />
+                <span className={`text-sm font-medium ${light ? "text-gray-800" : "text-white"}`}>Ask ChatGPT</span>
               </div>
-              <div onClick={handleGemini}
-                className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}>
+              <div
+                onClick={handleGemini}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
+                  light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
+                }`}
+                style={{
+                  background: light ? "rgba(255, 255, 255, 0.9)" : "rgba(255,255,255,0.07)",
+                  border: light ? "1px solid rgba(139, 92, 246, 0.25)" : "1px solid rgba(255,255,255,0.14)",
+                }}
+              >
                 <img src={gemini} alt="gemini" className="w-4 h-4" />
-                <span className="text-white text-sm font-medium">Ask Gemini</span>
+                <span className={`text-sm font-medium ${light ? "text-gray-800" : "text-white"}`}>Ask Gemini</span>
               </div>
-              <div onClick={handleClaude}
-                className="flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/15"
-                style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)" }}>
+              <div
+                onClick={handleClaude}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
+                  light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
+                }`}
+                style={{
+                  background: light ? "rgba(255, 255, 255, 0.9)" : "rgba(255,255,255,0.07)",
+                  border: light ? "1px solid rgba(139, 92, 246, 0.25)" : "1px solid rgba(255,255,255,0.14)",
+                }}
+              >
                 <img src={claude} alt="claude" className="w-4 h-4" />
-                <span className="text-white text-sm font-medium">Ask Claude</span>
+                <span className={`text-sm font-medium ${light ? "text-gray-800" : "text-white"}`}>Ask Claude</span>
               </div>
             </div>
           </div>

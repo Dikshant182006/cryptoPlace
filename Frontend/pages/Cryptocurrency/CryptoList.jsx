@@ -169,7 +169,7 @@ const CryptoList = ({ light }) => {
               Favorites
             </NavLink>
           </div>
-          <div className="table m-auto my-10 pb-5 min-h-[60vh] w-[95vw] rounded-xl pt-5 text-white/50 pr-5 overflow-x-auto ">
+          <div className={`table m-auto my-10 pb-5 min-h-[60vh] w-[95vw] rounded-xl pt-5 pr-5 overflow-x-auto ${light ? "bg-transparent" : "bg-[#090909]"}`}>
             <div className={`grid min-w-[240vw] sm:min-w-[70vw] grid-cols-[0.5fr_2fr_0.5fr_0.5fr_0.5fr_1fr_1fr_1fr] gap-10 mb-10 text-right ${textMain}`}>
               <p>#</p>
               <p className="text-start">Name</p>
@@ -184,7 +184,7 @@ const CryptoList = ({ light }) => {
             {allCoin.slice(0, 35).map((item, index) => (
               <div
                 key={item.id}
-                className={`text-white grid grid-cols-[0.5fr_2fr_0.5fr_0.5fr_0.5fr_1fr_1fr_1fr] text-right min-w-[200vw] sm:min-w-[70vw] gap-10 mt-4 ${textMain}`}
+                className={`grid grid-cols-[0.5fr_2fr_0.5fr_0.5fr_0.5fr_1fr_1fr_1fr] text-right min-w-[200vw] sm:min-w-[70vw] gap-10 mt-4 ${textMain}`}
               >
                 <div className="flex justify-between ml-5 items-center gap-2">
                   <input onChange={() => toggleFavourites(item)} type="checkbox" checked={favorites.some((fav) => fav.id === item.id)} />

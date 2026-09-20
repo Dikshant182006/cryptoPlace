@@ -17,9 +17,7 @@ import ScrollToTop from "../modules/shared/CommonSidebarForTop.jsx";
 import { useLocation } from "react-router-dom";
 
 function App() {
-
   const [light, setLight] = useState(false);
-
   const location = useLocation();
 
   return (
@@ -27,7 +25,7 @@ function App() {
       <ScrollToTop />
       <Navbar light={light} setLight={setLight} />
       {location.pathname !== "/signup" &&
-      location.pathname !== "/login" && <TickerCoin />}
+      location.pathname !== "/login" && <TickerCoin light={light} />}
       <Routes>
         <Route path="/" element={<Home light={light} />} />
         <Route path="/coins/" element={<CryptoList light={light} />} />
@@ -38,7 +36,7 @@ function App() {
         <Route path="/helpCenter" element={<HelpCenter light={light} />} />
         <Route path="/aboutus" element={<AboutUs light={light} />} />
         <Route path="/features" element={<Features />} />
-        <Route path="/favorites/" element={<Favourite />} />
+        <Route path="/favorites/" element={<Favourite light={light} />} />
       </Routes>
       <Footer light={light} setLight={setLight} />
     </div>
