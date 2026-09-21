@@ -78,7 +78,7 @@ function Navbar({ light, setLight }) {
         className={`flex items-center p-2 px-5 w-full fixed top-0 left-0 z-60 transition
 ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
       >
-        <div className="flex justify-between w-[60vw]">
+        <div className="flex justify-between w-[20vw]">
           <div onClick={handleHandburg} className="md:hidden text-2xl cursor-pointer">
             ☰
           </div>

@@ -19,7 +19,7 @@ const TickerCoin = ({ light }) => {
 
   return (
     <div
-      className={`w-full overflow-hidden border-y py-2 fixed top-14 z-50 backdrop-blur-md transition ${
+      className={`w-full overflow-hidden border-y py-2 fixed top-13 z-50 backdrop-blur-md transition ${
         light
           ? "bg-white/80 border-gray-200 text-black shadow-sm"
           : "bg-black/30 border-white/10 text-white"
