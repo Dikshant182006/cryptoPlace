@@ -6,10 +6,20 @@ import gemini from "../../src/assets/gemini.svg";
 import claude from "../../src/assets/claude.svg";
 import useDebounce from "../../modules/shared/Hooks/useDebounceHook";
 import { useCoins } from "../../src/hooks/UseCoin";
+import CommonPagination from "../../src/components/Pagination/CommonPagination";
 
 const Home = ({ light, setLight }) => {
   const { currency } = useContext(CoinContext);
+  const [displayCoin, setDisplayCoin] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   
+  const itemsPerPage = 6;
+
+  const lastIndex = currentPage * itemsPerPage;
+  const firstIndex = lastIndex - itemsPerPage;
+  const currentCoins = displayCoin.slice(firstIndex, lastIndex);
+  const totalPages = Math.ceil(displayCoin.length/itemsPerPage);
+
   const {
     data: allCoin = [],
     isLoading,
@@ -17,7 +27,6 @@ const Home = ({ light, setLight }) => {
     error,
   } = useCoins(currency.name);
   
-  const [displayCoin, setDisplayCoin] = useState([]);
   const [input, setInput] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -165,7 +174,9 @@ const Home = ({ light, setLight }) => {
       </div>
 
       <div className="overflow-x-auto hide-scrollbar-x">
-        <div className={`crypto-table border border-white/10 sm:max-w-[80vw] min-w-[800px] pb-5 m-auto mb-6 rounded-2xl sm:mt-10 mt-5 ${changeBac}`}>
+        <div
+          className={`crypto-table border border-white/10 sm:max-w-[80vw] min-w-[800px] m-auto mb-6 rounded-2xl sm:mt-10 mt-5 overflow-hidden ${changeBac}`}
+        >
           <div className="table-layout grid grid-cols-[0.5fr_2fr_1fr_1fr_1.5fr] p-2 px-3 rounded-lg border-black">
             <p>#</p>
             <p>Coins</p>
@@ -173,7 +184,7 @@ const Home = ({ light, setLight }) => {
             <p>24H Change</p>
             <p className="text-right">Market Cap</p>
           </div>
-          {displayCoin.slice(0, 8).map((item, index) => (
+          {currentCoins.map((item, index) => (
             <Link
               to={`/coin/${item.id}`}
               key={item.id}
@@ -204,6 +215,16 @@ const Home = ({ light, setLight }) => {
               </p>
             </Link>
           ))}
+
+          {/* Attached Pagination Footer */}
+          <CommonPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            totalItems={displayCoin.length}
+            itemsPerPage={itemsPerPage}
+            light={light}
+          />
         </div>
       </div>
 
