@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { CoinContext } from "../../context/coinContext";
 import { NavLink } from "react-router-dom";
-import Favourite from "./favourite";
 import { useGlobal } from "../../src/hooks/UseGlobal";
 import { useCoins } from "../../src/hooks/UseCoin";
 import CommonPagination from "../../src/components/Pagination/CommonPagination";
@@ -30,6 +29,9 @@ const CryptoList = ({ light }) => {
       key: "market_cap_rank",
       header: "#",
       width: "0.5fr",
+      headerClassName: "text-start",
+      cellClassName: "text-start",
+      render: (item) => <p className={textMain}>{item.market_cap_rank}</p>,
     },
     {
       key: "name",
@@ -310,15 +312,16 @@ const CryptoList = ({ light }) => {
             isSelected={(item) =>
               favorites.some((fav) => fav.id === item.id)
             }
-          />
-
-          <CommonPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            totalItems={coins.length}
-            itemsPerPage={itemsPerPage}
-            light={light}
+            footer={
+              <CommonPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                totalItems={coins.length}
+                itemsPerPage={itemsPerPage}
+                light={light}
+              />
+            }
           />
         </div>
       </div>

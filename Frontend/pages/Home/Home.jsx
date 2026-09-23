@@ -1,12 +1,12 @@
 import { useContext, useState, useEffect } from "react";
 import { CoinContext } from "../../context/coinContext";
-import { Link } from "react-router-dom";
 import chatgpt from "../../src/assets/chatgpt.svg";
 import gemini from "../../src/assets/gemini.svg";
 import claude from "../../src/assets/claude.svg";
 import useDebounce from "../../modules/shared/Hooks/useDebounceHook";
 import { useCoins } from "../../src/hooks/UseCoin";
 import CommonPagination from "../../src/components/Pagination/CommonPagination";
+import DataTable from "../../src/components/DataTable/DataTable";
 
 const Home = ({ light, setLight }) => {
   const { currency } = useContext(CoinContext);
@@ -38,7 +38,79 @@ const Home = ({ light, setLight }) => {
     "Live Market Data",
     "Deep Insights",
     "Smart Alerts",
-  ]
+  ];
+
+  const columns = [
+    {
+      key: "market_cap_rank",
+      header: "#",
+      width: "0.5fr",
+      headerClassName: "text-start",
+      cellClassName: "text-start",
+      render: (item) => <p className={light ? "text-black/70" : "text-white/70"}>{item.market_cap_rank}</p>,
+    },
+    {
+      key: "name",
+      header: "Coins",
+      width: "2fr",
+      headerClassName: "text-start",
+      cellClassName: "text-start",
+      render: (item) => (
+        <div className="flex items-center gap-2 text-start">
+          <img src={item.image} alt={item.name} className="w-6 h-6 sm:w-7 sm:h-7 rounded-full" />
+          <p className={`font-semibold text-sm sm:text-base ${light ? "text-gray-900" : "text-white"}`}>
+            {item.name} - <span className="lowercase">{item.symbol}</span>
+          </p>
+        </div>
+      ),
+    },
+    {
+      key: "current_price",
+      header: "Price",
+      width: "1fr",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      render: (item) => (
+        <p className={`font-semibold ${light ? "text-gray-900" : "text-white"}`}>
+          {currency.symbol}
+          {item.current_price?.toLocaleString()}
+        </p>
+      ),
+    },
+    {
+      key: "price_change_percentage_24h",
+      header: "24H Change",
+      width: "1fr",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      render: (item) => {
+        const isPositive = item.price_change_percentage_24h > 0;
+        return (
+          <p
+            className={`font-semibold ${
+              isPositive ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {isPositive ? "▲" : "▼"}{" "}
+            {Math.abs(Math.floor(item.price_change_percentage_24h * 100) / 100)}%
+          </p>
+        );
+      },
+    },
+    {
+      key: "market_cap",
+      header: "Market Cap",
+      width: "1.5fr",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      render: (item) => (
+        <p className={`font-semibold ${light ? "text-gray-900" : "text-white"}`}>
+          {currency.symbol}
+          {item.market_cap?.toLocaleString()}
+        </p>
+      ),
+    },
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -173,59 +245,24 @@ const Home = ({ light, setLight }) => {
         </div>
       </div>
 
-      <div className="overflow-x-auto hide-scrollbar-x">
-        <div
-          className={`crypto-table border border-white/10 sm:max-w-[80vw] min-w-[800px] m-auto mb-6 rounded-2xl sm:mt-10 mt-5 overflow-hidden ${changeBac}`}
-        >
-          <div className="table-layout grid grid-cols-[0.5fr_2fr_1fr_1fr_1.5fr] p-2 px-3 rounded-lg border-black">
-            <p>#</p>
-            <p>Coins</p>
-            <p>Price</p>
-            <p>24H Change</p>
-            <p className="text-right">Market Cap</p>
-          </div>
-          {currentCoins.map((item, index) => (
-            <Link
-              to={`/coin/${item.id}`}
-              key={item.id}
-              className="grid grid-cols-[0.5fr_2fr_1fr_1fr_1.5fr] items-center py-4 px-4 text-sm last:border-0 min-w-[80vw]"
-            >
-              <p>{item.market_cap_rank}</p>
-              <div className="flex items-center gap-2">
-                <img src={item.image} alt="coinImage" className="w-7" />
-                <p className="text-lg">{item.name + " - " + item.symbol}</p>
-              </div>
-              <p>
-                {currency.symbol}
-                {item.current_price?.toLocaleString()}
-              </p>
-              <p
-                className={
-                  item.price_change_percentage_24h > 0
-                    ? "text-green-800"
-                    : "text-red-800"
-                }
-              >
-                {item.price_change_percentage_24h > 0 ? "▲" : "▼"}
-                {Math.abs(Math.floor(item.price_change_percentage_24h * 100)) / 100} %
-              </p>
-              <p className="text-end">
-                {currency.symbol}
-                {item.market_cap?.toLocaleString()}
-              </p>
-            </Link>
-          ))}
-
-          {/* Attached Pagination Footer */}
-          <CommonPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            totalItems={displayCoin.length}
-            itemsPerPage={itemsPerPage}
-            light={light}
-          />
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:mt-10 mt-5 mb-6">
+        <DataTable
+          columns={columns}
+          data={currentCoins}
+          light={light}
+          rowKey={(item) => item.id}
+          getRowLink={(item) => `/coin/${item.id}`}
+          footer={
+            <CommonPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={displayCoin.length}
+              itemsPerPage={itemsPerPage}
+              light={light}
+            />
+          }
+        />
       </div>
 
       <div className="mt-15">

@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { useGlobal } from "../../src/hooks/UseGlobal";
 import { useCoins } from "../../src/hooks/UseCoin";
 import CommonPagination from "../../src/components/Pagination/CommonPagination";
+import DataTable from "../../src/components/DataTable/DataTable";
 
 const Favourite = ({ light }) => {
   const { currency, favorites, setFavorites } = useContext(CoinContext);
@@ -45,6 +46,130 @@ const Favourite = ({ light }) => {
     return num;
   };
 
+  const textMain = light ? "text-black/70" : "text-white/60";
+
+  const columns = [
+    {
+      key: "market_cap_rank",
+      header: "#",
+      width: "0.5fr",
+      render: (item) => <p className={textMain}>{item.market_cap_rank}</p>,
+    },
+    {
+      key: "name",
+      header: "Name",
+      width: "2fr",
+      headerClassName: "text-start",
+      cellClassName: "text-start",
+      render: (item) => (
+        <div className="flex items-center gap-2 text-start">
+          <img
+            src={item.image}
+            alt={item.name || item.id}
+            className="w-6 h-6 sm:w-7 sm:h-7 rounded-full"
+          />
+          <p
+            className={`capitalize font-semibold ${
+              light ? "text-gray-900" : "text-white"
+            }`}
+          >
+            {item.id}
+          </p>
+          <span className="text-xs uppercase opacity-70">
+            {item.symbol}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: "price_change_percentage_1h_in_currency",
+      header: "1h %",
+      width: "0.5fr",
+      render: (item) => {
+        const value = item.price_change_percentage_1h_in_currency;
+        return (
+          <p
+            className={`font-semibold ${
+              value > 0 ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {value > 0 ? "▲" : "▼"}
+            {Math.abs(value?.toFixed(2) ?? 0)}%
+          </p>
+        );
+      },
+    },
+    {
+      key: "price_change_percentage_24h_in_currency",
+      header: "24h %",
+      width: "0.5fr",
+      render: (item) => {
+        const value = item.price_change_percentage_24h_in_currency;
+        return (
+          <p
+            className={`font-semibold ${
+              value > 0 ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {value > 0 ? "▲" : "▼"}
+            {Math.abs(value?.toFixed(2) ?? 0)}%
+          </p>
+        );
+      },
+    },
+    {
+      key: "price_change_percentage_7d_in_currency",
+      header: "7d %",
+      width: "0.5fr",
+      render: (item) => {
+        const value = item.price_change_percentage_7d_in_currency;
+        return (
+          <p
+            className={`font-semibold ${
+              value > 0 ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {value > 0 ? "▲" : "▼"}
+            {Math.abs(value?.toFixed(2) ?? 0)}%
+          </p>
+        );
+      },
+    },
+    {
+      key: "current_price",
+      header: "Price",
+      width: "1fr",
+      render: (item) => (
+        <p className={`font-semibold ${light ? "text-gray-900" : "text-white"}`}>
+          {currency.symbol}
+          {item.current_price?.toLocaleString()}
+        </p>
+      ),
+    },
+    {
+      key: "market_cap",
+      header: "Market Cap",
+      width: "1fr",
+      render: (item) => (
+        <p className={textMain}>
+          {currency.symbol}
+          {formatNumber(item.market_cap)}
+        </p>
+      ),
+    },
+    {
+      key: "total_volume",
+      header: "Volume 24h",
+      width: "1fr",
+      render: (item) => (
+        <p className={textMain}>
+          {currency.symbol}
+          {formatNumber(item.total_volume)}
+        </p>
+      ),
+    },
+  ];
+
   if (isLoading || isCoinsLoading) {
     return (
       <div className="min-h-screen mt-40 flex justify-center items-center">
@@ -62,8 +187,6 @@ const Favourite = ({ light }) => {
       </div>
     );
   }
-
-  const textMain = light ? "text-black/70" : "text-white/60";
 
   return (
     <>
@@ -173,7 +296,7 @@ const Favourite = ({ light }) => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4 pb-10">
           <div className="flex gap-10 my-8 font-bold">
             <NavLink
               to={"/coins/"}
@@ -197,110 +320,37 @@ const Favourite = ({ light }) => {
             </NavLink>
           </div>
 
-          <div className={`w-full rounded-2xl border border-white/10 overflow-hidden shadow-xl ${light ? "bg-white/80 border-black/10" : "bg-[#090909]"}`}>
-            <div className="overflow-x-auto hide-scrollbar-x p-5">
-              <div className={`grid min-w-[700px] grid-cols-[0.5fr_2fr_0.5fr_0.5fr_0.5fr_1fr_1fr_1fr] gap-4 pb-4 border-b ${light ? "border-black/10" : "border-white/10"} text-right font-medium text-xs sm:text-sm ${textMain}`}>
-                <p>#</p>
-                <p className="text-start">Name</p>
-                <p>1h %</p>
-                <p>24h %</p>
-                <p>7d %</p>
-                <p>Price</p>
-                <p>Market Cap</p>
-                <p>Volume 24h</p>
+          <DataTable
+            columns={columns}
+            data={currentFavorites}
+            light={light}
+            rowKey={(item) => item.id}
+            selectable
+            onSelect={toggleFavourites}
+            isSelected={(item) => favorites.some((fav) => fav.id === item.id)}
+            emptyState={
+              <div>
+                <p className={`text-base font-medium ${textMain}`}>
+                  You have no favorites yet ⭐
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Check items in CryptoCurrencies to add them here.
+                </p>
               </div>
-
-              {favorites.length === 0 ? (
-                <div className="py-16 text-center">
-                  <p className={`text-base font-medium ${textMain}`}>
-                    You have no favorites yet ⭐
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">Check items in CryptoCurrencies to add them here.</p>
-                </div>
-              ) : (
-                currentFavorites.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`grid min-w-[700px] grid-cols-[0.5fr_2fr_0.5fr_0.5fr_0.5fr_1fr_1fr_1fr] text-right gap-4 py-3.5 items-center border-b ${light ? "border-black/5 hover:bg-black/5" : "border-white/5 hover:bg-white/5"} transition-colors rounded-lg px-1 text-xs sm:text-sm ${textMain}`}
-                  >
-                    <div className="flex justify-between items-center gap-2">
-                      <input
-                        onChange={() => toggleFavourites(item)}
-                        type="checkbox"
-                        checked={favorites.some((fav) => fav.id === item.id)}
-                        className="cursor-pointer accent-orange-500 rounded"
-                      />
-                      <p className={textMain}>{item.market_cap_rank}</p>
-                    </div>
-                    <div className="flex items-center gap-2 text-start">
-                      <img src={item.image} alt={item.name || item.id} className="w-6 h-6 sm:w-7 sm:h-7 rounded-full" />
-                      <p className={`capitalize font-semibold ${light ? "text-gray-900" : "text-white"}`}>{item.id}</p>
-                      <span className="text-xs uppercase opacity-70">
-                        {item.symbol?.toUpperCase()}
-                      </span>
-                    </div>
-                    <p
-                      className={`font-semibold ${
-                        item.price_change_percentage_1h_in_currency > 0
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {item.price_change_percentage_1h_in_currency > 0 ? "▲" : "▼"}
-                      {Math.abs(
-                        item.price_change_percentage_1h_in_currency?.toFixed(2) ?? 0,
-                      )}%
-                    </p>
-                    <p
-                      className={`font-semibold ${
-                        item.price_change_percentage_24h_in_currency > 0
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {item.price_change_percentage_24h_in_currency > 0 ? "▲" : "▼"}
-                      {Math.abs(
-                        item.price_change_percentage_24h_in_currency?.toFixed(2) ?? 0,
-                      )}%
-                    </p>
-                    <p
-                      className={`font-semibold ${
-                        item.price_change_percentage_7d_in_currency > 0
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {item.price_change_percentage_7d_in_currency > 0 ? "▲" : "▼"}
-                      {Math.abs(
-                        item.price_change_percentage_7d_in_currency?.toFixed(2) ?? 0,
-                      )}%
-                    </p>
-                    <p className={`font-semibold ${light ? "text-gray-900" : "text-white"}`}>
-                      {currency.symbol}
-                      {item.current_price?.toLocaleString()}
-                    </p>
-                    <p className={textMain}>
-                      {currency.symbol}{formatNumber(item.market_cap)}
-                    </p>
-                    <p className={textMain}>
-                      {currency.symbol}{formatNumber(item.total_volume)}
-                    </p>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {favorites.length > itemsPerPage && (
-              <CommonPagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-                totalItems={favorites.length}
-                itemsPerPage={itemsPerPage}
-                light={light}
-              />
-            )}
-          </div>
+            }
+            footer={
+              favorites.length > itemsPerPage ? (
+                <CommonPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  totalItems={favorites.length}
+                  itemsPerPage={itemsPerPage}
+                  light={light}
+                />
+              ) : null
+            }
+          />
         </div>
       </div>
     </>
