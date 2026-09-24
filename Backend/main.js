@@ -247,6 +247,111 @@ app.get("/api/profile", authMiddleware, async (req, res) => {
   }
 });
 
+// Load favorites
+app.get("/api/favorites", authMiddleware, async (req, res) => {
+  try {
+    await connectDB();
+    const user = await User.findById(req.user.id).select("favorites");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    res.json({
+      favorites: user.favorites || [],
+    })
+  } catch (error) {
+    console.error("Get favorites error:", error.message);
+
+    res.status(500).json({
+      message: "Failed to get favorites"
+    });
+  }
+})
+
+// Add new favorites
+app.post("/api/favorites", authMiddleware, async (req, res) => {
+  try {
+    await connectDB();
+
+    const { coinId } = req.body;
+
+    if (!coinId) {
+      return res.status(400).json({
+        message: "Coin Id is required",
+      });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $addToSet: {
+          favorites: coinId,
+        },
+      },
+      {
+        new: true,
+      }
+    ).select("favorites");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      message: "Favorite added",
+      favorites: user.favorites,
+    });
+  } catch (error) {
+    console.error("Add Favorite error:", error.message);
+
+    res.status(500).json({
+      message: "Failed to add favorite"
+    })
+  }
+})
+
+// Remove a favourite
+app.delete("/api/favourites/:coinId", authMiddleware, async (req, res) => {
+  try {
+    await connectDB();
+    const { coinId } = req.params;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $pull: {
+          favourites: coinId,
+        },
+      },
+      {
+        new: true,
+      }
+    ).select("favourites");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      })
+    }
+
+    res.json({
+      message: "Favourite removed",
+      favourites: user.favourites,
+    });
+  } catch (error) {
+    console.error("Remove favourite error: ", error.messsage);
+
+    res.status(500).json({
+      message: "Failed to remove favourite"
+    })
+  }
+})
+
 // Logout
 app.get("/api/logout", (req, res) => {
   const isProduction = process.env.NODE_ENV === "production";
