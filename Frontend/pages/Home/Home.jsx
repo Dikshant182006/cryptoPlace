@@ -5,8 +5,7 @@ import gemini from "../../src/assets/gemini.svg";
 import claude from "../../src/assets/claude.svg";
 import useDebounce from "../../modules/shared/Hooks/useDebounceHook";
 import { useCoins } from "../../src/hooks/UseCoin";
-import CommonPagination from "../../src/components/Pagination/CommonPagination";
-import DataTable from "../../src/components/DataTable/DataTable";
+import { Pagination, DataTable } from "../../src/components";
 
 const Home = ({ light, setLight }) => {
   const { currency } = useContext(CoinContext);
@@ -21,11 +20,17 @@ const Home = ({ light, setLight }) => {
   const totalPages = Math.ceil(displayCoin.length/itemsPerPage);
 
   const {
-    data: allCoin = [],
+    data: coinData,
     isLoading,
     isError,
     error,
-  } = useCoins(currency.name);
+  } = useCoins(currency.name, 1, 50);
+
+  const allCoin = Array.isArray(coinData)
+    ? coinData
+    : Array.isArray(coinData?.data)
+    ? coinData.data
+    : [];
   
   const [input, setInput] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
@@ -253,7 +258,7 @@ const Home = ({ light, setLight }) => {
           rowKey={(item) => item.id}
           getRowLink={(item) => `/coin/${item.id}`}
           footer={
-            <CommonPagination
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={setCurrentPage}

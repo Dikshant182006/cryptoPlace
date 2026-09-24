@@ -45,7 +45,11 @@ app.get("/", (req, res) => {
 // Coins API
 app.get("/api/coins", async (req, res) => {
   try {
-    const { currency = "usd" } = req.query;
+    const {
+      currency = "usd",
+      page = 1,
+      per_page = 6,
+    } = req.query;
 
     const response = await axios.get(
       "https://api.coingecko.com/api/v3/coins/markets",
@@ -53,18 +57,22 @@ app.get("/api/coins", async (req, res) => {
         params: {
           vs_currency: currency,
           order: "market_cap_desc",
-          per_page: 50,
-          page: 1,
+          per_page: Number(per_page) || 6,
+          page: Number(page) || 1,
           sparkline: false,
           price_change_percentage: "1h,24h,7d",
         },
-      },
+      }
     );
-    
-    res.json(response.data);
+
+    res.json({
+      data: response.data,
+      page: Number(page) || 1,
+      per_page: Number(per_page) || 6,
+      total: 50,
+    });
   } catch (error) {
     console.error("Coins API error:", error.message);
-
     res.status(500).json({
       message: "Coins API error",
     });
@@ -76,7 +84,7 @@ app.get("/api/global", async (req, res) => {
   try {
     const { currency = "usd" } = req.query;
 
-    const response = await axios.get("https://api.coingecko.com/api/v3/global", 
+    const response = await axios.get("https://api.coingecko.com/api/v3/global",
       {
         params: {
           vs_currency: currency

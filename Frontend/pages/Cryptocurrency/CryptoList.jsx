@@ -1,20 +1,32 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { CoinContext } from "../../context/coinContext";
 import { NavLink } from "react-router-dom";
 import { useGlobal } from "../../src/hooks/UseGlobal";
 import { useCoins } from "../../src/hooks/UseCoin";
-import CommonPagination from "../../src/components/Pagination/CommonPagination";
-import DataTable from "../../src/components/DataTable/DataTable";
+import { DataTable, Pagination } from "../../src/components";
 
 const CryptoList = ({ light }) => {
   const { currency, favorites, setFavorites } = useContext(CoinContext);
   const [currentPage, setCurrentPage] = useState(1);
 
   const textMain = light ? "text-black/70" : "text-white/60";
+  const itemsPerPage = 6;
 
   const {
-    data: allCoin = [],
-  } = useCoins(currency.name);
+    data: coinData,
+    isLoading: isCoinsLoading,
+    isError: isCoinsError,
+    error: coinsError,
+  } = useCoins(currency.name, currentPage, itemsPerPage);
+
+  const currentCoins = coinData?.data ?? [];
+
+  const totalItems = coinData?.total ?? 0;
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalItems / itemsPerPage)
+  );
 
   const formatNumber = (num) => {
     if (num >= 1e12) return (num / 1e12).toFixed(0) + "T";
@@ -149,16 +161,6 @@ const CryptoList = ({ light }) => {
     },
   ];
 
-  const itemsPerPage = 6;
-
-  const coins = allCoin;
-  const totalPages = Math.ceil(coins.length / itemsPerPage);
-
-  const firstIndex = (currentPage - 1) * itemsPerPage;
-  const lastIndex = firstIndex + itemsPerPage;
-
-  const currentCoins = coins.slice(firstIndex, lastIndex);
-
   const toggleFavourites = (item) => {
     if (favorites.some((fav) => fav.id === item.id)) {
       setFavorites(favorites.filter((fav) => fav.id !== item.id));
@@ -168,14 +170,33 @@ const CryptoList = ({ light }) => {
   };
 
   const {
-    data: wholeData = [],
+    data: wholeData = {},
     isLoading,
     isError,
     error,
   } = useGlobal(currency.name);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  if (isLoading || isCoinsLoading) {
+    return (
+      <div className="min-h-screen mt-40 flex justify-center items-center">
+        <p className="text-xl">Loading...</p>
+      </div>
+    );
+  }
+
+  if (isError || isCoinsError) {
+    return (
+      <div className="min-h-screen mt-40 flex justify-center items-center">
+        <p className="text-xl text-red-500">
+          Error: {error?.message || coinsError?.message}
+        </p>
+      </div>
+    );
+  }
+
+  const marketCapChange = wholeData?.market_cap_change_percentage_24h_usd ?? 0;
+  const volumeChange = wholeData?.volume_change_percentage_24h_usd ?? 0;
+  const btcDominance = wholeData?.market_cap_percentage?.btc ?? 0;
 
   return (
     <>
@@ -198,7 +219,7 @@ const CryptoList = ({ light }) => {
 
         <div className="market-cap flex flex-col md:flex-row gap-4 md:gap-7 justify-center mt-8 px-4">
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${marketCapChange > 0
               ? "bg-green-950"
               : "bg-red-950"
               }`}
@@ -209,28 +230,26 @@ const CryptoList = ({ light }) => {
               <h2 className="text-lg lg:text-xl font-bold text-white break-all">
                 {currency.symbol}
                 {(
-                  wholeData.total_market_cap[currency.name] ??
-                  wholeData.total_market_cap.usd
+                  wholeData?.total_market_cap?.[currency.name] ??
+                  wholeData?.total_market_cap?.usd ??
+                  0
                 )?.toLocaleString()}
               </h2>
 
               <span
-                className={`w-fit py-1 px-1.5 rounded-lg text-white/50 text-sm ${wholeData.market_cap_change_percentage_24h_usd.toFixed(2) > 0
+                className={`w-fit py-1 px-1.5 rounded-lg text-white/50 text-sm ${marketCapChange > 0
                   ? "bg-green-800"
                   : "bg-red-900"
                   }`}
               >
-                {wholeData.market_cap_change_percentage_24h_usd > 0 ? "▲" : "▼"}
-                {Math.abs(
-                  wholeData.market_cap_change_percentage_24h_usd.toFixed(2),
-                )}
-                %
+                {marketCapChange > 0 ? "▲" : "▼"}
+                {Math.abs(Number(marketCapChange).toFixed(2))}%
               </span>
             </div>
           </div>
 
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${volumeChange > 0
               ? "bg-green-950"
               : "bg-red-950"
               }`}
@@ -241,25 +260,26 @@ const CryptoList = ({ light }) => {
               <h2 className="text-lg lg:text-xl font-bold text-white break-all">
                 {currency.symbol}
                 {(
-                  wholeData.total_volume[currency.name] ??
-                  wholeData.total_volume.usd
+                  wholeData?.total_volume?.[currency.name] ??
+                  wholeData?.total_volume?.usd ??
+                  0
                 )?.toLocaleString()}
               </h2>
 
               <span
-                className={`w-fit py-1 px-1.5 rounded-lg text-white/60 ${wholeData.volume_change_percentage_24h_usd.toFixed(2) > 0
+                className={`w-fit py-1 px-1.5 rounded-lg text-white/60 ${volumeChange > 0
                   ? "bg-green-800"
                   : "bg-red-900"
                   }`}
               >
-                {wholeData.volume_change_percentage_24h_usd > 0 ? "▲" : "▼"}
-                {wholeData.volume_change_percentage_24h_usd.toFixed(2)}%
+                {volumeChange > 0 ? "▲" : "▼"}
+                {Math.abs(Number(volumeChange).toFixed(2))}%
               </span>
             </div>
           </div>
 
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${wholeData.market_cap_percentage.btc.toFixed(1) > 0
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${btcDominance > 0
               ? "bg-green-950"
               : "bg-red-950"
               }`}
@@ -268,7 +288,7 @@ const CryptoList = ({ light }) => {
 
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center mt-2">
               <h2 className="font-bold text-lg lg:text-xl text-white">
-                {wholeData.market_cap_percentage.btc.toFixed(1)}%
+                {Number(btcDominance).toFixed(1)}%
               </h2>
 
               <span className="w-fit bg-green-900 py-1 px-2 rounded-lg text-white text-sm">
@@ -313,11 +333,11 @@ const CryptoList = ({ light }) => {
               favorites.some((fav) => fav.id === item.id)
             }
             footer={
-              <CommonPagination
+              <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
-                totalItems={coins.length}
+                totalItems={totalItems}
                 itemsPerPage={itemsPerPage}
                 light={light}
               />

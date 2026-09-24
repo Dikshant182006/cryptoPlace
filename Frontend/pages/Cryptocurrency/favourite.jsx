@@ -3,8 +3,7 @@ import { CoinContext } from "../../context/coinContext";
 import { NavLink } from "react-router-dom";
 import { useGlobal } from "../../src/hooks/UseGlobal";
 import { useCoins } from "../../src/hooks/UseCoin";
-import CommonPagination from "../../src/components/Pagination/CommonPagination";
-import DataTable from "../../src/components/DataTable/DataTable";
+import { Pagination, DataTable } from "../../src/components";
 
 const Favourite = ({ light }) => {
   const { currency, favorites, setFavorites } = useContext(CoinContext);
@@ -15,12 +14,6 @@ const Favourite = ({ light }) => {
   const firstIndex = (currentPage - 1) * itemsPerPage;
   const lastIndex = firstIndex + itemsPerPage;
   const currentFavorites = favorites.slice(firstIndex, lastIndex);
-
-  const {
-    isLoading: isCoinsLoading,
-    isError: isCoinsError,
-    error: coinsError,
-  } = useCoins(currency.name);
 
   const {
     data: wholeData = {},
@@ -170,7 +163,7 @@ const Favourite = ({ light }) => {
     },
   ];
 
-  if (isLoading || isCoinsLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen mt-40 flex justify-center items-center">
         <p className="text-xl">Loading...</p>
@@ -178,11 +171,11 @@ const Favourite = ({ light }) => {
     );
   }
 
-  if (isError || isCoinsError) {
+  if (isError) {
     return (
       <div className="min-h-screen mt-40 flex justify-center items-center">
         <p className="text-xl text-red-500">
-          Error: {error?.message || coinsError?.message}
+          Error: {error?.message}
         </p>
       </div>
     );
@@ -340,7 +333,7 @@ const Favourite = ({ light }) => {
             }
             footer={
               favorites.length > itemsPerPage ? (
-                <CommonPagination
+                <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onPageChange={setCurrentPage}

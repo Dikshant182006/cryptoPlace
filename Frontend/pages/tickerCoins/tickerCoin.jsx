@@ -5,17 +5,22 @@ import { useCoins } from "../../src/hooks/UseCoin";
 const TickerCoin = ({ light }) => {
   const { currency } = useContext(CoinContext);
 
-   const {
-      data: allCoin = [],
-      isLoading,
-      isError,
-      error,
-    } = useCoins(currency.name);
+  const {
+    data: coinData,
+    isLoading,
+    isError,
+    error,
+  } = useCoins(currency.name, 1, 15);
 
-  const tickerCoins = [...allCoin.slice(0, 15), ...allCoin.slice(0, 15)];
+  const coinsList = Array.isArray(coinData)
+    ? coinData
+    : Array.isArray(coinData?.data)
+    ? coinData.data
+    : [];
 
-  if(isLoading) return null;
-  if(isError) return null;
+  if (isLoading || isError || coinsList.length === 0) return null;
+
+  const tickerCoins = [...coinsList.slice(0, 15), ...coinsList.slice(0, 15)];
 
   return (
     <div
