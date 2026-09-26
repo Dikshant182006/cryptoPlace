@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+
 export const CoinContext = createContext();
 
 const CoinContextProvider = (props) => {
@@ -9,6 +10,8 @@ const CoinContextProvider = (props) => {
   const [favorites, setFavorites] = useState([]);
 
   const contextValue = {
+    favorites,
+    setFavorites,
     currency,
     setCurrency,
     favorites,

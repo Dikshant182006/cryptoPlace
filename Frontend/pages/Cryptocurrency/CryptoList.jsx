@@ -4,13 +4,28 @@ import { NavLink } from "react-router-dom";
 import { useGlobal } from "../../src/hooks/UseGlobal";
 import { useCoins } from "../../src/hooks/UseCoin";
 import { DataTable, Pagination } from "../../src/components";
+import { useFavorites } from "../../src/hooks/UseFavorites";
+import { addFavorite, removeFavorite } from "../../src/api/FavoriteApi";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CryptoList = ({ light }) => {
-  const { currency, favorites, setFavorites } = useContext(CoinContext);
+  const { currency } = useContext(CoinContext);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const queryClient = useQueryClient();
 
   const textMain = light ? "text-black/70" : "text-white/60";
   const itemsPerPage = 6;
+
+  const {
+    data: favoriteData,
+    isLoading: isFavoritesLoading,
+    isError: isFavoritesError,
+    error: favoritesError,
+  } = useFavorites();
+
+  const favoriteIds = favoriteData?.favorites ?? [];
+  console.log("Favorites from MongoDB:", favoriteData);
 
   const {
     data: coinData,
@@ -20,9 +35,7 @@ const CryptoList = ({ light }) => {
   } = useCoins(currency.name, currentPage, itemsPerPage);
 
   const currentCoins = coinData?.data ?? [];
-
   const totalItems = coinData?.total ?? 0;
-
   const totalPages = Math.max(
     1,
     Math.ceil(totalItems / itemsPerPage)
@@ -161,13 +174,24 @@ const CryptoList = ({ light }) => {
     },
   ];
 
-  const toggleFavourites = (item) => {
-    if (favorites.some((fav) => fav.id === item.id)) {
-      setFavorites(favorites.filter((fav) => fav.id !== item.id));
-    } else {
-      setFavorites([...favorites, item]);
+  const toggleFavorites = async (item) => {
+    const isFavorite = favoriteIds.includes(item.id);
+
+    try {
+      if (isFavorite) {
+        await removeFavorite(item.id);
+      } else {
+        await addFavorite(item.id);
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: ["favorites"],
+      })
+    } catch (error) {
+      console.log("favorite error:", error);
     }
-  };
+
+  }
 
   const {
     data: wholeData = {},
@@ -328,9 +352,9 @@ const CryptoList = ({ light }) => {
             light={light}
             rowKey={(item) => item.id}
             selectable
-            onSelect={toggleFavourites}
+            onSelect={toggleFavorites}
             isSelected={(item) =>
-              favorites.some((fav) => fav.id === item.id)
+              favoriteIds.includes(item.id)
             }
             footer={
               <Pagination

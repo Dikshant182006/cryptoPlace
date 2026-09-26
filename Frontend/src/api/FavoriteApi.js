@@ -32,7 +32,7 @@ export const addFavorite = async (coinId) => {
 }
 
 export const removeFavorite = async (coinId) => {
-    const resfponse = await fetch(
+    const response = await fetch(
         `${API_URL}/api/favorites/${coinId}`,
         {
             method: "DELETE",

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   
   password: { type: String, required: true },
 
-  favourites: { type: [String], default: [] }
+  favorites: { type: [String], default: [{}] },
 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);

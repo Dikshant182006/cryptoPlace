@@ -316,7 +316,7 @@ app.post("/api/favorites", authMiddleware, async (req, res) => {
 })
 
 // Remove a favourite
-app.delete("/api/favourites/:coinId", authMiddleware, async (req, res) => {
+app.delete("/api/favorites/:coinId", authMiddleware, async (req, res) => {
   try {
     await connectDB();
     const { coinId } = req.params;
@@ -325,13 +325,13 @@ app.delete("/api/favourites/:coinId", authMiddleware, async (req, res) => {
       req.user.id,
       {
         $pull: {
-          favourites: coinId,
+          favorites: coinId,
         },
       },
       {
         new: true,
       }
-    ).select("favourites");
+    ).select("favorites");
 
     if (!user) {
       return res.status(404).json({
@@ -341,7 +341,7 @@ app.delete("/api/favourites/:coinId", authMiddleware, async (req, res) => {
 
     res.json({
       message: "Favourite removed",
-      favourites: user.favourites,
+      favorites: user.favorites,
     });
   } catch (error) {
     console.error("Remove favourite error: ", error.messsage);
