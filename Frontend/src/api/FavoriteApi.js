@@ -44,3 +44,18 @@ export const removeFavorite = async (coinId) => {
         throw new Error("Failed to remove favorites");
     }
 }
+
+export const fetchfavoriteCoins = async (currency) => {
+    const response = await fetch(
+        `${API_URL}/api/favorites/coins?currency=${currency}`,
+        {
+            credentials: "include",
+        }
+    );
+
+    if(!response.ok) {
+        throw new Error("Failed to fetch favorite coins");
+    }
+
+    return response.json();
+}

@@ -2,31 +2,66 @@ import React, { useContext, useState } from "react";
 import { CoinContext } from "../../context/coinContext";
 import { NavLink } from "react-router-dom";
 import { useGlobal } from "../../src/hooks/UseGlobal";
-import { useCoins } from "../../src/hooks/UseCoin";
 import { Pagination, DataTable } from "../../src/components";
+import { useFavorites, useFavoriteCoins } from "../../src/hooks/UseFavorites";
+import { addFavorite, removeFavorite } from "../../src/api/FavoriteApi";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Favourite = ({ light }) => {
-  const { currency, favorites, setFavorites } = useContext(CoinContext);
   const [currentPage, setCurrentPage] = useState(1);
+  const { currency } = useContext(CoinContext);
+  const queryClient = useQueryClient();
+
   const itemsPerPage = 6;
 
-  const totalPages = Math.ceil(favorites.length / itemsPerPage);
+  // This is for the coin ids for select the coin
+  const {
+    data: favoritesData,
+    isLoading: isFavoritesLoading,
+    isError: isFavoritesError,
+    error: favoritesError,
+  } = useFavorites();
+
+  // This is for the whole object
+  const {
+    data: favoriteObject,
+    isLoading: isFavoriteCoinsLoading,
+    isError: isFavoriteCoinsError,
+    error: favoriteCoinsError,
+  } = useFavoriteCoins(currency.name);
+
+  const favoriteIds = favoritesData?.favorites ?? [];
+  const favoriteCoins = favoriteObject?.data ?? [];
+  const totalPages = Math.ceil(favoriteCoins.length / itemsPerPage);
   const firstIndex = (currentPage - 1) * itemsPerPage;
   const lastIndex = firstIndex + itemsPerPage;
-  const currentFavorites = favorites.slice(firstIndex, lastIndex);
+
+  const currentFavorites = favoriteCoins.slice(firstIndex, lastIndex);
 
   const {
     data: wholeData = {},
-    isLoading,
-    isError,
-    error,
   } = useGlobal(currency.name);
 
-  const toggleFavourites = (item) => {
-    if (favorites.some((fav) => fav.id === item.id)) {
-      setFavorites(favorites.filter((fav) => fav.id !== item.id));
-    } else {
-      setFavorites([...favorites, item]);
+  const toggleFavourites = async (item) => {
+    const isFavorite = favoriteIds.includes(item.id);
+
+    try {
+      if (isFavorite) {
+        await removeFavorite(item.id);
+      } else {
+        await addFavorite(item.id);
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: ["favorites"],
+      })
+
+      await queryClient.invalidateQueries({
+        queryKey: ["favoriteCoins", currency.name]
+      })
+
+    } catch (error) {
+      console.error("Failed to fetch the data", error);
     }
   };
 
@@ -62,9 +97,8 @@ const Favourite = ({ light }) => {
             className="w-6 h-6 sm:w-7 sm:h-7 rounded-full"
           />
           <p
-            className={`capitalize font-semibold ${
-              light ? "text-gray-900" : "text-white"
-            }`}
+            className={`capitalize font-semibold ${light ? "text-gray-900" : "text-white"
+              }`}
           >
             {item.id}
           </p>
@@ -82,9 +116,8 @@ const Favourite = ({ light }) => {
         const value = item.price_change_percentage_1h_in_currency;
         return (
           <p
-            className={`font-semibold ${
-              value > 0 ? "text-green-500" : "text-red-500"
-            }`}
+            className={`font-semibold ${value > 0 ? "text-green-500" : "text-red-500"
+              }`}
           >
             {value > 0 ? "▲" : "▼"}
             {Math.abs(value?.toFixed(2) ?? 0)}%
@@ -100,9 +133,8 @@ const Favourite = ({ light }) => {
         const value = item.price_change_percentage_24h_in_currency;
         return (
           <p
-            className={`font-semibold ${
-              value > 0 ? "text-green-500" : "text-red-500"
-            }`}
+            className={`font-semibold ${value > 0 ? "text-green-500" : "text-red-500"
+              }`}
           >
             {value > 0 ? "▲" : "▼"}
             {Math.abs(value?.toFixed(2) ?? 0)}%
@@ -118,9 +150,8 @@ const Favourite = ({ light }) => {
         const value = item.price_change_percentage_7d_in_currency;
         return (
           <p
-            className={`font-semibold ${
-              value > 0 ? "text-green-500" : "text-red-500"
-            }`}
+            className={`font-semibold ${value > 0 ? "text-green-500" : "text-red-500"
+              }`}
           >
             {value > 0 ? "▲" : "▼"}
             {Math.abs(value?.toFixed(2) ?? 0)}%
@@ -163,7 +194,7 @@ const Favourite = ({ light }) => {
     },
   ];
 
-  if (isLoading) {
+  if (isFavoritesLoading || isFavoriteCoinsLoading) {
     return (
       <div className="min-h-screen mt-40 flex justify-center items-center">
         <p className="text-xl">Loading...</p>
@@ -171,11 +202,12 @@ const Favourite = ({ light }) => {
     );
   }
 
-  if (isError) {
+  if (isFavoritesError || isFavoriteCoinsError) {
     return (
       <div className="min-h-screen mt-40 flex justify-center items-center">
         <p className="text-xl text-red-500">
-          Error: {error?.message}
+          Error:{" "}
+          {favoritesError?.message || favoriteCoinsError?.message}
         </p>
       </div>
     );
@@ -202,11 +234,10 @@ const Favourite = ({ light }) => {
 
         <div className="market-cap flex flex-col md:flex-row gap-4 md:gap-7 justify-center mt-8 px-4">
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              (wholeData?.market_cap_change_percentage_24h_usd ?? 0) > 0
-                ? "bg-green-950"
-                : "bg-red-950"
-            }`}
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${(wholeData?.market_cap_change_percentage_24h_usd ?? 0) > 0
+              ? "bg-green-950"
+              : "bg-red-950"
+              }`}
           >
             <p>Market Cap</p>
 
@@ -221,11 +252,10 @@ const Favourite = ({ light }) => {
               </h2>
 
               <span
-                className={`w-fit py-1 px-1.5 rounded-lg text-white/50 text-sm ${
-                  (wholeData?.market_cap_change_percentage_24h_usd ?? 0) > 0
-                    ? "bg-green-800"
-                    : "bg-red-900"
-                }`}
+                className={`w-fit py-1 px-1.5 rounded-lg text-white/50 text-sm ${(wholeData?.market_cap_change_percentage_24h_usd ?? 0) > 0
+                  ? "bg-green-800"
+                  : "bg-red-900"
+                  }`}
               >
                 {(wholeData?.market_cap_change_percentage_24h_usd ?? 0) > 0 ? "▲" : "▼"}
                 {Math.abs(
@@ -237,11 +267,10 @@ const Favourite = ({ light }) => {
           </div>
 
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              (wholeData?.volume_change_percentage_24h_usd ?? 0) > 0
-                ? "bg-green-950"
-                : "bg-red-950"
-            }`}
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${(wholeData?.volume_change_percentage_24h_usd ?? 0) > 0
+              ? "bg-green-950"
+              : "bg-red-950"
+              }`}
           >
             <p>Volume 24h</p>
 
@@ -256,11 +285,10 @@ const Favourite = ({ light }) => {
               </h2>
 
               <span
-                className={`w-fit py-1 px-1.5 rounded-lg text-white/60 ${
-                  (wholeData?.volume_change_percentage_24h_usd ?? 0) > 0
-                    ? "bg-green-800"
-                    : "bg-red-900"
-                }`}
+                className={`w-fit py-1 px-1.5 rounded-lg text-white/60 ${(wholeData?.volume_change_percentage_24h_usd ?? 0) > 0
+                  ? "bg-green-800"
+                  : "bg-red-900"
+                  }`}
               >
                 {(wholeData?.volume_change_percentage_24h_usd ?? 0) > 0 ? "▲" : "▼"}
                 {wholeData?.volume_change_percentage_24h_usd?.toFixed(2) ?? "0.00"}%
@@ -269,11 +297,10 @@ const Favourite = ({ light }) => {
           </div>
 
           <div
-            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${
-              (wholeData?.market_cap_percentage?.btc ?? 0) > 0
-                ? "bg-green-950"
-                : "bg-red-950"
-            }`}
+            className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${(wholeData?.market_cap_percentage?.btc ?? 0) > 0
+              ? "bg-green-950"
+              : "bg-red-950"
+              }`}
           >
             <p>BTC Dominance</p>
 
@@ -320,24 +347,25 @@ const Favourite = ({ light }) => {
             rowKey={(item) => item.id}
             selectable
             onSelect={toggleFavourites}
-            isSelected={(item) => favorites.some((fav) => fav.id === item.id)}
+            isSelected={(item) => favoriteIds.includes(item.id)}
             emptyState={
               <div>
                 <p className={`text-base font-medium ${textMain}`}>
                   You have no favorites yet ⭐
                 </p>
+
                 <p className="text-xs text-gray-500 mt-1">
                   Check items in CryptoCurrencies to add them here.
                 </p>
               </div>
             }
             footer={
-              favorites.length > itemsPerPage ? (
+              favoriteCoins.length > itemsPerPage ? (
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onPageChange={setCurrentPage}
-                  totalItems={favorites.length}
+                  totalItems={favoriteCoins.length}
                   itemsPerPage={itemsPerPage}
                   light={light}
                 />

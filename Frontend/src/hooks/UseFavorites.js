@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addFavorite, getFavorites, removeFavorite } from "../api/FavoriteApi";
+import { addFavorite, fetchfavoriteCoins, getFavorites, removeFavorite } from "../api/FavoriteApi";
 
 // GET favorites
 export const useFavorites = () => {
@@ -30,11 +30,17 @@ export const useRemoveFavorite = () => {
 
     return useMutation({
         mutationFn: removeFavorite,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["favorites"],
+            })
+        }
     })
+}
 
-    onSuccess: () => {
-        queryClient.invalidateQueries({
-            queryKey: ["favorites"],
-        })
-    }
+export const useFavoriteCoins = (currency) => {
+    return useQuery({
+        queryKey: ["favoriteCoins", currency],
+        queryFn: () => fetchfavoriteCoins(currency),
+    });
 }

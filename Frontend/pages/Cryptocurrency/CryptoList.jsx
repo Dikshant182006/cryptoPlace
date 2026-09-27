@@ -188,9 +188,8 @@ const CryptoList = ({ light }) => {
         queryKey: ["favorites"],
       })
     } catch (error) {
-      console.log("favorite error:", error);
+      console.error("favorite error:", error);
     }
-
   }
 
   const {

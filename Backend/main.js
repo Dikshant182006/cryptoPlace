@@ -271,6 +271,54 @@ app.get("/api/favorites", authMiddleware, async (req, res) => {
   }
 })
 
+// For favorites we want coin data
+app.get("/api/favorites/coins", authMiddleware, async (req, res) => {
+  try {
+    await connectDB();
+
+    const { currency = "usd" } = req.query;
+
+    const user = await User.findById(req.user.id).select("favorites");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const favoriteIds = user.favorites || [];
+
+    if (favoriteIds.length === 0) {
+      return res.json({
+        data: [],
+      });
+    }
+
+    const response = await axios.get(
+      "https://api.coingecko.com/api/v3/coins/markets",
+      {
+        params: {
+          vs_currency: currency,
+          ids: favoriteIds.join(","),
+          order: "market_cap_desc",
+          sparkline: false,
+          price_change_percentage: "1h,24h,7d",
+        },
+      }
+    );
+
+    res.json({
+      data: response.data,
+    });
+  } catch (error) {
+    console.error("Favorite coins error:", error.message);
+
+    res.status(500).json({
+      message: "Failed to fetch favorite coins",
+    });
+  }
+});
+
 // Add new favorites
 app.post("/api/favorites", authMiddleware, async (req, res) => {
   try {
