@@ -7,13 +7,14 @@ import useDebounce from "../../modules/shared/Hooks/useDebounceHook";
 import { useCoins } from "../../src/hooks/UseCoin";
 import { Pagination, DataTable } from "../../src/components";
 
-const Home = ({ light, setLight }) => {
+const EMPTY_COINS = [];
+
+const Home = ({ light }) => {
   const { currency } = useContext(CoinContext);
   const [displayCoin, setDisplayCoin] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   
   const itemsPerPage = 6;
-
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const currentCoins = displayCoin.slice(firstIndex, lastIndex);
@@ -26,11 +27,7 @@ const Home = ({ light, setLight }) => {
     error,
   } = useCoins(currency.name, 1, 50);
 
-  const allCoin = Array.isArray(coinData)
-    ? coinData
-    : Array.isArray(coinData?.data)
-    ? coinData.data
-    : [];
+  const allCoin = coinData?.data ?? EMPTY_COINS;
   
   const [input, setInput] = useState("");
   const [wordIndex, setWordIndex] = useState(0);

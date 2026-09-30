@@ -1,11 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const axios = require("axios");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const { getCoins, getGlobal, getCoinDetails, getCoinChart, getFavoriteCoins } = require('./services/coinGeckoService');
 
 const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
@@ -51,22 +51,14 @@ app.get("/api/coins", async (req, res) => {
       per_page = 6,
     } = req.query;
 
-    const response = await axios.get(
-      "https://api.coingecko.com/api/v3/coins/markets",
-      {
-        params: {
-          vs_currency: currency,
-          order: "market_cap_desc",
-          per_page: Number(per_page) || 6,
-          page: Number(page) || 1,
-          sparkline: false,
-          price_change_percentage: "1h,24h,7d",
-        },
-      }
-    );
+    const data = await getCoins(
+      currency,
+      Number(page) || 1,
+      Number(per_page) || 6,
+    )
 
     res.json({
-      data: response.data,
+      data,
       page: Number(page) || 1,
       per_page: Number(per_page) || 6,
       total: 50,
@@ -84,14 +76,11 @@ app.get("/api/global", async (req, res) => {
   try {
     const { currency = "usd" } = req.query;
 
-    const response = await axios.get("https://api.coingecko.com/api/v3/global",
-      {
-        params: {
-          vs_currency: currency
-        }
-      }
+    const data = await getGlobal(
+      currency,
     )
-    res.json(response.data);
+
+    res.json(data);
   } catch (error) {
     console.error("Global API error:", error.message);
     res.status(500).json({
@@ -104,8 +93,10 @@ app.get("/api/global", async (req, res) => {
 app.get("/api/coins/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const response = await axios.get(`https://api.coingecko.com/api/v3/coins/${id}`);
-    res.json(response.data);
+
+    const data = await getCoinDetails(id);
+
+    res.json(data);
   } catch (error) {
     console.error("Coin details API error:", error.message);
     res.status(500).json({
@@ -120,17 +111,14 @@ app.get("/api/coins/:id/chart", async (req, res) => {
     const { id } = req.params;
     const { currency = "usd", days = "10", interval = "daily" } = req.query;
 
-    const response = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/${id}/market_chart`,
-      {
-        params: {
-          vs_currency: currency, // It dynamically passes usd, inr, eur
-          days,
-          interval,
-        },
-      }
-    );
-    res.json(response.data);
+    const data = await getCoinChart(
+      id,
+      currency,
+      days,
+      interval
+    )
+
+    res.json(data);
   } catch (error) {
     console.error("Coin chart API error:", error.message);
     res.status(500).json({
@@ -287,29 +275,18 @@ app.get("/api/favorites/coins", authMiddleware, async (req, res) => {
     }
 
     const favoriteIds = user.favorites || [];
-
     if (favoriteIds.length === 0) {
       return res.json({
         data: [],
       });
     }
 
-    const response = await axios.get(
-      "https://api.coingecko.com/api/v3/coins/markets",
-      {
-        params: {
-          vs_currency: currency,
-          ids: favoriteIds.join(","),
-          order: "market_cap_desc",
-          sparkline: false,
-          price_change_percentage: "1h,24h,7d",
-        },
-      }
-    );
+    const data = await getFavoriteCoins(
+      favoriteIds,
+      currency,
+    )
 
-    res.json({
-      data: response.data,
-    });
+    res.json({ data });
   } catch (error) {
     console.error("Favorite coins error:", error.message);
 
