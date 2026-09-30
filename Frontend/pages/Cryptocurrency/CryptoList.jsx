@@ -352,6 +352,7 @@ const CryptoList = ({ light }) => {
             rowKey={(item) => item.id}
             selectable
             onSelect={toggleFavorites}
+            hideSelectableValue
             isSelected={(item) =>
               favoriteIds.includes(item.id)
             }

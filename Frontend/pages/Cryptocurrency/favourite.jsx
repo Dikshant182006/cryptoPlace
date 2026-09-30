@@ -81,6 +81,7 @@ const Favourite = ({ light }) => {
       key: "market_cap_rank",
       header: "#",
       width: "0.5fr",
+      headerClassName: "text-start",
       render: (item) => <p className={textMain}>{item.market_cap_rank}</p>,
     },
     {
@@ -344,9 +345,9 @@ const Favourite = ({ light }) => {
             columns={columns}
             data={currentFavorites}
             light={light}
-            rowKey={(item) => item.id}
             selectable
             onSelect={toggleFavourites}
+            hideSelectableValue
             isSelected={(item) => favoriteIds.includes(item.id)}
             emptyState={
               <div>

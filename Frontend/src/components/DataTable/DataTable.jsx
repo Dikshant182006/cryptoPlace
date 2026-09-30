@@ -15,6 +15,7 @@ const DataTable = ({
   footer,
   containerClassName = "",
   minWidth = "min-w-[700px]",
+  hideSelectableValue = false,
 }) => {
   const textHeader = light ? "text-black/70" : "text-white/60";
   const textRow = light ? "text-black/80" : "text-white/70";
@@ -90,9 +91,11 @@ const DataTable = ({
                       className="cursor-pointer accent-orange-500 rounded"
                       onClick={(e) => e.stopPropagation()}
                     />
-                    {column.render
+                    {!hideSelectableValue && 
+                    (column.render
                       ? column.render(row, rowIndex)
-                      : row[column.key]}
+                      : row[column.key])
+                    }
                   </div>
                 ) : column.render ? (
                   column.render(row, rowIndex)
