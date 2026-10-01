@@ -1,20 +1,35 @@
 // This file is where we communicate with coinGreko
 const axios = require('axios');
-const { getCache, setCache } = require('../cache/cacheStore');
+const { getCache,
+    setCache,
+    getInFlight,
+    setInFlight,
+    deleteInFlight,
+} = require('../cache/cacheStore');
 
 const getCoins = async (currency, page, perPage) => {
     // Cache ka address/data name
     const cacheKey = `coins:${currency}:${page}:${perPage}`;
+    // Check cache
     const cachedData = getCache(cacheKey);
 
-    if(cachedData) {
+    if (cachedData) {
         console.log("CACHE HIT:", cacheKey);
         return cachedData;
     }
 
+    // Check existing request
+    const existingRequest = getInFlight(cacheKey);
+
+    if (existingRequest) {
+        console.log("IN-FLIGHT HIT:", cacheKey);
+        return existingRequest;
+    }
+
     console.log("CACHE MISS", cacheKey);
 
-    const response = await axios.get(
+    // Promise/ Create Request
+    const request = axios.get(
         "https://api.coingecko.com/api/v3/coins/markets",
         {
             params: {
@@ -28,8 +43,20 @@ const getCoins = async (currency, page, perPage) => {
         }
     )
 
-    setCache(cacheKey, response.data, 30000);
-    return response.data;
+    // Store Promise
+    setInFlight(cacheKey, request);
+
+    try {
+        // Wait for response
+        const response = await request;
+        
+        // Store data in cache
+        setCache(cacheKey, response.data, 30000);
+        return response.data;
+    } finally {
+        // Request Finished
+        deleteInFlight(cacheKey);
+    }
 }
 
 const getGlobal = async (currency) => {
@@ -37,7 +64,7 @@ const getGlobal = async (currency) => {
     const cacheKey = `global:${currency}`;
     const cacheData = getCache(cacheKey);
 
-    if(cacheData) {
+    if (cacheData) {
         console.log("Global Cache Hit:", cacheKey);
         return cacheData;
     }
@@ -61,7 +88,7 @@ const getCoinDetails = async (id) => {
     const cacheKey = `coinDetails:${id}`;
     const cacheData = getCache(cacheKey);
 
-    if(cacheData) {
+    if (cacheData) {
         console.log("Coin Details Hit:", cacheKey);
         return cacheData;
     }
@@ -78,7 +105,7 @@ const getCoinChart = async (id, currency, days, interval) => {
     const cacheKey = `chartDetails:${id}`;
     const cacheData = getCache(cacheKey);
 
-    if(cacheData) {
+    if (cacheData) {
         console.log("Chart Details Hit: ", cacheKey);
         return cacheData;
     }
@@ -105,7 +132,7 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
     const cacheKey = `favoriteCoins:${favoriteIds}`;
     const cacheData = getCache(cacheKey);
 
-    if(cacheData) {
+    if (cacheData) {
         console.log("Chart Details hit:", cacheKey);
         return cacheData;
     }

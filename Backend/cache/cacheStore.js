@@ -1,4 +1,5 @@
 const cache = new Map();
+const inFlight = new Map();
 
 const setCache = (key, data, ttl) => {
     const expiresAt = Date.now() + ttl;
@@ -26,7 +27,25 @@ const getCache = (key) => {
     return cached.data;
 }
 
+// Is the key request is already working
+const getInFlight = (key) => {
+    return inFlight.get(key);
+}
+
+// This request is currently running store this request in the promise
+const setInFlight = (key, promise) => {
+    inFlight.set(key, promise);
+}
+
+// Request has been completed so dont put this in the inFlight
+const deleteInFlight = (key) => {
+    inFlight.delete(key);
+}
+
 module.exports = {
     setCache,
     getCache,
+    getInFlight,
+    setInFlight,
+    deleteInFlight
 }
