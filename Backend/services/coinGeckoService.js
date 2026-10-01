@@ -41,7 +41,7 @@ const getCoins = async (currency, page, perPage) => {
                 price_change_percentage: "1h,24h,7d",
             },
         }
-    )
+    ).then((response) => response.data);
 
     // Store Promise
     setInFlight(cacheKey, request);
@@ -49,9 +49,9 @@ const getCoins = async (currency, page, perPage) => {
     try {
         // Wait for response
         const response = await request;
-        
+
         // Store data in cache
-        setCache(cacheKey, response.data, 30000);
+        setCache(cacheKey, response, 30000);
         return response.data;
     } finally {
         // Request Finished
@@ -65,23 +65,37 @@ const getGlobal = async (currency) => {
     const cacheData = getCache(cacheKey);
 
     if (cacheData) {
-        console.log("Global Cache Hit:", cacheKey);
+        console.log("CACHE HIT", cacheKey);
         return cacheData;
     }
 
     console.log("CACHE MISS", cacheKey);
 
-    const response = await axios.get(
+    const existingRequest = getInFlight(cacheKey);
+    if (existingRequest) {
+        console.log("IN-FLIGHT HIT", cacheKey);
+        return existingRequest;
+    }
+
+    const request = axios.get(
         "https://api.coingecko.com/api/v3/global",
         {
             params: {
                 vs_currency: currency
             }
         }
-    )
+    ).then((response) => response.data);
 
-    setCache(cacheKey, response.data, 60000);
-    return response.data;
+    setInFlight(cacheKey, request);
+
+    try {
+        const response = await request;
+
+        setCache(cacheKey, response, 60000);
+        return response.data;
+    } finally {
+        deleteInFlight(cacheKey);
+    }
 }
 
 const getCoinDetails = async (id) => {
@@ -93,16 +107,30 @@ const getCoinDetails = async (id) => {
         return cacheData;
     }
 
-    const response = await axios.get(
-        `https://api.coingecko.com/api/v3/coins/${id}`
-    )
+    const existingRequest = getInFlight(cacheKey);
+    if (existingRequest) {
+        console.log("In flight", cacheKey);
+        return existingRequest;
+    }
 
-    setCache(cacheKey, response.data, 60000);
-    return response.data;
+    const request = axios.get(
+        `https://api.coingecko.com/api/v3/coins/${id}`
+    ).then((response) => response.data);
+
+    setInFlight(cacheKey, request);
+
+    try {
+        const response = await request;
+
+        setCache(cacheKey, response, 60000);
+        return response.data;
+    } finally {
+        deleteInFlight(cacheKey);
+    }
 }
 
 const getCoinChart = async (id, currency, days, interval) => {
-    const cacheKey = `chartDetails:${id}`;
+    const cacheKey = `chart:${id}:${currency}:${days}:${interval}`;
     const cacheData = getCache(cacheKey);
 
     if (cacheData) {
@@ -112,7 +140,12 @@ const getCoinChart = async (id, currency, days, interval) => {
 
     console.log("Chart Details Miss");
 
-    const response = await axios.get(
+    const existingRequest = getInFlight(cacheKey);
+    if (existingRequest) {
+        return existingRequest;
+    }
+
+    const request = axios.get(
         `https://api.coingecko.com/api/v3/coins/${id}/market_chart`,
         {
             params: {
@@ -121,15 +154,24 @@ const getCoinChart = async (id, currency, days, interval) => {
                 interval,
             },
         }
-    )
+    ).then((response) => response.data);
 
-    setCache(cacheKey, response.data, 60000);
-    return response.data;
+    setInFlight(cacheKey, request);
+
+    try {
+        const response = await request;
+
+        setCache(cacheKey, response, 60000);
+        return response.data;
+    } finally {
+        deleteInFlight(cacheKey);
+    }
+
 }
 
 const getFavoriteCoins = async (favoriteIds, currency) => {
 
-    const cacheKey = `favoriteCoins:${favoriteIds}`;
+    const cacheKey = `favoriteCoins:${currency}:${favoriteIds.join(",")}`;
     const cacheData = getCache(cacheKey);
 
     if (cacheData) {
@@ -137,7 +179,12 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
         return cacheData;
     }
 
-    const response = await axios.get(
+    const existingRequest = getInFlight(cacheKey);
+    if(existingRequest) {
+        return existingRequest;
+    }
+
+    const request = axios.get(
         "https://api.coingecko.com/api/v3/coins/markets",
         {
             params: {
@@ -148,10 +195,18 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
                 price_change_percentage: "1h,24h,7d",
             },
         }
-    );
+    ).then((response) => response.data);
 
-    setCache(cacheKey, response.data, 60000);
-    return response.data;
+    setInFlight(cacheKey, request);
+    
+    try {
+        const response = await request;
+        
+        setCache(cacheKey, response, 60000);
+        return response.data;
+    } finally {
+        deleteInFlight(cacheKey);
+    }
 }
 
 module.exports = {
