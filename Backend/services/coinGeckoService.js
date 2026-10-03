@@ -10,7 +10,7 @@ const { getCache,
 const getCoins = async (currency, page, perPage) => {
     // Cache ka address/data name
     const cacheKey = `coins:${currency}:${page}:${perPage}`;
-    // Check cache
+    // Check completed cache
     const cachedData = getCache(cacheKey);
 
     if (cachedData) {
@@ -52,7 +52,7 @@ const getCoins = async (currency, page, perPage) => {
 
         // Store data in cache
         setCache(cacheKey, response, 30000);
-        return response.data;
+        return response;
     } finally {
         // Request Finished
         deleteInFlight(cacheKey);
@@ -92,7 +92,7 @@ const getGlobal = async (currency) => {
         const response = await request;
 
         setCache(cacheKey, response, 60000);
-        return response.data;
+        return response;
     } finally {
         deleteInFlight(cacheKey);
     }
@@ -123,7 +123,7 @@ const getCoinDetails = async (id) => {
         const response = await request;
 
         setCache(cacheKey, response, 60000);
-        return response.data;
+        return response;
     } finally {
         deleteInFlight(cacheKey);
     }
@@ -162,7 +162,7 @@ const getCoinChart = async (id, currency, days, interval) => {
         const response = await request;
 
         setCache(cacheKey, response, 60000);
-        return response.data;
+        return response;
     } finally {
         deleteInFlight(cacheKey);
     }
@@ -180,7 +180,7 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
     }
 
     const existingRequest = getInFlight(cacheKey);
-    if(existingRequest) {
+    if (existingRequest) {
         return existingRequest;
     }
 
@@ -198,12 +198,12 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
     ).then((response) => response.data);
 
     setInFlight(cacheKey, request);
-    
+
     try {
         const response = await request;
-        
+
         setCache(cacheKey, response, 60000);
-        return response.data;
+        return response;
     } finally {
         deleteInFlight(cacheKey);
     }
