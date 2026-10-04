@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { getCoins, getGlobal, getCoinDetails, getCoinChart, getFavoriteCoins } = require('./services/coinGeckoService');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
@@ -15,6 +16,7 @@ const port = process.env.PORT || 3000;
 // middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use('/api', apiLimiter); // It means that if request starting from the /api implement rate limiter in that.
 
 const allowedOrigins = [
   "http://localhost:5173",
