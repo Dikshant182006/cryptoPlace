@@ -18,13 +18,20 @@ const getCache = (key) => {
         return null;
     }
 
-    // If time is greater then the cache data store time
-    if (Date.now() > cached.expiresAt) {
-        cache.delete(key);
-        return null;
+    const isStale = Date.now() > cached.expiresAt;
+
+    return {
+        data: cached.data,
+        isStale,
     }
 
-    return cached.data;
+    // // If time is greater then the cache data store time
+    // if (Date.now() > cached.expiresAt) {
+    //     cache.delete(key);
+    //     return null;
+    // }
+
+    // return cached.data;
 }
 
 // Is the key request is already working

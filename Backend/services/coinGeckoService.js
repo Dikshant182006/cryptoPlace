@@ -6,6 +6,7 @@ const { getCache,
     setInFlight,
     deleteInFlight,
 } = require('../cache/cacheStore');
+const { response } = require('../main');
 
 const getCoins = async (currency, page, perPage) => {
     // Cache ka address/data name
@@ -13,9 +14,9 @@ const getCoins = async (currency, page, perPage) => {
     // Check completed cache
     const cachedData = getCache(cacheKey);
 
-    if (cachedData) {
+    if (cachedData && !cachedData.isStale) {
         console.log("CACHE HIT:", cacheKey);
-        return cachedData;
+        return cachedData.data;
     }
 
     // Check existing request
@@ -26,7 +27,11 @@ const getCoins = async (currency, page, perPage) => {
         return existingRequest;
     }
 
-    console.log("CACHE MISS", cacheKey);
+    console.log(
+        cachedData?.isStale
+            ? "STALE CACHE:" :
+            "CACHE MISS:", cacheKey
+    );
 
     // Promise/ Create Request
     const request = axios.get(
@@ -53,6 +58,14 @@ const getCoins = async (currency, page, perPage) => {
         // Store data in cache
         setCache(cacheKey, response, 30000);
         return response;
+    } catch (error) {
+        if (cachedData?.isStale) {
+            console.log("COINGECKO FAILED → RETURNING STALE CACHE");
+
+            return cachedData.data;
+        }
+
+        throw error;
     } finally {
         // Request Finished
         deleteInFlight(cacheKey);
@@ -64,9 +77,9 @@ const getGlobal = async (currency) => {
     const cacheKey = `global:${currency}`;
     const cacheData = getCache(cacheKey);
 
-    if (cacheData) {
+    if (cacheData && !cacheData.isStale) {
         console.log("CACHE HIT", cacheKey);
-        return cacheData;
+        return cacheData.data;
     }
 
     console.log("CACHE MISS", cacheKey);
@@ -93,6 +106,15 @@ const getGlobal = async (currency) => {
 
         setCache(cacheKey, response, 60000);
         return response;
+    } catch (error) {
+
+        if (cacheData?.isStale) {
+            console.log("COINGECKO FAILED → RETURNING STALE CACHE");
+
+            return cacheData.data;
+        }
+
+        throw error;
     } finally {
         deleteInFlight(cacheKey);
     }
@@ -102,9 +124,9 @@ const getCoinDetails = async (id) => {
     const cacheKey = `coinDetails:${id}`;
     const cacheData = getCache(cacheKey);
 
-    if (cacheData) {
+    if (cacheData && !cacheData.isStale) {
         console.log("Coin Details Hit:", cacheKey);
-        return cacheData;
+        return cacheData.data;
     }
 
     const existingRequest = getInFlight(cacheKey);
@@ -124,7 +146,16 @@ const getCoinDetails = async (id) => {
 
         setCache(cacheKey, response, 60000);
         return response;
-    } finally {
+    } catch(error) {
+        if (cacheData?.isStale) {
+            console.log("COINGREKO FAILS RETURN STALE CACHE");
+
+            return response.data;
+        }
+
+        throw error;
+    }
+    finally {
         deleteInFlight(cacheKey);
     }
 }
@@ -133,9 +164,9 @@ const getCoinChart = async (id, currency, days, interval) => {
     const cacheKey = `chart:${id}:${currency}:${days}:${interval}`;
     const cacheData = getCache(cacheKey);
 
-    if (cacheData) {
+    if (cacheData && !cacheData.isStale) {
         console.log("Chart Details Hit: ", cacheKey);
-        return cacheData;
+        return cacheData.data;
     }
 
     console.log("Chart Details Miss");
@@ -163,10 +194,15 @@ const getCoinChart = async (id, currency, days, interval) => {
 
         setCache(cacheKey, response, 60000);
         return response;
+    } catch(error) {
+        if (cacheData?.isStale) {
+            console.log("COINGREKO FAILS RETURN STALE DATA");
+
+            return response.data;
+        }
     } finally {
         deleteInFlight(cacheKey);
     }
-
 }
 
 const getFavoriteCoins = async (favoriteIds, currency) => {
@@ -174,9 +210,9 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
     const cacheKey = `favoriteCoins:${currency}:${favoriteIds.join(",")}`;
     const cacheData = getCache(cacheKey);
 
-    if (cacheData) {
+    if (cacheData && !cacheData.isStale) {
         console.log("Chart Details hit:", cacheKey);
-        return cacheData;
+        return cacheData.data;
     }
 
     const existingRequest = getInFlight(cacheKey);
@@ -204,6 +240,14 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
 
         setCache(cacheKey, response, 60000);
         return response;
+    } catch(error) {
+        if(cacheData.isStale) {
+            console.log("COINGREKO FAILED RETURN STALE DATA");
+            
+            return response.data;
+        }
+
+        throw error;
     } finally {
         deleteInFlight(cacheKey);
     }

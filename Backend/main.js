@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { getCoins, getGlobal, getCoinDetails, getCoinChart, getFavoriteCoins } = require('./services/coinGeckoService');
-const { apiLimiter } = require('./middleware/rateLimiter');
+const apiLimiter = require('./middleware/rateLimiter');
 
 const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
