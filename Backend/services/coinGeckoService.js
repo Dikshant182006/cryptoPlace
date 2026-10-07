@@ -6,16 +6,15 @@ const { getCache,
     setInFlight,
     deleteInFlight,
 } = require('../cache/cacheStore');
-const { response } = require('../main');
 
 const getCoins = async (currency, page, perPage) => {
     // Cache ka address/data name
     const cacheKey = `coins:${currency}:${page}:${perPage}`;
     // Check completed cache
-    const cachedData = getCache(cacheKey);
+    const cachedData = await getCache(cacheKey);
 
     if (cachedData && !cachedData.isStale) {
-        console.log("CACHE HIT:", cacheKey);
+        console.log("Redis Hit:", cacheKey);
         return cachedData.data;
     }
 
@@ -30,7 +29,7 @@ const getCoins = async (currency, page, perPage) => {
     console.log(
         cachedData?.isStale
             ? "STALE CACHE:" :
-            "CACHE MISS:", cacheKey
+            "Redis Miss:", cacheKey
     );
 
     // Promise/ Create Request
@@ -56,7 +55,7 @@ const getCoins = async (currency, page, perPage) => {
         const response = await request;
 
         // Store data in cache
-        setCache(cacheKey, response, 30000);
+        await setCache(cacheKey, response, 30000);
         return response;
     } catch (error) {
         if (cachedData?.isStale) {
@@ -75,7 +74,7 @@ const getCoins = async (currency, page, perPage) => {
 const getGlobal = async (currency) => {
 
     const cacheKey = `global:${currency}`;
-    const cacheData = getCache(cacheKey);
+    const cacheData = await getCache(cacheKey);
 
     if (cacheData && !cacheData.isStale) {
         console.log("CACHE HIT", cacheKey);
@@ -104,7 +103,7 @@ const getGlobal = async (currency) => {
     try {
         const response = await request;
 
-        setCache(cacheKey, response, 60000);
+        await setCache(cacheKey, response, 60000);
         return response;
     } catch (error) {
 
@@ -122,7 +121,7 @@ const getGlobal = async (currency) => {
 
 const getCoinDetails = async (id) => {
     const cacheKey = `coinDetails:${id}`;
-    const cacheData = getCache(cacheKey);
+    const cacheData = await getCache(cacheKey);
 
     if (cacheData && !cacheData.isStale) {
         console.log("Coin Details Hit:", cacheKey);
@@ -144,13 +143,13 @@ const getCoinDetails = async (id) => {
     try {
         const response = await request;
 
-        setCache(cacheKey, response, 60000);
+        await setCache(cacheKey, response, 60000);
         return response;
-    } catch(error) {
+    } catch (error) {
         if (cacheData?.isStale) {
             console.log("COINGREKO FAILS RETURN STALE CACHE");
 
-            return response.data;
+            return cacheData.data;
         }
 
         throw error;
@@ -162,7 +161,7 @@ const getCoinDetails = async (id) => {
 
 const getCoinChart = async (id, currency, days, interval) => {
     const cacheKey = `chart:${id}:${currency}:${days}:${interval}`;
-    const cacheData = getCache(cacheKey);
+    const cacheData = await getCache(cacheKey);
 
     if (cacheData && !cacheData.isStale) {
         console.log("Chart Details Hit: ", cacheKey);
@@ -192,13 +191,13 @@ const getCoinChart = async (id, currency, days, interval) => {
     try {
         const response = await request;
 
-        setCache(cacheKey, response, 60000);
+        await setCache(cacheKey, response, 60000);
         return response;
-    } catch(error) {
+    } catch (error) {
         if (cacheData?.isStale) {
             console.log("COINGREKO FAILS RETURN STALE DATA");
 
-            return response.data;
+            return cacheData.data;
         }
     } finally {
         deleteInFlight(cacheKey);
@@ -208,7 +207,7 @@ const getCoinChart = async (id, currency, days, interval) => {
 const getFavoriteCoins = async (favoriteIds, currency) => {
 
     const cacheKey = `favoriteCoins:${currency}:${favoriteIds.join(",")}`;
-    const cacheData = getCache(cacheKey);
+    const cacheData = await getCache(cacheKey);
 
     if (cacheData && !cacheData.isStale) {
         console.log("Chart Details hit:", cacheKey);
@@ -238,13 +237,13 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
     try {
         const response = await request;
 
-        setCache(cacheKey, response, 60000);
+        await setCache(cacheKey, response, 60000);
         return response;
-    } catch(error) {
-        if(cacheData.isStale) {
+    } catch (error) {
+        if (cacheData.isStale) {
             console.log("COINGREKO FAILED RETURN STALE DATA");
-            
-            return response.data;
+
+            return cacheData.data;
         }
 
         throw error;

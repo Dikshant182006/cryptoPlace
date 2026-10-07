@@ -8,10 +8,23 @@ const cors = require("cors");
 const { getCoins, getGlobal, getCoinDetails, getCoinChart, getFavoriteCoins } = require('./services/coinGeckoService');
 const apiLimiter = require('./middleware/rateLimiter');
 
+const { connectRedis } = require('./cache/redisClient');
 const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
-
 const port = process.env.PORT || 3000;
+
+// Server for local
+if (process.env.NODE_ENV !== "production") {
+  connectRedis()
+    .then(() => {
+      app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+      });
+    })
+    .catch((error) => {
+      console.error("Redis connection failed:", error);
+    });
+}
 
 // middleware
 app.use(express.json());
@@ -393,12 +406,5 @@ app.get("/api/logout", (req, res) => {
     message: "Logged out",
   });
 });
-
-// Server
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
-}
 
 module.exports = app;

@@ -1,37 +1,38 @@
-const cache = new Map();
+// For backend manage the redis cache.
+// const cache = new Map();
+const { redisClient } = require('./redisClient');
 const inFlight = new Map();
 
-const setCache = (key, data, ttl) => {
+// Data ko Redis me cache ki form me save krna
+const setCache = async (key, data, ttl) => {
     const expiresAt = Date.now() + ttl;
 
-    cache.set(key, {
-        data,
-        expiresAt,
-    })
+    const cachedData = {
+        data,  // actual data
+        expiresAt,    // when data is stale
+    };
+
+    await redisClient.set(
+        key,
+        JSON.stringify(cachedData)
+    )
 }
 
-const getCache = (key) => {
-    const cached = cache.get(key);
+const getCache = async (key) => {
+    const cached = await redisClient.get(key);
 
     // If key does not exist
     if (!cached) {
         return null;
     }
 
-    const isStale = Date.now() > cached.expiresAt;
+    const cacheData = JSON.parse(cached);
+    const isStale = Date.now() > cacheData.expiresAt;
 
     return {
-        data: cached.data,
+        data: cacheData.data,
         isStale,
     }
-
-    // // If time is greater then the cache data store time
-    // if (Date.now() > cached.expiresAt) {
-    //     cache.delete(key);
-    //     return null;
-    // }
-
-    // return cached.data;
 }
 
 // Is the key request is already working
