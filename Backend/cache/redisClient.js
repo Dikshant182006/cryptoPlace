@@ -1,6 +1,6 @@
 // It creates a bridge which is responsible for the setting bridge between redis
 const { createClient } = require("redis");
-const { redis } = require("@upstash/redis");
+const { Redis } = require("@upstash/redis");
 
 // It is used to communicate with redis/ creating a redis client
 let redisClient;

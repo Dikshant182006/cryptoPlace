@@ -199,6 +199,7 @@ const getCoinChart = async (id, currency, days, interval) => {
 
             return cacheData.data;
         }
+        throw error;
     } finally {
         deleteInFlight(cacheKey);
     }
