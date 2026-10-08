@@ -26,7 +26,7 @@ const getCache = async (key) => {
         return null;
     }
 
-    const cacheData = JSON.parse(cached);
+    const cacheData = typeof cached === "string" ? JSON.parse(cached) : cached;
     const isStale = Date.now() > cacheData.expiresAt;
 
     return {

@@ -24,6 +24,11 @@ if(process.env.NODE_ENV !== "production") {
 }
 
 const connectRedis = async () => {
+    if(process.env.NODE_ENV === "production") {
+        console.log("Using upstash Redis");
+        return;
+    }
+
     await redisClient.connect();  // Connect the redis server
     console.log("Redis connected");
 }
