@@ -28,8 +28,8 @@ function Navbar({ light, setLight }) {
     }).catch(() => {
       setUser(null);
     })
-  }, [location])
-  
+  }, [location]);
+
   const currencyHandler = (e) => {
     const value = e.target.value;
 

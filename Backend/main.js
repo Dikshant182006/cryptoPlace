@@ -42,7 +42,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(null, true); // Allow during transition/deployment
+        callback(new Error("Not allowed by CORS")); // Allow during transition/deployment
       }
     },
     credentials: true,
@@ -384,7 +384,7 @@ app.delete("/api/favorites/:coinId", authMiddleware, async (req, res) => {
       favorites: user.favorites,
     });
   } catch (error) {
-    console.error("Remove favourite error: ", error.messsage);
+    console.error("Remove favourite error: ", error.message);
 
     res.status(500).json({
       message: "Failed to remove favourite"
