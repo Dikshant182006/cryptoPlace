@@ -17,9 +17,11 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // Redis Error Listener
-redisClient.on("error", (error) => {
-    console.error("Redis Error", error);
-})
+if(process.env.NODE_ENV !== "production") {
+    redisClient.on("error", (error) => {
+        console.error("Redis Error", error);
+    })
+}
 
 const connectRedis = async () => {
     await redisClient.connect();  // Connect the redis server
