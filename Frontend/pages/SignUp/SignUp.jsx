@@ -468,12 +468,12 @@ const SignUp = ({ light }) => {
                 )}
 
                 {/* Registration Form */}
-                <form onSubmit={submitData} className="space-y-2 xl:space-y-2.5">
+                <form className="space-y-2 xl:space-y-2.5">
                   {/* Name Fields (2 Columns) */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {/* First Name */}
                     <div>
-                      <label
+                      <label 
                         className={`block text-[11px] xl:text-xs font-semibold mb-1 ${
                           light ? "text-slate-700" : "text-white/80"
                         }`}
@@ -494,7 +494,13 @@ const SignUp = ({ light }) => {
                           maxLength={20}
                           name="firstname"
                           type="text"
-                          placeholder="e.g. Satoshi"
+                          onKeyDown={(e) => {
+                            if(e.key === "Enter") {
+                              e.preventDefault();
+                              document.querySelector('input[name="lastname"]')?.focus();
+                            }
+                          }}
+                          placeholder="e.g. Dikshant"
                           className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
                             light
                               ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
@@ -531,6 +537,13 @@ const SignUp = ({ light }) => {
                           name="lastname"
                           type="text"
                           placeholder="e.g. Nakamoto"
+                          onKeyDown={(e) => {
+                            
+                            if(e.key === "Enter") {
+                              e.preventDefault();
+                              document.querySelector('input[name="email"]')?.focus();
+                            }
+                          }}
                           className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
                             light
                               ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
@@ -567,6 +580,12 @@ const SignUp = ({ light }) => {
                         name="email"
                         type="email"
                         placeholder="satoshi@cryptoplace.io"
+                        onKeyDown={(e) => {
+                          if(e.key === "Enter") {
+                            e.preventDefault();
+                            document.querySelector('input[name="password"]')?.focus();
+                          }
+                        }}
                         className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
                           light
                             ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
@@ -601,6 +620,12 @@ const SignUp = ({ light }) => {
                         value={formData.password}
                         name="password"
                         type={showPassword ? "text" : "password"}
+                        onKeyDown={(e) => {
+                          if(e.key === "Enter") {
+                            e.preventDefault();
+                            submitData(e);
+                          }
+                        }}
                         placeholder="••••••••••••"
                         className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
                           light

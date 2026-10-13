@@ -77,7 +77,7 @@ const Login = ({ light }) => {
       await axios.post(`${API_URL}/login`, formData, {
         withCredentials: true,
       });
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       console.error(err);
       const errMsg =
@@ -399,7 +399,7 @@ const Login = ({ light }) => {
                 )}
 
                 {/* Form */}
-                <form onSubmit={submitData} className="space-y-2 xl:space-y-2.5">
+                <form className="space-y-2 xl:space-y-2.5">
                   {/* Email Field */}
                   <div>
                     <label
@@ -423,6 +423,12 @@ const Login = ({ light }) => {
                         name="email"
                         type="email"
                         placeholder="satoshi@cryptoplace.io"
+                        onKeyDown={(e) => {
+                          if(e.key === "Enter") {
+                            e.preventDefault();
+                            document.querySelector('input[name="password"]')?.focus();
+                          }
+                        }}
                         className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
                           light
                             ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
@@ -460,6 +466,12 @@ const Login = ({ light }) => {
                         name="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••••••"
+                        onKeyDown={(e) => {
+                          if(e.key === "Enter") {
+                            e.preventDefault();
+                            submitData(e);
+                          }
+                        }}
                         className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
                           light
                             ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"

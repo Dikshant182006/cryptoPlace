@@ -37,13 +37,13 @@ function App() {
         <>
         <Navbar light={light} setLight={setLight} />
         <TickerCoin light={light} setLight={setLight} />
-        <Footer light={light} setlight={setLight} />
         </>
       )}
 
       <Routes>
         <Route path="/" element={<SignUp light={light} />} />
         <Route path="/login" element={<Login light={light} />} />
+        <Route path="/home" element={<Home light={light} />} />
         <Route path="/coins/" element={<CryptoList light={light} />} />
         <Route path="/coin/:coinId" element={<Coin />} />
         <Route path="/tracker" element={<Tracker light={light} />} />
@@ -52,6 +52,10 @@ function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/favorites/" element={<Favourite light={light} />} />
       </Routes>
+
+      {!isAuthLocation && (
+      <Footer light={light} setlight={setLight} />
+      )}
     </div>
   );
 }
