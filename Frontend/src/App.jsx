@@ -20,25 +20,38 @@ function App() {
   const [light, setLight] = useState(false);
   const location = useLocation();
 
+  const isAuthLocation = location.pathname === "/" || location.pathname === "/login";
+
   return (
-     <div className={light ? "min-h-screen bg-white text-black" : "min-h-screen bg-black text-white"}>
+     <div
+       className={`${
+         light ? "bg-white text-black" : "bg-black text-white"
+       } ${
+         isAuthLocation 
+           ? "h-screen overflow-y-auto lg:overflow-hidden no-scrollbar"
+           : "min-h-screen"
+       }`}
+     >
       <ScrollToTop />
-      <Navbar light={light} setLight={setLight} />
-      {location.pathname !== "/signup" &&
-      location.pathname !== "/login" && <TickerCoin light={light} />}
+      {!isAuthLocation && (
+        <>
+        <Navbar light={light} setLight={setLight} />
+        <TickerCoin light={light} setLight={setLight} />
+        <Footer light={light} setlight={setLight} />
+        </>
+      )}
+
       <Routes>
-        <Route path="/" element={<Home light={light} />} />
+        <Route path="/" element={<SignUp light={light} />} />
+        <Route path="/login" element={<Login light={light} />} />
         <Route path="/coins/" element={<CryptoList light={light} />} />
         <Route path="/coin/:coinId" element={<Coin />} />
-        <Route path="/signup" element={<SignUp light={light} />} />
-        <Route path="/login" element={<Login light={light} />} />
         <Route path="/tracker" element={<Tracker light={light} />} />
         <Route path="/helpCenter" element={<HelpCenter light={light} />} />
         <Route path="/aboutus" element={<AboutUs light={light} />} />
         <Route path="/features" element={<Features />} />
         <Route path="/favorites/" element={<Favourite light={light} />} />
       </Routes>
-      <Footer light={light} setLight={setLight} />
     </div>
   );
 }

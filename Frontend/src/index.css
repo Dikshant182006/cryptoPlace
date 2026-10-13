@@ -35,6 +35,15 @@ body {
   scrollbar-width: thin; /* keeps vertical visible */
 }
 
+/* Hide scrollbar completely utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @keyframes aiFloat {
   0%, 100% { transform: translateY(10px); }
   50%       { transform: translateY(-20px); }

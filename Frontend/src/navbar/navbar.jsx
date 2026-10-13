@@ -218,7 +218,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
                   Login
                 </Link>
                 <Link
-                  to="/signup"
+                  to="/"
                   className="px-5 py-1.5 rounded-xl bg-orange-600 backdrop-blur-md text-white border border-white/20 hover:bg-orange-500 transition-all duration-300 text-sm font-medium text-center"
                 >
                   Get Started
