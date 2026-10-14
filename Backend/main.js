@@ -148,7 +148,7 @@ app.post("/register", async (req, res) => {
     await connectDB();
     const { firstname, lastname, email, password } = req.body;
 
-    if (!firstname || !lastname || !email || !password) {
+    if (!email || !password) {
       return res.status(400).json({
         message: "All fields are required",
       });
