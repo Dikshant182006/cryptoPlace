@@ -18,7 +18,6 @@ const Tracker = ({light}) => {
     window.open(link);
   };
 
-  const textMain = light? "text-black/70": "text-white/60";
   const textSub = light ? "text-gray-700" : "text-white/60";
 
   return (

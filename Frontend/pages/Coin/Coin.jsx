@@ -11,44 +11,59 @@ const Coin = () => {
   const [historicalData, setHistoricalData] = useState(null);
 
   const { currency } = useContext(CoinContext);
-
-  const displayCoinDetail = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/coins/${coinId}`);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setCoinDetails(data);
-    } catch (error) {
-      console.log("Fetch error:", error.message);
-    }
-  };
-
-  const displayHistoricalData = async () => {
-    try {
-      const response = await fetch(
-        `${API_URL}/api/coins/${coinId}/chart?currency=${currency.name}&days=10&interval=daily`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setHistoricalData(data);
-    } catch (error) {
-      console.log("Fetch error:", error.message);
-    }
-  };
-
+  
   useEffect(() => {
-    displayCoinDetail();
-    displayHistoricalData();
-  }, [currency.name, coinId]);
+    let ignore = false;
 
+    async function fetchCoinDetails() {
+      try {
+        const response = await fetch(`${API_URL}/api/coins/${coinId}`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!ignore) {
+          setCoinDetails(data);
+        }
+      } catch (error) {
+        if (!ignore) {
+          console.error("Coin details error:", error.message);
+        }
+      }
+    }
+
+    async function fetchHistoricalData() {
+      try {
+        const response = await fetch(
+          `${API_URL}/api/coins/${coinId}/chart?currency=${currency.name}&days=10&interval=daily`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!ignore) {
+          setHistoricalData(data);
+        }
+      } catch (error) {
+        if (!ignore) {
+          console.error("Historical data error:", error.message);
+        }
+      }
+    }
+
+    fetchCoinDetails();
+    fetchHistoricalData();
+
+    return () => {
+      ignore = true;
+    };
+  }, [coinId, currency.name]);
   if (coinDetails && historicalData) {
     return (
       <div className="coin pt-24">

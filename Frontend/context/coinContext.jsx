@@ -1,12 +1,12 @@
-import { createContext, useState } from "react";
-
-export const CoinContext = createContext();
+import { useState } from "react";
+import { CoinContext } from "./coinContext.js";
 
 const CoinContextProvider = (props) => {
   const [currency, setCurrency] = useState({
     name: "usd",
     symbol: "$",
   });
+
   const [favorites, setFavorites] = useState([]);
 
   const contextValue = {
@@ -14,8 +14,6 @@ const CoinContextProvider = (props) => {
     setFavorites,
     currency,
     setCurrency,
-    favorites,
-    setFavorites,
   };
 
   return (
