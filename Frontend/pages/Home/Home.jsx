@@ -13,12 +13,12 @@ const Home = ({ light }) => {
   const { currency } = useContext(CoinContext);
   const [displayCoin, setDisplayCoin] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const itemsPerPage = 6;
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const currentCoins = displayCoin.slice(firstIndex, lastIndex);
-  const totalPages = Math.ceil(displayCoin.length/itemsPerPage);
+  const totalPages = Math.ceil(displayCoin.length / itemsPerPage);
 
   const {
     data: coinData,
@@ -28,7 +28,7 @@ const Home = ({ light }) => {
   } = useCoins(currency.name, 1, 50);
 
   const allCoin = coinData?.data ?? EMPTY_COINS;
-  
+
   const [input, setInput] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -89,9 +89,8 @@ const Home = ({ light }) => {
         const isPositive = item.price_change_percentage_24h > 0;
         return (
           <p
-            className={`font-semibold ${
-              isPositive ? "text-green-500" : "text-red-500"
-            }`}
+            className={`font-semibold ${isPositive ? "text-green-500" : "text-red-500"
+              }`}
           >
             {isPositive ? "▲" : "▼"}{" "}
             {Math.abs(Math.floor(item.price_change_percentage_24h * 100) / 100)}%
@@ -138,8 +137,8 @@ const Home = ({ light }) => {
     setDisplayCoin(filteredCoins);
   }, [debounceValue, allCoin]);
 
-  if(isLoading) return <p>Loading...</p>;
-  if(isError) return <p>Error: {error.message} </p>
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error: {error.message} </p>
 
   // To handle the input
   const handleInput = (e) => {
@@ -147,7 +146,7 @@ const Home = ({ light }) => {
   };
 
   // Open ChatGpt
-  const handleChat = (e) => {
+  const handleChat = () => {
     const prompt = "Best crypto Tracker";
     const encoded = encodeURIComponent(prompt);
 
@@ -156,23 +155,18 @@ const Home = ({ light }) => {
   };
 
   // Open Gemini
-  const handleGemini = (e) => {
+  const handleGemini = () => {
     const url = "https://aistudio.google.com/";
     window.open(url);
   };
 
   // Open Claude
-  const handleClaude = (e) => {
-    const prompt = "Best crypto Tracker";
-    const encoded = encodeURIComponent(prompt);
-
+  const handleClaude = () => {
     const url = "https://claude.ai/";
     window.open(url);
   };
 
   const textMain = light ? "text-black/80" : "text-white/50";
-  const textSub = light ? "text-black" : "text-white";
-  const changeBac = light ? "bg-white text-black" : "bg-black";
 
   return (
     <div className="home py-2 mt-18 ">
@@ -203,9 +197,8 @@ const Home = ({ light }) => {
                 </p>
 
                 <form
-                  className={`flex items-center backdrop-blur-md border rounded-full shadow-lg focus-within:ring-2 focus-within:ring-purple-400 transition-all ${
-                    light ? "bg-black/5 border-black/10" : "bg-white/10 border-white/20"
-                  }`}
+                  className={`flex items-center backdrop-blur-md border rounded-full shadow-lg focus-within:ring-2 focus-within:ring-purple-400 transition-all ${light ? "bg-black/5 border-black/10" : "bg-white/10 border-white/20"
+                    }`}
                 >
                   <span className="pl-4 text-gray-400 text-lg ">🔍</span>
                   <input
@@ -283,9 +276,8 @@ const Home = ({ light }) => {
 
       <div className="cryptoAi my-15">
         <div
-          className={`m-auto rounded-3xl w-[90vw] py-14 px-12 text-center relative overflow-hidden ${
-            light ? "border border-purple-200/60 shadow-xl" : ""
-          }`}
+          className={`m-auto rounded-3xl w-[90vw] py-14 px-12 text-center relative overflow-hidden ${light ? "border border-purple-200/60 shadow-xl" : ""
+            }`}
           style={{
             background: light
               ? "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #fdf4ff 100%)"
@@ -334,9 +326,8 @@ const Home = ({ light }) => {
             <div className="flex flex-wrap gap-3 justify-center">
               <div
                 onClick={handleChat}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
-                  light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
-                }`}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
+                  }`}
                 style={{
                   background: light ? "rgba(255, 255, 255, 0.9)" : "rgba(255,255,255,0.07)",
                   border: light ? "1px solid rgba(139, 92, 246, 0.25)" : "1px solid rgba(255,255,255,0.14)",
@@ -347,9 +338,8 @@ const Home = ({ light }) => {
               </div>
               <div
                 onClick={handleGemini}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
-                  light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
-                }`}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
+                  }`}
                 style={{
                   background: light ? "rgba(255, 255, 255, 0.9)" : "rgba(255,255,255,0.07)",
                   border: light ? "1px solid rgba(139, 92, 246, 0.25)" : "1px solid rgba(255,255,255,0.14)",
@@ -360,9 +350,8 @@ const Home = ({ light }) => {
               </div>
               <div
                 onClick={handleClaude}
-                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
-                  light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
-                }`}
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${light ? "hover:bg-white shadow-sm" : "hover:bg-white/15"
+                  }`}
                 style={{
                   background: light ? "rgba(255, 255, 255, 0.9)" : "rgba(255,255,255,0.07)",
                   border: light ? "1px solid rgba(139, 92, 246, 0.25)" : "1px solid rgba(255,255,255,0.14)",

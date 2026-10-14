@@ -19,9 +19,6 @@ const CryptoList = ({ light }) => {
 
   const {
     data: favoriteData,
-    isLoading: isFavoritesLoading,
-    isError: isFavoritesError,
-    error: favoritesError,
   } = useFavorites();
 
   const favoriteIds = favoriteData?.favorites ?? [];

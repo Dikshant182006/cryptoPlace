@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Footer = ({light, setlight}) => {
+const Footer = ({light}) => {
   return (
     <footer className={`relative overflow-hidden ${light ? "bg-white" : "bg-[#090909]"}`}>
       {/* Glow blobs */}

@@ -88,7 +88,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               alt="logo"
               className="cursor-pointer w-9 h-9 hover:scale-110 transition"
             />
-            <Link to={"/"} className="font-bold cursor-pointer text-lg">
+            <Link to={"/home"} className="font-bold cursor-pointer text-lg">
               Cryptoplace
             </Link>
           </div>
@@ -107,7 +107,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               Portfolio Tracker
             </NavLink>
             <NavLink
-              to={"/"}
+              to={"/home"}
               className={({ isActive }) =>
                 isActive ? "border-b-2 border-orange-300" : ""
               }
@@ -248,7 +248,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               Portfolio Tracker
             </NavLink>
             <NavLink
-              to={"/"}
+              to={"/home"}
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
                 isActive ? "border-b-2 border-orange-400 font-bold pb-1" : ""

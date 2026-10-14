@@ -9,7 +9,6 @@ const TickerCoin = ({ light }) => {
     data: coinData,
     isLoading,
     isError,
-    error,
   } = useCoins(currency.name, 1, 15);
 
   const coinsList = Array.isArray(coinData)

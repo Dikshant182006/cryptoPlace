@@ -45,7 +45,6 @@ const HelpCenter = ({light}) => {
   ];
 
   const textMain = light? "text-black/70": "text-white/60";
-  const textSub = light? "text-black" : "text-white";
 
   return (
     <div className="h-screen my-30 mx-20">
