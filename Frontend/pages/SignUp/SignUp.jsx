@@ -26,7 +26,6 @@ const SignUp = ({ light }) => {
 
   const [error, setError] = useState({
     firstname: "",
-    lastname: "",
     email: "",
     password: "",
   });
@@ -125,15 +124,11 @@ const SignUp = ({ light }) => {
     e.preventDefault();
     setServerError("");
 
-    const fnError = validationName(formData.firstname);
-    const lnError = validationName(formData.lastname);
     const emError = validationEmail(formData.email);
     const pwError = validationPassword(formData.password);
 
-    if (fnError || lnError || emError || pwError) {
+    if (emError || pwError) {
       setError({
-        firstname: fnError,
-        lastname: lnError,
         email: emError,
         password: pwError,
       });
@@ -468,7 +463,7 @@ const SignUp = ({ light }) => {
                 )}
 
                 {/* Registration Form */}
-                <form className="space-y-2 xl:space-y-2.5">
+                <form onSubmit={submitData} className="space-y-2 xl:space-y-2.5">
                   {/* Name Fields (2 Columns) */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {/* First Name */}
@@ -508,9 +503,6 @@ const SignUp = ({ light }) => {
                           }`}
                         />
                       </div>
-                      {error.firstname && (
-                        <p className="mt-0.5 text-[11px] text-red-500">{error.firstname}</p>
-                      )}
                     </div>
 
                     {/* Last Name */}
@@ -551,9 +543,6 @@ const SignUp = ({ light }) => {
                           }`}
                         />
                       </div>
-                      {error.lastname && (
-                        <p className="mt-0.5 text-[11px] text-red-500">{error.lastname}</p>
-                      )}
                     </div>
                   </div>
 
@@ -564,7 +553,7 @@ const SignUp = ({ light }) => {
                         light ? "text-slate-700" : "text-white/80"
                       }`}
                     >
-                      Email Address
+                      Email Address <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <span
@@ -605,7 +594,7 @@ const SignUp = ({ light }) => {
                         light ? "text-slate-700" : "text-white/80"
                       }`}
                     >
-                      Password
+                      Password <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <span

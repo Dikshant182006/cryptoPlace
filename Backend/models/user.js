@@ -13,14 +13,10 @@ const connectDB = async () => {
 connectDB().catch((err) => console.log("MongoDB initial connect:", err.message));
 
 const userSchema = new mongoose.Schema({
-  firstname: { type: String, required: true },
-
-  lastname: { type: String, required: true },
-
+  firstname: { type: String, required: false },
+  lastname: { type: String, required: false },
   email: { type: String, required: true, unique: true },
-  
   password: { type: String, required: true },
-
   favorites: { type: [String], default: [] },
 });
 
