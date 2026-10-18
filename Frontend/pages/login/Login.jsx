@@ -95,17 +95,15 @@ const Login = ({ light }) => {
 
   return (
     <div
-      className={`w-full min-h-screen lg:h-screen lg:overflow-hidden py-4 sm:py-6 lg:py-0 flex flex-col justify-center relative overflow-x-hidden no-scrollbar transition-colors duration-300 ${
-        light ? "bg-[#f8fafc] text-slate-900" : "bg-[#070709] text-white"
-      }`}
+      className={`w-full min-h-screen lg:h-screen lg:overflow-hidden py-4 sm:py-6 lg:py-0 flex flex-col justify-center relative overflow-x-hidden no-scrollbar transition-colors duration-300 ${light ? "bg-[#f8fafc] text-slate-900" : "bg-[#070709] text-white"
+        }`}
     >
       {/* Background Matrix & Tech Grid */}
       <div
-        className={`absolute inset-0 pointer-events-none ${
-          light
+        className={`absolute inset-0 pointer-events-none ${light
             ? "bg-[radial-gradient(#0000000a_1px,transparent_1px)]"
             : "bg-[radial-gradient(#ffffff0a_1px,transparent_1px)]"
-        } [background-size:32px_32px]`}
+          } [background-size:32px_32px]`}
       />
 
       {/* Radiant Ambient Glow Elements */}
@@ -116,10 +114,10 @@ const Login = ({ light }) => {
       {/* Main Full-Page Content Container */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-12 items-center">
-          
+
           {/* ================= LEFT SIDE: CRYPTO SHOWCASE & WELCOME BACK ================= */}
           <div className="lg:col-span-7 flex flex-col justify-center space-y-3 xl:space-y-5">
-            
+
             {/* Live Engine Status Badge */}
             <div className="inline-flex items-center gap-2.5 w-fit px-3 py-1 xl:px-4 xl:py-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 backdrop-blur-md">
               <span className="relative flex h-2 w-2 xl:h-2.5 xl:w-2.5">
@@ -140,9 +138,8 @@ const Login = ({ light }) => {
                 </span>
               </h1>
               <p
-                className={`text-xs xl:text-sm max-w-xl leading-relaxed ${
-                  light ? "text-slate-600" : "text-white/70"
-                }`}
+                className={`text-xs xl:text-sm max-w-xl leading-relaxed ${light ? "text-slate-600" : "text-white/70"
+                  }`}
               >
                 Log in to resume monitoring your crypto portfolio, track live exchange movements,
                 and review AI price predictions in real time.
@@ -153,11 +150,10 @@ const Login = ({ light }) => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 xl:gap-3.5 pt-0.5">
               {/* Bitcoin Card */}
               <div
-                className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${
-                  light
+                className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
                     ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
                     : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
-                }`}
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -184,11 +180,10 @@ const Login = ({ light }) => {
 
               {/* Ethereum Card */}
               <div
-                className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${
-                  light
+                className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
                     ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
                     : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
-                }`}
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -215,11 +210,10 @@ const Login = ({ light }) => {
 
               {/* Solana Card */}
               <div
-                className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${
-                  light
+                className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
                     ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
                     : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
-                }`}
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -248,11 +242,10 @@ const Login = ({ light }) => {
             {/* Core Feature Badges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 xl:gap-4 pt-1">
               <div
-                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${
-                  light
+                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
                     ? "bg-white/60 border-slate-200/60"
                     : "bg-white/[0.02] border-white/[0.08]"
-                }`}
+                  }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-orange-500/10 text-orange-400 text-base xl:text-lg shrink-0">
                   <FaBolt />
@@ -260,9 +253,8 @@ const Login = ({ light }) => {
                 <div>
                   <h4 className="font-bold text-xs xl:text-sm">Live Portfolios</h4>
                   <p
-                    className={`text-[11px] xl:text-xs mt-0.5 ${
-                      light ? "text-slate-500" : "text-white/50"
-                    }`}
+                    className={`text-[11px] xl:text-xs mt-0.5 ${light ? "text-slate-500" : "text-white/50"
+                      }`}
                   >
                     Track asset growth in your preferred fiat currency.
                   </p>
@@ -270,11 +262,10 @@ const Login = ({ light }) => {
               </div>
 
               <div
-                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${
-                  light
+                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
                     ? "bg-white/60 border-slate-200/60"
                     : "bg-white/[0.02] border-white/[0.08]"
-                }`}
+                  }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-amber-500/10 text-amber-400 text-base xl:text-lg shrink-0">
                   <FaBrain />
@@ -282,9 +273,8 @@ const Login = ({ light }) => {
                 <div>
                   <h4 className="font-bold text-xs xl:text-sm">AI Market Pulse</h4>
                   <p
-                    className={`text-[11px] xl:text-xs mt-0.5 ${
-                      light ? "text-slate-500" : "text-white/50"
-                    }`}
+                    className={`text-[11px] xl:text-xs mt-0.5 ${light ? "text-slate-500" : "text-white/50"
+                      }`}
                   >
                     Stay ahead with algorithmic signals & sentiment.
                   </p>
@@ -292,11 +282,10 @@ const Login = ({ light }) => {
               </div>
 
               <div
-                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${
-                  light
+                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
                     ? "bg-white/60 border-slate-200/60"
                     : "bg-white/[0.02] border-white/[0.08]"
-                }`}
+                  }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-yellow-500/10 text-yellow-400 text-base xl:text-lg shrink-0">
                   <FaShieldAlt />
@@ -304,9 +293,8 @@ const Login = ({ light }) => {
                 <div>
                   <h4 className="font-bold text-xs xl:text-sm">Instant Sync</h4>
                   <p
-                    className={`text-[11px] xl:text-xs mt-0.5 ${
-                      light ? "text-slate-500" : "text-white/50"
-                    }`}
+                    className={`text-[11px] xl:text-xs mt-0.5 ${light ? "text-slate-500" : "text-white/50"
+                      }`}
                   >
                     Cross-device synchronization with session security.
                   </p>
@@ -318,17 +306,16 @@ const Login = ({ light }) => {
           {/* ================= RIGHT SIDE: AUTH LOGIN PORTAL ================= */}
           <div className="lg:col-span-5 w-full max-w-lg mx-auto lg:max-w-none">
             <div className="relative">
-              
+
               {/* Outer Ambient Glow Ring */}
               <div className="absolute -inset-1 rounded-[32px] bg-gradient-to-r from-orange-500/25 via-amber-500/15 to-orange-600/25 blur-xl opacity-80" />
 
               {/* Glass Auth Card */}
               <div
-                className={`relative rounded-[22px] xl:rounded-[28px] backdrop-blur-2xl p-4 sm:p-5 lg:p-4.5 xl:p-6 border transition-all duration-300 shadow-2xl ${
-                  light
+                className={`relative rounded-[22px] xl:rounded-[28px] backdrop-blur-2xl p-4 sm:p-5 lg:p-4.5 xl:p-6 border transition-all duration-300 shadow-2xl ${light
                     ? "bg-white/95 border-slate-200 shadow-orange-500/10 text-slate-900"
                     : "bg-[#111115]/95 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.7)] text-white"
-                }`}
+                  }`}
               >
                 {/* Header */}
                 <div className="mb-2 xl:mb-3">
@@ -339,9 +326,8 @@ const Login = ({ light }) => {
                     Log In to CryptoPlace
                   </h2>
                   <p
-                    className={`mt-0.5 text-xs sm:text-xs xl:text-sm ${
-                      light ? "text-slate-500" : "text-white/60"
-                    }`}
+                    className={`mt-0.5 text-xs sm:text-xs xl:text-sm ${light ? "text-slate-500" : "text-white/60"
+                      }`}
                   >
                     Enter your credentials to access your live terminal.
                   </p>
@@ -351,11 +337,10 @@ const Login = ({ light }) => {
                 <div className="grid grid-cols-2 gap-2 mb-2 xl:mb-3">
                   <button
                     type="button"
-                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${
-                      light
+                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${light
                         ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
                         : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
-                    }`}
+                      }`}
                   >
                     <FaGoogle className="text-red-400 text-xs sm:text-sm" />
                     <span>Google</span>
@@ -363,11 +348,10 @@ const Login = ({ light }) => {
 
                   <button
                     type="button"
-                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${
-                      light
+                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${light
                         ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
                         : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
-                    }`}
+                      }`}
                   >
                     <FaGithub className="text-xs sm:text-sm" />
                     <span>GitHub</span>
@@ -377,14 +361,12 @@ const Login = ({ light }) => {
                 {/* Divider */}
                 <div className="relative flex items-center justify-center mb-2 xl:mb-3">
                   <div
-                    className={`w-full border-t ${
-                      light ? "border-slate-200" : "border-white/10"
-                    }`}
+                    className={`w-full border-t ${light ? "border-slate-200" : "border-white/10"
+                      }`}
                   />
                   <span
-                    className={`absolute px-2 text-[10px] xl:text-xs uppercase tracking-wider font-semibold ${
-                      light ? "bg-white text-slate-400" : "bg-[#111115] text-white/40"
-                    }`}
+                    className={`absolute px-2 text-[10px] xl:text-xs uppercase tracking-wider font-semibold ${light ? "bg-white text-slate-400" : "bg-[#111115] text-white/40"
+                      }`}
                   >
                     Or continue with email
                   </span>
@@ -403,17 +385,15 @@ const Login = ({ light }) => {
                   {/* Email Field */}
                   <div>
                     <label
-                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${
-                        light ? "text-slate-700" : "text-white/80"
-                      }`}
+                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                        }`}
                     >
-                      Email Address
+                      Email Address <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <span
-                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${
-                          light ? "text-slate-400" : "text-white/40"
-                        }`}
+                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                          }`}
                       >
                         <FaEnvelope />
                       </span>
@@ -424,16 +404,15 @@ const Login = ({ light }) => {
                         type="email"
                         placeholder="satoshi@cryptoplace.io"
                         onKeyDown={(e) => {
-                          if(e.key === "Enter") {
+                          if (e.key === "Enter") {
                             e.preventDefault();
                             document.querySelector('input[name="password"]')?.focus();
                           }
                         }}
-                        className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
-                          light
+                        className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
                             ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                             : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                        }`}
+                          }`}
                       />
                     </div>
                     {error.email && (
@@ -445,18 +424,16 @@ const Login = ({ light }) => {
                   <div>
                     <div className="flex justify-between items-center mb-1">
                       <label
-                        className={`block text-[11px] xl:text-xs font-semibold ${
-                          light ? "text-slate-700" : "text-white/80"
-                        }`}
+                        className={`block text-[11px] xl:text-xs font-semibold ${light ? "text-slate-700" : "text-white/80"
+                          }`}
                       >
-                        Password
+                        Password<span className="text-red-500">*</span>
                       </label>
                     </div>
                     <div className="relative">
                       <span
-                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${
-                          light ? "text-slate-400" : "text-white/40"
-                        }`}
+                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                          }`}
                       >
                         <FaLock />
                       </span>
@@ -467,25 +444,23 @@ const Login = ({ light }) => {
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••••••"
                         onKeyDown={(e) => {
-                          if(e.key === "Enter") {
+                          if (e.key === "Enter") {
                             e.preventDefault();
                             submitData(e);
                           }
                         }}
-                        className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
-                          light
+                        className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
                             ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                             : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                        }`}
+                          }`}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs transition cursor-pointer ${
-                          light
+                        className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs transition cursor-pointer ${light
                             ? "text-slate-400 hover:text-slate-700"
                             : "text-white/40 hover:text-white"
-                        }`}
+                          }`}
                       >
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                       </button>
@@ -519,9 +494,8 @@ const Login = ({ light }) => {
                   {/* Switch to Sign Up */}
                   <div className="text-center pt-0.5 xl:pt-1">
                     <p
-                      className={`text-xs ${
-                        light ? "text-slate-600" : "text-white/60"
-                      }`}
+                      className={`text-xs ${light ? "text-slate-600" : "text-white/60"
+                        }`}
                     >
                       Don't have an account?{" "}
                       <Link
@@ -535,11 +509,10 @@ const Login = ({ light }) => {
 
                   {/* Security Badge Footnote */}
                   <div
-                    className={`mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] ${
-                      light
+                    className={`mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] ${light
                         ? "border-slate-100 text-slate-400"
                         : "border-white/5 text-white/40"
-                    }`}
+                      }`}
                   >
                     <FaShieldAlt className="text-orange-400 text-xs" />
                     <span>256-Bit SSL Encrypted & Decentralized Security</span>

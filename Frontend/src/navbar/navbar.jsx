@@ -75,7 +75,7 @@ function Navbar({ light, setLight }) {
   return (
     <>
       <div
-        className={`flex items-center p-2 px-5 w-full fixed top-0 left-0 z-60 transition
+        className={`flex items-center p-2 px-5 w-full pl-10 fixed top-0 left-0 z-60 transition
 ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
       >
         <div className="flex justify-between w-[20vw]">
@@ -189,42 +189,14 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               </option>
             </select>
 
-            {user ? (
-              <div className="flex items-center gap-3">
+            {user && (
+              <div className="flex items-center gap-10">
                 <span className={`text-sm font-medium ${light ? "text-gray-900" : "text-white"}`}>
                   Welcome, {user.firstname}
                 </span>
-                <button
-                  onClick={handleLogout}
-                  className={`px-5 py-1.5 rounded-xl backdrop-blur-md border text-sm font-medium text-center cursor-pointer transition ${
-                    light
-                      ? "text-gray-900 border-gray-300 hover:bg-gray-100"
-                      : "text-white border-white/20 hover:bg-white/10"
-                  }`}
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className={`px-5 py-1.5 rounded-xl backdrop-blur-md border text-sm font-medium text-center transition ${
-                    light
-                      ? "text-gray-900 border-gray-300 hover:bg-gray-100"
-                      : "text-white border-white/20 hover:bg-white/10"
-                  }`}
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/"
-                  className="px-5 py-1.5 rounded-xl bg-orange-600 backdrop-blur-md text-white border border-white/20 hover:bg-orange-500 transition-all duration-300 text-sm font-medium text-center"
-                >
-                  Get Started
-                </Link>
-              </>
-            )}
+                <img className="cursor-pointer" onClick={handleLogout} src="/logout.svg" alt="Logout" />
+              </div>)
+            }
           </div>
         </div>
 
@@ -264,7 +236,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               }
             >
               CryptoCurrencies
-            </NavLink>
+            </NavLink>            
 
             {/* Theme toggle in mobile */}
             <div className="flex items-center justify-between py-2 border-t border-b border-gray-500/20">
@@ -313,6 +285,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
           </div>
         )}
       </div>
+      
       <hr className={`border transition ${light ? "border-gray-200" : "border-zinc-800"}`} />
     </>
   );
