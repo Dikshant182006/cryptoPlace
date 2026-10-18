@@ -94,7 +94,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
           </div>
         </div>
 
-        <div className="md:flex items-center hidden justify-between w-full mx-20">
+        <div className="md:flex items-center hidden justify-between w-full ml-5">
           <div className="md:flex hidden items-center justify-between w-[50vw] mx-5">
             <NavLink
               to={"/tracker"}
@@ -190,7 +190,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
             </select>
 
             {user && (
-              <div className="flex items-center gap-10">
+              <div className="flex items-center gap-25">
                 <span className={`text-sm font-medium ${light ? "text-gray-900" : "text-white"}`}>
                   Welcome, {user.firstname}
                 </span>
