@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useEffectEvent } from "react";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { CoinContext } from "../../context/coinContext";
@@ -6,29 +6,17 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/logo.svg";
 import setting from "../assets/setting.svg";
-import { useLocation } from "react-router-dom";
 import { API_URL } from "../config";
 
-function Navbar({ light, setLight }) {
+function Navbar({ light, setLight, user, setUser }) {
   const { currency, setCurrency } = useContext(CoinContext);
   // set the menu in the mobile
   const [menuOpen, setMenuOpen] = useState(false);
   // set the toggle in the laptop and mobile black and dark color
   const [settingOpen, setSettingOpen] = useState(false);
-  // Create a user
-  const [user, setUser] = useState(null);
-  const location = useLocation();
+  // For open dialog box
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    axios.get(`${API_URL}/api/profile`, {
-      withCredentials: true,
-    }).then((res) => {
-      setUser(res.data);
-    }).catch(() => {
-      setUser(null);
-    })
-  }, [location]);
 
   const currencyHandler = (e) => {
     const value = e.target.value;
@@ -58,15 +46,36 @@ function Navbar({ light, setLight }) {
   };
 
   const handleLogout = async () => {
-    try{
+    try {
       await axios.get(`${API_URL}/api/logout`, {
         withCredentials: true,
       });
+      if (setUser) setUser(null);
+      setLogoutDialogOpen(false);
       navigate('/login');
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    if (!logoutDialogOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setLogoutDialogOpen(false);
+      }
+
+      if (e.key === "Enter") {
+        handleLogout();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+  }, [logoutDialogOpen]);
 
   const navBg = light ? "bg-gray-200" : "bg-neutral-800";
   const navText = light ? "text-black/60" : "text-white/60";
@@ -122,7 +131,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
             >
               CryptoCurrencies
             </NavLink>
-            
+
             <div className="relative">
               <img
                 onClick={handleSetting}
@@ -132,18 +141,16 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               />
               {settingOpen && (
                 <div
-                  className={`mt-2 rounded-2xl absolute top-8 -right-12 w-44 p-3.5 shadow-2xl backdrop-blur-md transition-all z-50 ${
-                    light
-                      ? "bg-white border border-gray-200 text-gray-900 shadow-purple-500/10"
-                      : "bg-gradient-to-b from-[#2c2c2c] to-[#121212] border border-white/10 text-white/90"
-                  }`}
+                  className={`mt-2 rounded-2xl absolute top-8 -right-12 w-44 p-3.5 shadow-2xl backdrop-blur-md transition-all z-50 ${light
+                    ? "bg-white border border-gray-200 text-gray-900 shadow-purple-500/10"
+                    : "bg-gradient-to-b from-[#2c2c2c] to-[#121212] border border-white/10 text-white/90"
+                    }`}
                 >
                   <div className="flex justify-between items-center">
                     <h2 className="font-semibold text-sm">Theme</h2>
                     <label
-                      className={`relative items-center flex cursor-pointer rounded-full p-0.5 transition ${
-                        light ? "bg-gray-200" : "bg-gray-800"
-                      }`}
+                      className={`relative items-center flex cursor-pointer rounded-full p-0.5 transition ${light ? "bg-gray-200" : "bg-gray-800"
+                        }`}
                     >
                       <input
                         onChange={handleChange}
@@ -153,11 +160,10 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
                       />
 
                       <div
-                        className={`w-9 h-6 rounded-full flex justify-center items-center text-xs transition-all peer-checked:translate-x-4 ${
-                          light
-                            ? "bg-white text-amber-500 shadow-sm"
-                            : "bg-gray-700 text-yellow-300"
-                        }`}
+                        className={`w-9 h-6 rounded-full flex justify-center items-center text-xs transition-all peer-checked:translate-x-4 ${light
+                          ? "bg-white text-amber-500 shadow-sm"
+                          : "bg-gray-700 text-yellow-300"
+                          }`}
                       >
                         {light ? "☀️" : "🌙"}
                       </div>
@@ -170,11 +176,10 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
 
           <div className="currency-box md:flex items-center gap-5 hidden">
             <select
-              className={`cursor-pointer px-3 py-1.5 justify-center rounded-lg text-sm font-medium transition ${
-                light
-                  ? "bg-gray-100 text-gray-900 border border-gray-300 hover:bg-gray-200"
-                  : "bg-[#1f1f1f] text-white hover:bg-gray-900"
-              }`}
+              className={`cursor-pointer px-3 py-1.5 justify-center rounded-lg text-sm font-medium transition ${light
+                ? "bg-gray-100 text-gray-900 border border-gray-300 hover:bg-gray-200"
+                : "bg-[#1f1f1f] text-white hover:bg-gray-900"
+                }`}
               onChange={currencyHandler}
               value={currency?.name || "usd"}
             >
@@ -194,17 +199,51 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
                 <span className={`text-sm font-medium ${light ? "text-gray-900" : "text-white"}`}>
                   Welcome, {user.firstname}
                 </span>
-                <img className="cursor-pointer" onClick={handleLogout} src="/logout.svg" alt="Logout" />
+                <img className="cursor-pointer" onClick={() => setLogoutDialogOpen(true)} src="/logout.svg" alt="Logout" />
               </div>)
             }
+
+            {logoutDialogOpen && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4">
+                <div
+                  className={`w-full max-w-sm rounded-2xl p-6 shadow-2xl ${light
+                    ? "bg-white text-gray-900"
+                    : "bg-neutral-900 text-white border border-white/10"
+                    }`}
+                >
+                  <h2 className="text-xl font-bold">
+                    Confirm Logout
+                  </h2>
+
+                  <p className="mt-3 text-sm opacity-75">
+                    Are you sure you want to log out?
+                  </p>
+
+                  <div className="mt-6 flex justify-end gap-3">
+                    <button
+                      onClick={() => setLogoutDialogOpen(false)}
+                      className="rounded-lg border border-gray-400 px-4 py-2 text-sm cursor-pointer hover:bg-gray-500/10"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      onClick={handleLogout}
+                      className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold cursor-pointer text-white hover:bg-red-700"
+                    >
+                      Yes, Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         {menuOpen && (
           <div
-            className={`absolute top-14 left-0 w-[75%] h-screen shadow-2xl p-5 flex flex-col gap-8 md:hidden transition z-50 ${
-              light ? "bg-white text-black border-r border-gray-200" : "bg-neutral-900 text-white"
-            }`}
+            className={`absolute top-14 left-0 w-[75%] h-screen shadow-2xl p-5 flex flex-col gap-8 md:hidden transition z-50 ${light ? "bg-white text-black border-r border-gray-200" : "bg-neutral-900 text-white"
+              }`}
           >
             <NavLink
               to={"/tracker"}
@@ -212,9 +251,8 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               className={({ isActive }) =>
                 isActive
                   ? "text-orange-400 cursor-pointer bg-neutral-800 rounded-lg p-2 text-sm px-4 font-bold w-full"
-                  : `cursor-pointer rounded-lg p-2 text-sm px-4 font-bold w-full ${
-                      light ? "bg-gray-100 text-gray-700" : "bg-neutral-800 text-white/70"
-                    }`
+                  : `cursor-pointer rounded-lg p-2 text-sm px-4 font-bold w-full ${light ? "bg-gray-100 text-gray-700" : "bg-neutral-800 text-white/70"
+                  }`
               }
             >
               Portfolio Tracker
@@ -236,15 +274,14 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
               }
             >
               CryptoCurrencies
-            </NavLink>            
+            </NavLink>
 
             {/* Theme toggle in mobile */}
             <div className="flex items-center justify-between py-2 border-t border-b border-gray-500/20">
               <span className="font-semibold text-sm">Theme</span>
               <label
-                className={`relative items-center flex cursor-pointer rounded-full p-0.5 ${
-                  light ? "bg-gray-200" : "bg-gray-800"
-                }`}
+                className={`relative items-center flex cursor-pointer rounded-full p-0.5 ${light ? "bg-gray-200" : "bg-gray-800"
+                  }`}
               >
                 <input
                   onChange={handleChange}
@@ -253,9 +290,8 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
                   className="sr-only peer"
                 />
                 <div
-                  className={`w-9 h-6 rounded-full flex justify-center items-center text-xs transition-all peer-checked:translate-x-4 ${
-                    light ? "bg-white text-amber-500 shadow-sm" : "bg-gray-700 text-yellow-300"
-                  }`}
+                  className={`w-9 h-6 rounded-full flex justify-center items-center text-xs transition-all peer-checked:translate-x-4 ${light ? "bg-white text-amber-500 shadow-sm" : "bg-gray-700 text-yellow-300"
+                    }`}
                 >
                   {light ? "☀️" : "🌙"}
                 </div>
@@ -264,9 +300,8 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
 
             <div className="currency-box flex flex-col gap-4">
               <select
-                className={`cursor-pointer px-3 py-2 rounded-lg text-sm ${
-                  light ? "bg-gray-100 text-black border border-gray-300" : "bg-[#1f1f1f] text-white"
-                }`}
+                className={`cursor-pointer px-3 py-2 rounded-lg text-sm ${light ? "bg-gray-100 text-black border border-gray-300" : "bg-[#1f1f1f] text-white"
+                  }`}
                 onChange={currencyHandler}
                 value={currency?.name || "usd"}
               >
@@ -285,7 +320,7 @@ ${light ? "bg-white text-black" : "bg-neutral-900 text-white"}`}
           </div>
         )}
       </div>
-      
+
       <hr className={`border transition ${light ? "border-gray-200" : "border-zinc-800"}`} />
     </>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import {
   FaEye,
   FaEyeSlash,
@@ -15,7 +15,7 @@ import {
 import axios from "axios";
 import { API_URL } from "../../src/config";
 
-const Login = ({ light }) => {
+const Login = ({ light, user, setUser }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,6 +30,10 @@ const Login = ({ light }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  if (user) {
+    return <Navigate to='/home' replace />;
+  }
 
   const validationEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -74,9 +78,12 @@ const Login = ({ light }) => {
 
     setIsLoading(true);
     try {
-      await axios.post(`${API_URL}/login`, formData, {
+      const res = await axios.post(`${API_URL}/login`, formData, {
         withCredentials: true,
       });
+      if (setUser) {
+        setUser(res.data.userData || res.data);
+      }
       navigate("/home");
     } catch (err) {
       console.error(err);
@@ -101,8 +108,8 @@ const Login = ({ light }) => {
       {/* Background Matrix & Tech Grid */}
       <div
         className={`absolute inset-0 pointer-events-none ${light
-            ? "bg-[radial-gradient(#0000000a_1px,transparent_1px)]"
-            : "bg-[radial-gradient(#ffffff0a_1px,transparent_1px)]"
+          ? "bg-[radial-gradient(#0000000a_1px,transparent_1px)]"
+          : "bg-[radial-gradient(#ffffff0a_1px,transparent_1px)]"
           } [background-size:32px_32px]`}
       />
 
@@ -151,8 +158,8 @@ const Login = ({ light }) => {
               {/* Bitcoin Card */}
               <div
                 className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
-                    ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
-                    : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
+                  ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
+                  : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
                   }`}
               >
                 <div className="flex items-center justify-between">
@@ -181,8 +188,8 @@ const Login = ({ light }) => {
               {/* Ethereum Card */}
               <div
                 className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
-                    ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
-                    : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
+                  ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
+                  : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
                   }`}
               >
                 <div className="flex items-center justify-between">
@@ -211,8 +218,8 @@ const Login = ({ light }) => {
               {/* Solana Card */}
               <div
                 className={`p-2.5 xl:p-3.5 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
-                    ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
-                    : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
+                  ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
+                  : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
                   }`}
               >
                 <div className="flex items-center justify-between">
@@ -243,8 +250,8 @@ const Login = ({ light }) => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 xl:gap-4 pt-1">
               <div
                 className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
-                    ? "bg-white/60 border-slate-200/60"
-                    : "bg-white/[0.02] border-white/[0.08]"
+                  ? "bg-white/60 border-slate-200/60"
+                  : "bg-white/[0.02] border-white/[0.08]"
                   }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-orange-500/10 text-orange-400 text-base xl:text-lg shrink-0">
@@ -263,8 +270,8 @@ const Login = ({ light }) => {
 
               <div
                 className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
-                    ? "bg-white/60 border-slate-200/60"
-                    : "bg-white/[0.02] border-white/[0.08]"
+                  ? "bg-white/60 border-slate-200/60"
+                  : "bg-white/[0.02] border-white/[0.08]"
                   }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-amber-500/10 text-amber-400 text-base xl:text-lg shrink-0">
@@ -283,8 +290,8 @@ const Login = ({ light }) => {
 
               <div
                 className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
-                    ? "bg-white/60 border-slate-200/60"
-                    : "bg-white/[0.02] border-white/[0.08]"
+                  ? "bg-white/60 border-slate-200/60"
+                  : "bg-white/[0.02] border-white/[0.08]"
                   }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-yellow-500/10 text-yellow-400 text-base xl:text-lg shrink-0">
@@ -313,8 +320,8 @@ const Login = ({ light }) => {
               {/* Glass Auth Card */}
               <div
                 className={`relative rounded-[22px] xl:rounded-[28px] backdrop-blur-2xl p-4 sm:p-5 lg:p-4.5 xl:p-6 border transition-all duration-300 shadow-2xl ${light
-                    ? "bg-white/95 border-slate-200 shadow-orange-500/10 text-slate-900"
-                    : "bg-[#111115]/95 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.7)] text-white"
+                  ? "bg-white/95 border-slate-200 shadow-orange-500/10 text-slate-900"
+                  : "bg-[#111115]/95 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.7)] text-white"
                   }`}
               >
                 {/* Header */}
@@ -338,8 +345,8 @@ const Login = ({ light }) => {
                   <button
                     type="button"
                     className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${light
-                        ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
-                        : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
+                      ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
+                      : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
                       }`}
                   >
                     <FaGoogle className="text-red-400 text-xs sm:text-sm" />
@@ -349,8 +356,8 @@ const Login = ({ light }) => {
                   <button
                     type="button"
                     className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${light
-                        ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
-                        : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
+                      ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
+                      : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
                       }`}
                   >
                     <FaGithub className="text-xs sm:text-sm" />
@@ -381,7 +388,7 @@ const Login = ({ light }) => {
                 )}
 
                 {/* Form */}
-                <form className="space-y-2 xl:space-y-2.5">
+                <form onSubmit={submitData} className="space-y-2 xl:space-y-2.5">
                   {/* Email Field */}
                   <div>
                     <label
@@ -410,8 +417,8 @@ const Login = ({ light }) => {
                           }
                         }}
                         className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
-                            ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                           }`}
                       />
                     </div>
@@ -450,16 +457,16 @@ const Login = ({ light }) => {
                           }
                         }}
                         className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
-                            ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                           }`}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
                         className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs transition cursor-pointer ${light
-                            ? "text-slate-400 hover:text-slate-700"
-                            : "text-white/40 hover:text-white"
+                          ? "text-slate-400 hover:text-slate-700"
+                          : "text-white/40 hover:text-white"
                           }`}
                       >
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -510,8 +517,8 @@ const Login = ({ light }) => {
                   {/* Security Badge Footnote */}
                   <div
                     className={`mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] ${light
-                        ? "border-slate-100 text-slate-400"
-                        : "border-white/5 text-white/40"
+                      ? "border-slate-100 text-slate-400"
+                      : "border-white/5 text-white/40"
                       }`}
                   >
                     <FaShieldAlt className="text-orange-400 text-xs" />
