@@ -506,7 +506,7 @@ const Login = ({ light, user, setUser }) => {
                     >
                       Don't have an account?{" "}
                       <Link
-                        to="/"
+                        to="/signup"
                         className="font-bold text-orange-400 hover:text-orange-300 hover:underline transition ml-1"
                       >
                         Sign Up Free

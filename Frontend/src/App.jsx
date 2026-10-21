@@ -27,7 +27,7 @@ function App() {
   const location = useLocation();
   console.log("APP COMPONENT RENDERS");
 
-  const isAuthLocation = location.pathname === "/" || location.pathname === "/login";
+  const isAuthLocation = location.pathname === "/" || location.pathname === "/signup";
   useEffect(() => {
     axios.get(`${API_URL}/api/profile`, {
       withCredentials: true,
@@ -69,8 +69,8 @@ function App() {
 
       <main className={!isAuthLocation ? "pt-[108px] md:pl-[72px]" : ""}>
         <Routes>
-          <Route path="/" element={<SignUp light={light} />} />
-          <Route path="/login" element={<Login light={light} user={user} setUser={setUser} />} />
+          <Route path="/signup" element={<SignUp light={light} />} />
+          <Route path="/" element={<Login light={light} user={user} setUser={setUser} />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute user={user} authLoading={authLoading} />}>

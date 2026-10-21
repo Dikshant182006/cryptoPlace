@@ -750,7 +750,7 @@ const SignUp = ({ light }) => {
                     >
                       Already have an account?{" "}
                       <Link
-                        to="/login"
+                        to="/"
                         className="font-bold text-orange-400 hover:text-orange-300 hover:underline transition ml-1"
                       >
                         Log In
