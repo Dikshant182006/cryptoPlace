@@ -17,16 +17,31 @@ const TickerCoin = ({ light }) => {
     ? coinData.data
     : [];
 
-  if (isLoading || isError || coinsList.length === 0) return null;
+  if (isLoading || isError || coinsList.length === 0) {
+    return (
+      <div
+        className={`w-full h-10 overflow-hidden border-b fixed top-[68px] z-50 backdrop-blur-md transition-colors duration-200 flex items-center px-4 md:pl-24 ${
+          light
+            ? "bg-slate-50/90 border-slate-200/80 text-gray-500 shadow-xs"
+            : "bg-slate-900/40 border-white/5 text-gray-400 backdrop-blur-xl shadow-xs"
+        }`}
+      >
+        <div className="flex items-center gap-2 text-xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span className="tracking-wide">Loading live market prices...</span>
+        </div>
+      </div>
+    );
+  }
 
   const tickerCoins = [...coinsList.slice(0, 15), ...coinsList.slice(0, 15)];
 
   return (
     <div
-      className={`w-full overflow-hidden border-y py-2 fixed top-13 z-50 backdrop-blur-md transition ${
+      className={`w-full h-10 overflow-hidden border-b fixed top-[68px] z-50 backdrop-blur-md transition-colors duration-200 flex items-center md:pl-24 ${
         light
-          ? "bg-white/80 border-gray-200 text-black shadow-sm"
-          : "bg-black/30 border-white/10 text-white"
+          ? "bg-slate-50/90 border-slate-200/80 text-gray-900 shadow-xs"
+          : "bg-slate-900/40 border-white/5 text-white backdrop-blur-xl shadow-xs"
       }`}
     >
       <div
@@ -43,7 +58,7 @@ const TickerCoin = ({ light }) => {
             <span className={`text-sm font-medium ${light ? "text-gray-900" : "text-white"}`}>
               {item.symbol?.toUpperCase()}
             </span>
-            <span className={`text-sm ${light ? "text-gray-600" : "text-gray-400"}`}>
+            <span className={`text-sm ${light ? "text-gray-600" : "text-gray-300 font-medium"}`}>
               {currency.symbol} {item.current_price?.toLocaleString()}
             </span>
             <span

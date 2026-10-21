@@ -21,7 +21,7 @@ const Tracker = ({light}) => {
   const textSub = light ? "text-gray-700" : "text-white/60";
 
   return (
-    <div className="mt-40 h-[150%]">
+    <div className="min-h-[calc(100vh-108px)] py-8">
       <div className="flex flex-col items-center gap-10">
         <div className="flex flex-col sm:flex-row text-center">
           <h2 className="text-5xl font-bold bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">

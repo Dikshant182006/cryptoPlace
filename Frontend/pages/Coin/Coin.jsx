@@ -66,7 +66,7 @@ const Coin = () => {
   }, [coinId, currency.name]);
   if (coinDetails && historicalData) {
     return (
-      <div className="coin pt-24">
+      <div className="coin py-6">
         <div className="coin-name flex flex-col items-center gap-3 h-screen">
           <img src={coinDetails.image.large} className="w-24" />
           <p className="font-bold text-2xl">

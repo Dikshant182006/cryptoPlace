@@ -47,7 +47,7 @@ const HelpCenter = ({light}) => {
   const textMain = light? "text-black/70": "text-white/60";
 
   return (
-    <div className="h-screen my-30 mx-20">
+    <div className="min-h-[calc(100vh-108px)] py-10 px-6 sm:px-20">
       <div className="flex flex-col gap-30 sm:flex-row">
         <div>
           <h2 className="text-4xl leading-11 font-bold">

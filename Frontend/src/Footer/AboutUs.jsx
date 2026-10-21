@@ -5,8 +5,8 @@ const AboutUs = ({light}) => {
   const textMain = light? "text-black/70": "text-white/60";
   const textSub = light? "text-black" : "text-white";
   return (
-    <div className="min-h-screen">
-      <div className="mt-30 flex flex-col justify-center items-center">
+    <div className="min-h-[calc(100vh-108px)] py-8">
+      <div className="flex flex-col justify-center items-center">
         <h2 className="text-4xl font-bold text-center">
           About CryptoPlace & Brand Details
         </h2>

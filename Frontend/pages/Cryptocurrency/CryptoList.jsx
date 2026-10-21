@@ -198,7 +198,7 @@ const CryptoList = ({ light }) => {
 
   if (isLoading || isCoinsLoading) {
     return (
-      <div className="min-h-screen mt-40 flex justify-center items-center">
+      <div className="min-h-[60vh] flex justify-center items-center">
         <p className="text-xl">Loading...</p>
       </div>
     );
@@ -206,7 +206,7 @@ const CryptoList = ({ light }) => {
 
   if (isError || isCoinsError) {
     return (
-      <div className="min-h-screen mt-40 flex justify-center items-center">
+      <div className="min-h-[60vh] flex justify-center items-center">
         <p className="text-xl text-red-500">
           Error: {error?.message || coinsError?.message}
         </p>
@@ -220,7 +220,7 @@ const CryptoList = ({ light }) => {
 
   return (
     <>
-      <div className="min-h-screen mt-40">
+      <div className="min-h-[calc(100vh-108px)] py-6">
         <div className="flex justify-center items-center ">
           <div className="flex flex-col items-center">
             <p className={`text-center rounded-full border border-purple-500/40 bg-purple-500/10 text-sm font-medium p-2 ${textMain}`}>

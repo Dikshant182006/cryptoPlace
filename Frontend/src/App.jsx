@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "./navbar/navbar.jsx";
+import { Sidebar } from "./components";
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home/Home.jsx";
 import Coin from "../pages/Coin/Coin.jsx";
@@ -39,6 +40,16 @@ function App() {
     })
   }, []);
 
+  useEffect(() => {
+    if (light) {
+      document.body.style.backgroundColor = "#ffffff";
+      document.body.style.color = "#000000";
+    } else {
+      document.body.style.backgroundColor = "#000000";
+      document.body.style.color = "#ffffff";
+    }
+  }, [light]);
+
   return (
     <div
       className={`${light ? "bg-white text-black" : "bg-black text-white"
@@ -51,29 +62,34 @@ function App() {
       {!isAuthLocation && (
         <>
           <Navbar light={light} setLight={setLight} user={user} setUser={setUser} />
+          <Sidebar light={light} setLight={setLight} user={user} setUser={setUser} />
           <TickerCoin light={light} setLight={setLight} />
         </>
       )}
 
-      <Routes>
-        <Route path="/" element={<SignUp light={light} />} />
-        <Route path="/login" element={<Login light={light} user={user} setUser={setUser} />} />
+      <main className={!isAuthLocation ? "pt-[108px] md:pl-[72px]" : ""}>
+        <Routes>
+          <Route path="/" element={<SignUp light={light} />} />
+          <Route path="/login" element={<Login light={light} user={user} setUser={setUser} />} />
 
-        {/* Protected Routes */}
-        <Route element={<ProtectedRoute user={user} authLoading={authLoading} />}>
-          <Route path="/home" element={<Home light={light} />} />
-          <Route path="/coins/" element={<CryptoList light={light} />} />
-          <Route path="/coin/:coinId" element={<Coin />} />
-          <Route path="/tracker" element={<Tracker light={light} />} />
-          <Route path="/helpCenter" element={<HelpCenter light={light} />} />
-          <Route path="/aboutus" element={<AboutUs light={light} />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/favorites/" element={<Favourite light={light} />} />
-        </Route>
-      </Routes>
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute user={user} authLoading={authLoading} />}>
+            <Route path="/home" element={<Home light={light} />} />
+            <Route path="/coins/" element={<CryptoList light={light} />} />
+            <Route path="/coin/:coinId" element={<Coin />} />
+            <Route path="/tracker" element={<Tracker light={light} />} />
+            <Route path="/helpCenter" element={<HelpCenter light={light} />} />
+            <Route path="/aboutus" element={<AboutUs light={light} />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/favorites/" element={<Favourite light={light} />} />
+          </Route>
+        </Routes>
+      </main>
 
       {!isAuthLocation && (
-        <Footer light={light} setlight={setLight} />
+        <div className="md:pl-[72px]">
+          <Footer light={light} setlight={setLight} />
+        </div>
       )}
     </div>
   );

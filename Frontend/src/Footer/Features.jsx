@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 const Features = () => {
   return (
-    <div className="min-h-screen">
-      <h1 className="text-6xl mt-30 flex justify-center font-bold bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 bg-clip-text text-transparent">
+    <div className="min-h-[calc(100vh-108px)] py-8">
+      <h1 className="text-6xl flex justify-center font-bold bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500 bg-clip-text text-transparent">
         Features
       </h1>
       <div className="flex flex-col mt-10 justify-center sm:flex-row gap-5">
