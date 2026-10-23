@@ -12,7 +12,7 @@ const apiLimiter = require('./middleware/rateLimiter');
 const { connectRedis } = require('./cache/redisClient');
 const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 // Server for local
 if (process.env.NODE_ENV !== "production") {

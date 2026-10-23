@@ -7,7 +7,7 @@ import { API_URL } from "../../config";
 
 const Sidebar = ({ light, setLight, user, setUser }) => {
   const { currency, setCurrency } = useContext(CoinContext);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const navigate = useNavigate();
