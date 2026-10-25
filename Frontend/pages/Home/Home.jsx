@@ -513,4 +513,4 @@ const Home = ({ light }) => {
   );
 };
 
-export default Home;
+export default Home; 
