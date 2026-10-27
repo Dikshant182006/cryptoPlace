@@ -25,10 +25,9 @@ const Home = ({ light }) => {
     isLoading,
     isError,
     error,
-  } = useCoins(currency.name, 1, 50);
+  } = useCoins(currency.name, currentPage, itemsPerPage);
 
   const allCoin = coinData?.data ?? EMPTY_COINS;
-
   const [tableSearch, setTableSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [timeframe, setTimeframe] = useState("24h");

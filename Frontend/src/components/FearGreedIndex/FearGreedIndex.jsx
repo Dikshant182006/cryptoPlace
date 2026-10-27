@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useFearGreedIndex } from "../../hooks/UseFearAndGreed";
 
 function describeArc(cx, cy, r, startAngle, endAngle) {
   const startRad = (startAngle * Math.PI) / 180;
@@ -28,52 +29,23 @@ const getSentimentColor = (cls) => {
 };
 
 const FearGreedIndex = ({ light = false, initialValue = 59, initialClassification = "Greed" }) => {
-  const [data, setData] = useState({
+
+  const {
+    data: fngData,
+  } = useFearGreedIndex();
+
+  const data = fngData ?? {
     value: initialValue,
     classification: initialClassification,
-  });
-  const [historical, setHistorical] = useState({
-    yesterday: 55,
-    lastWeek: 48,
-    lastMonth: 32,
-  });
+    historical: {
+      yesterday: 55,
+      lastWeek: 48,
+      lastMonth: 32,
+    },
+  };
+
+  const historical = data.historical;
   const [showTooltip, setShowTooltip] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-    const fetchFNG = async () => {
-      try {
-        const res = await fetch("https://api.alternative.me/fng/?limit=31");
-        if (!res.ok) return;
-        const json = await res.json();
-        if (isMounted && json?.data?.length > 0) {
-          const val = Number(json.data[0].value);
-          const cls = json.data[0].value_classification;
-          if (!isNaN(val)) {
-            setData({
-              value: val,
-              classification: cls || "Neutral",
-            });
-          }
-          const yVal = json.data[1]?.value ? Number(json.data[1].value) : 55;
-          const wVal = json.data[7]?.value ? Number(json.data[7].value) : 48;
-          const mVal = json.data[30]?.value ? Number(json.data[30].value) : 32;
-          setHistorical({
-            yesterday: isNaN(yVal) ? 55 : yVal,
-            lastWeek: isNaN(wVal) ? 48 : wVal,
-            lastMonth: isNaN(mVal) ? 32 : mVal,
-          });
-        }
-      } catch {
-        // Fallback to default state if offline or blocked
-      }
-    };
-
-    fetchFNG();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const cx = 125;
   const cy = 115;
@@ -89,11 +61,10 @@ const FearGreedIndex = ({ light = false, initialValue = 59, initialClassificatio
 
   return (
     <div
-      className={`relative rounded-3xl p-5 sm:p-5.5 transition-all duration-300 w-full max-w-[360px] sm:w-[350px] select-none group hover:-translate-y-1 ${
-        light
-          ? "bg-white/90 border border-black/10 shadow-xl hover:shadow-2xl hover:border-black/20"
-          : "bg-gradient-to-b from-[#14172a]/95 via-[#101322]/95 to-[#0b0c16]/98 border border-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl hover:border-purple-500/30 hover:shadow-purple-500/5"
-      }`}
+      className={`relative rounded-3xl p-5 sm:p-5.5 transition-all duration-300 w-full max-w-[360px] sm:w-[350px] select-none group hover:-translate-y-1 ${light
+        ? "bg-white/90 border border-black/10 shadow-xl hover:shadow-2xl hover:border-black/20"
+        : "bg-gradient-to-b from-[#14172a]/95 via-[#101322]/95 to-[#0b0c16]/98 border border-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl hover:border-purple-500/30 hover:shadow-purple-500/5"
+        }`}
     >
       {/* Subtle top hairline accent */}
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent pointer-events-none rounded-t-3xl" />
@@ -102,9 +73,8 @@ const FearGreedIndex = ({ light = false, initialValue = 59, initialClassificatio
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <h3
-            className={`font-bold text-base sm:text-[17px] tracking-tight ${
-              light ? "text-gray-900" : "text-white"
-            }`}
+            className={`font-bold text-base sm:text-[17px] tracking-tight ${light ? "text-gray-900" : "text-white"
+              }`}
           >
             Fear and Greed Index
           </h3>
@@ -115,11 +85,10 @@ const FearGreedIndex = ({ light = false, initialValue = 59, initialClassificatio
             onClick={() => setShowTooltip((prev) => !prev)}
           >
             <svg
-              className={`w-4 h-4 transition-colors ${
-                light
-                  ? "text-gray-400 hover:text-gray-700"
-                  : "text-gray-400 hover:text-white"
-              }`}
+              className={`w-4 h-4 transition-colors ${light
+                ? "text-gray-400 hover:text-gray-700"
+                : "text-gray-400 hover:text-white"
+                }`}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -135,11 +104,10 @@ const FearGreedIndex = ({ light = false, initialValue = 59, initialClassificatio
             {/* Tooltip */}
             {showTooltip && (
               <div
-                className={`absolute top-full mt-2 left-0 sm:left-1/2 sm:-translate-x-1/2 w-64 p-3 rounded-2xl text-xs leading-relaxed z-[100] shadow-2xl backdrop-blur-xl border transition-all ${
-                  light
-                    ? "bg-white/95 text-gray-800 border-gray-200 shadow-gray-400/20"
-                    : "bg-[#181b2f]/98 text-gray-200 border-white/15 shadow-black/80"
-                }`}
+                className={`absolute top-full mt-2 left-0 sm:left-1/2 sm:-translate-x-1/2 w-64 p-3 rounded-2xl text-xs leading-relaxed z-[100] shadow-2xl backdrop-blur-xl border transition-all ${light
+                  ? "bg-white/95 text-gray-800 border-gray-200 shadow-gray-400/20"
+                  : "bg-[#181b2f]/98 text-gray-200 border-white/15 shadow-black/80"
+                  }`}
               >
                 <div className="font-semibold mb-1 text-orange-400">Fear &amp; Greed Index</div>
                 The crypto Fear &amp; Greed Index analyzes multi-factor market sentiment from 0 (Extreme Fear) to 100 (Extreme Greed).
@@ -189,9 +157,8 @@ const FearGreedIndex = ({ light = false, initialValue = 59, initialClassificatio
         {/* Value and Classification in Center */}
         <div className="absolute bottom-2 flex flex-col items-center justify-center pointer-events-none">
           <span
-            className={`text-4xl sm:text-[44px] font-black leading-tight tracking-tight ${
-              light ? "text-gray-900" : "text-white"
-            }`}
+            className={`text-4xl sm:text-[44px] font-black leading-tight tracking-tight ${light ? "text-gray-900" : "text-white"
+              }`}
           >
             {data.value}
           </span>
@@ -203,9 +170,8 @@ const FearGreedIndex = ({ light = false, initialValue = 59, initialClassificatio
 
       {/* Contextual Historical Markers */}
       <div
-        className={`mt-3 pt-3 border-t w-full grid grid-cols-3 gap-2 text-center ${
-          light ? "border-gray-200" : "border-white/[0.08]"
-        }`}
+        className={`mt-3 pt-3 border-t w-full grid grid-cols-3 gap-2 text-center ${light ? "border-gray-200" : "border-white/[0.08]"
+          }`}
       >
         <div className="flex flex-col items-center">
           <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400">
@@ -220,9 +186,8 @@ const FearGreedIndex = ({ light = false, initialValue = 59, initialClassificatio
           </span>
         </div>
         <div
-          className={`flex flex-col items-center border-x ${
-            light ? "border-gray-200" : "border-white/[0.08]"
-          }`}
+          className={`flex flex-col items-center border-x ${light ? "border-gray-200" : "border-white/[0.08]"
+            }`}
         >
           <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400">
             Last Week
