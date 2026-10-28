@@ -143,7 +143,7 @@ const SignUp = ({ light }) => {
     setIsLoading(true);
     try {
       await axios.post(`${API_URL}/register`, formData);
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       console.error(err);
       const msg =
