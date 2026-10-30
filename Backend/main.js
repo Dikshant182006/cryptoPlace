@@ -9,7 +9,7 @@ const cors = require("cors");
 const { getCoins, getGlobal, getCoinDetails, getCoinChart, getFavoriteCoins } = require('./services/coinGeckoService');
 const apiLimiter = require('./middleware/rateLimiter');
 
-const { connectRedis } = require('./cache/redisClient');
+const { connectRedis } = require('./config/redisClient');
 const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
 const port = process.env.PORT || 4000;
@@ -125,7 +125,7 @@ app.get("/api/coins/:id", async (req, res) => {
 app.get("/api/coins/:id/chart", async (req, res) => {
   try {
     const { id } = req.params;
-    const { currency = "usd", days = "10", interval = "daily" } = req.query;
+    const { currency = "usd", days = "15", interval = "daily" } = req.query;
 
     const data = await getCoinChart(
       id,

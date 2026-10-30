@@ -1,6 +1,6 @@
 // For backend manage the redis cache.
 // const cache = new Map();
-const { redisClient } = require('./redisClient');
+const { redisClient } = require('../config/redisClient');
 const inFlight = new Map();
 
 // Data ko Redis me cache ki form me save krna
@@ -9,7 +9,7 @@ const setCache = async (key, data, ttl) => {
 
     const cachedData = {
         data,  // actual data
-        expiresAt,    // when data is stale
+        expiresAt,   // when data is stale
     };
 
     await redisClient.set(
