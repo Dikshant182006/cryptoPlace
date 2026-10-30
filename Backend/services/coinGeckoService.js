@@ -207,7 +207,9 @@ const getCoinChart = async (id, currency, days, interval) => {
 
 const getFavoriteCoins = async (favoriteIds, currency) => {
 
-    const cacheKey = `favoriteCoins:${currency}:${favoriteIds.join(",")}`;
+    const sortedIds = [...favoriteIds].sort();
+
+    const cacheKey = `favoriteCoins:${currency}:${sortedIds.join(",")}`;
     const cacheData = await getCache(cacheKey);
 
     if (cacheData && !cacheData.isStale) {
@@ -241,7 +243,7 @@ const getFavoriteCoins = async (favoriteIds, currency) => {
         await setCache(cacheKey, response, 60000);
         return response;
     } catch (error) {
-        if (cacheData.isStale) {
+        if (cacheData?.isStale) {
             console.log("COINGREKO FAILED RETURN STALE DATA");
 
             return cacheData.data;
