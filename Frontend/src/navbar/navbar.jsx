@@ -135,7 +135,22 @@ function Navbar({ light, setLight, user, setUser }) {
           : "bg-[#0b0e17]/90 border-white/[0.06] text-white shadow-[0_2px_30px_rgba(0,0,0,0.5)]"
           }`}
       >
-        <div className="relative w-full h-full px-3 sm:px-6 md:pl-24 flex items-center justify-between gap-3 sm:gap-6">
+        <div className="relative w-full h-full px-3 sm:px-6 flex items-center justify-between gap-3 sm:gap-6">
+          {/* BACK BUTTON - far left */}
+          <button
+            onClick={() => navigate(-1)}
+            className={`p-1.5 rounded-xl border cursor-pointer transition-all active:scale-90 flex items-center justify-center shrink-0 ${light
+              ? "bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200"
+              : "bg-white/[0.06] border-white/10 text-white/70 hover:bg-white/[0.1] hover:text-white"
+              }`}
+            title="Go Back"
+            aria-label="Go Back"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
           {/* LEFT: Logo Branding & Crypto Market Status */}
           <div className="flex items-center gap-2.5 shrink-0 z-10">
             <Link

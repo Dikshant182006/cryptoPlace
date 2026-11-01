@@ -91,7 +91,7 @@ function App() {
         </Routes>
       </main>
 
-      {!isAuthLocation && (
+      {!isAuthLocation && !isCoinPage && (
         <div className="md:pl-[72px]">
           <Footer light={light} setlight={setLight} />
         </div>
