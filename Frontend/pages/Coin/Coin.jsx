@@ -11,7 +11,7 @@ const Coin = () => {
   const [historicalData, setHistoricalData] = useState(null);
 
   const { currency } = useContext(CoinContext);
-  
+
   useEffect(() => {
     let ignore = false;
 
@@ -64,28 +64,23 @@ const Coin = () => {
       ignore = true;
     };
   }, [coinId, currency.name]);
+
   if (coinDetails && historicalData) {
     return (
-      <div className="coin py-6">
-        <div className="coin-name flex flex-col items-center gap-3 h-screen">
-          <img src={coinDetails.image.large} className="w-24" />
-          <p className="font-bold text-2xl">
+      /* h-[calc(100vh-90px)] fills the screen below your navbar. 
+         Adjust 90px to match your actual navbar height if needed. */
+      <div className="coin flex flex-col h-[calc(100vh-90px)] w-full overflow-hidden p-4">
+        {/* Header Info */}
+        <div className="coin-name flex flex-col items-center gap-2 shrink-0">
+          <img src={coinDetails.image.large} className="w-14 h-14" alt={coinDetails.name} />
+          <p className="font-bold text-xl text-white">
             {coinDetails.name} ({coinDetails.symbol.toUpperCase()})
           </p>
-          <div className="coin-chart">
-            <LineChart historicalData={historicalData} />
-          </div>
+        </div>
 
-          <div className="coin-info">
-            <ul className="flex">
-              <li>Crypto Market Rank </li>
-              <li>{coinDetails.market_cap_rank}</li>
-            </ul>
-            <ul className="flex">
-              <li>Current Price</li>
-              <li>{currency.symbol} {coinDetails.market_data.current_price[currency.name]?.toLocaleString()}</li>
-            </ul>
-          </div>
+        {/* Chart container grows to consume all leftover screen space */}
+        <div className="w-full flex-1 min-h-0 py-2">
+          <LineChart historicalData={historicalData} />
         </div>
       </div>
     );

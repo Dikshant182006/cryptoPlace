@@ -130,9 +130,9 @@ function Navbar({ light, setLight, user, setUser }) {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full h-[68px] z-60 backdrop-blur-xl transition-colors duration-200 border-b flex items-center ${light
-          ? "bg-white/95 border-gray-200 text-gray-900 shadow-sm"
-          : "bg-[#0b0e17]/95 border-white/[0.08] text-white shadow-lg"
+        className={`fixed top-0 left-0 w-full h-[64px] z-60 backdrop-blur-2xl transition-all duration-300 border-b flex items-center ${light
+          ? "bg-white/90 border-gray-200/80 text-gray-900 shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
+          : "bg-[#0b0e17]/90 border-white/[0.06] text-white shadow-[0_2px_30px_rgba(0,0,0,0.5)]"
           }`}
       >
         <div className="relative w-full h-full px-3 sm:px-6 md:pl-24 flex items-center justify-between gap-3 sm:gap-6">
@@ -148,16 +148,16 @@ function Navbar({ light, setLight, user, setUser }) {
                 alt="Cryptoplace Logo"
                 className="w-7 h-7 sm:w-8 sm:h-8 group-hover:scale-105 transition-transform"
               />
-              <span className="font-extrabold text-sm sm:text-base tracking-tight bg-gradient-to-r from-orange-400 via-amber-400 to-purple-400 bg-clip-text text-transparent hidden sm:inline-block">
+              <span className="font-extrabold text-sm sm:text-base tracking-tight bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent hidden sm:inline-block drop-shadow-[0_0_8px_rgba(251,146,60,0.4)]">
                 Cryptoplace
               </span>
             </Link>
 
             {/* Live Market Status Badge */}
             <div
-              className={`hidden xl:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${light
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+              className={`hidden xl:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border transition-all ${light
+                ? "bg-emerald-50 text-emerald-700 border-emerald-200 shadow-[0_0_10px_rgba(16,185,129,0.15)]"
+                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_12px_rgba(52,211,153,0.12)]"
                 }`}
             >
               <span className="relative flex h-2 w-2">
@@ -174,9 +174,9 @@ function Navbar({ light, setLight, user, setUser }) {
             className="relative flex-1 max-w-lg mx-auto hidden sm:block z-20"
           >
             <div
-              className={`relative flex items-center w-full rounded-2xl border transition-all duration-200 ${light
-                ? "bg-gray-100/90 border-gray-300 text-gray-900 focus-within:bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 shadow-xs"
-                : "bg-white/[0.04] border-white/10 text-white focus-within:bg-white/[0.07] focus-within:border-orange-500/60 focus-within:ring-2 focus-within:ring-orange-500/20 shadow-inner"
+              className={`relative flex items-center w-full rounded-2xl border transition-all duration-300 ${light
+                ? "bg-gray-100/90 border-gray-300 text-gray-900 focus-within:bg-white focus-within:border-orange-400 focus-within:ring-2 focus-within:ring-orange-400/25 focus-within:shadow-[0_0_20px_rgba(251,146,60,0.12)] shadow-xs"
+                : "bg-white/[0.04] border-white/10 text-white focus-within:bg-white/[0.08] focus-within:border-orange-500/70 focus-within:ring-2 focus-within:ring-orange-500/20 focus-within:shadow-[0_0_24px_rgba(249,115,22,0.1)] shadow-inner"
                 }`}
             >
               <span className="pl-3.5 pr-2 text-gray-400">
@@ -213,9 +213,9 @@ function Navbar({ light, setLight, user, setUser }) {
               ) : (
                 <div className="pr-3 flex items-center gap-1 shrink-0 pointer-events-none">
                   <kbd
-                    className={`px-1.5 py-0.5 text-[10px] font-mono rounded border ${light
-                      ? "bg-white border-gray-300 text-gray-500"
-                      : "bg-white/10 border-white/10 text-gray-400"
+                    className={`px-1.5 py-0.5 text-[10px] font-mono rounded border shadow-[0_2px_0px_0px] ${light
+                      ? "bg-white border-gray-300 text-gray-500 shadow-gray-300"
+                      : "bg-white/[0.07] border-white/15 text-gray-400 shadow-white/5"
                       }`}
                   >
                     Ctrl K
@@ -285,9 +285,9 @@ function Navbar({ light, setLight, user, setUser }) {
             {/* Currency Selector */}
             <div className="relative">
               <select
-                className={`cursor-pointer px-2.5 py-1.5 rounded-xl text-xs font-bold uppercase transition border ${light
-                  ? "bg-gray-100 text-gray-900 border-gray-300 hover:bg-gray-200"
-                  : "bg-neutral-800 text-white border-white/10 hover:bg-neutral-700"
+                className={`cursor-pointer px-3 py-1.5 rounded-xl text-xs font-bold uppercase transition-all border ${light
+                  ? "bg-gray-100 text-gray-900 border-gray-300 hover:bg-gray-200 hover:border-gray-400"
+                  : "bg-white/[0.06] text-white border-white/10 hover:bg-white/[0.1] hover:border-white/20"
                   }`}
                 onChange={currencyHandler}
                 value={currency?.name || "usd"}
@@ -309,8 +309,8 @@ function Navbar({ light, setLight, user, setUser }) {
             <button
               onClick={handleToggleTheme}
               className={`p-1.5 sm:p-2 rounded-xl border cursor-pointer transition-all active:scale-95 flex items-center justify-center ${light
-                ? "bg-gray-100 border-gray-300 text-amber-500 hover:bg-gray-200"
-                : "bg-neutral-800 border-white/10 text-yellow-300 hover:bg-neutral-700"
+                ? "bg-gray-100 border-gray-300 text-amber-500 hover:bg-amber-50 hover:border-amber-300 hover:shadow-[0_0_12px_rgba(245,158,11,0.2)]"
+                : "bg-white/[0.06] border-white/10 text-yellow-300 hover:bg-white/[0.1] hover:border-yellow-400/30 hover:shadow-[0_0_14px_rgba(253,224,71,0.15)]"
                 }`}
               title={light ? "Switch to Dark Mode" : "Switch to Light Mode"}
               aria-label="Toggle theme"
@@ -324,12 +324,12 @@ function Navbar({ light, setLight, user, setUser }) {
                 <button
                   onClick={() => setProfileOpen((prev) => !prev)}
                   className={`flex items-center gap-2 p-1 sm:px-2.5 sm:py-1.5 rounded-2xl border transition-all active:scale-95 cursor-pointer ${light
-                    ? "bg-gray-50 border-gray-200 hover:bg-gray-100 text-gray-900"
-                    : "bg-white/[0.04] border-white/10 hover:bg-white/[0.08] text-white"
+                    ? "bg-gray-50 border-gray-200 hover:bg-gray-100 hover:border-orange-200 text-gray-900"
+                    : "bg-white/[0.04] border-white/10 hover:bg-white/[0.08] hover:border-orange-500/30 hover:shadow-[0_0_16px_rgba(249,115,22,0.1)] text-white"
                     }`}
                   title="User Account & Personalization"
                 >
-                  <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-gradient-to-tr from-orange-500 via-amber-400 to-purple-600 text-white flex items-center justify-center text-xs font-black uppercase shadow-sm">
+                  <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full bg-gradient-to-tr from-orange-500 via-amber-400 to-purple-600 text-white flex items-center justify-center text-xs font-black uppercase shadow-[0_0_10px_rgba(249,115,22,0.5)] ring-2 ring-orange-400/30">
                     {user.firstname?.[0] || "U"}
                   </div>
                   <span className="hidden md:inline-block text-xs font-bold tracking-tight">
@@ -351,12 +351,12 @@ function Navbar({ light, setLight, user, setUser }) {
                 {profileOpen && (
                   <div
                     className={`absolute right-0 top-full mt-2 w-64 rounded-2xl border p-3 shadow-2xl backdrop-blur-2xl z-50 transition-all ${light
-                      ? "bg-white/95 border-gray-200 text-gray-900 shadow-gray-300/40"
-                      : "bg-[#111425]/98 border-white/15 text-white shadow-black/80"
+                      ? "bg-white/95 border-gray-200 text-gray-900 shadow-[0_8px_40px_rgba(0,0,0,0.12)]"
+                      : "bg-[#111425]/98 border-white/15 text-white shadow-[0_8px_40px_rgba(0,0,0,0.6)]"
                       }`}
                   >
                     {/* Greeting Header */}
-                    <div className="px-2 py-2 border-b border-inherit mb-2">
+                    <div className={`px-2 py-2 border-b border-inherit mb-2 rounded-xl mb-2 -mx-1 px-3 py-3 ${light ? "bg-orange-50/60" : "bg-gradient-to-br from-orange-500/10 via-amber-500/5 to-transparent"}`}>
                       <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-orange-400">
                         <span>👋</span>
                         <span>Good Morning</span>
@@ -454,12 +454,24 @@ function Navbar({ light, setLight, user, setUser }) {
       {logoutDialogOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div
-            className={`w-full max-w-sm rounded-2xl p-6 shadow-2xl transition-all ${light
-              ? "bg-white text-gray-900 border border-gray-200"
-              : "bg-neutral-900 text-white border border-white/10"
+            className={`w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl transition-all ${light
+              ? "bg-white text-gray-900 border border-gray-200 shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
+              : "bg-[#111425] text-white border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.8)]"
               }`}
           >
-            <h2 className="text-xl font-bold">Confirm Logout</h2>
+            {/* Modal gradient header strip */}
+            <div className="h-1 w-full bg-gradient-to-r from-red-500 via-orange-500 to-red-600" />
+            <div className="p-6">
+            <div className="flex items-center gap-3 mb-1">
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${light ? "bg-red-50 text-red-500" : "bg-red-500/10 text-red-400"}`}>
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold">Confirm Logout</h2>
+            </div>
             <p className="mt-3 text-sm opacity-75">
               Are you sure you want to log out of Cryptoplace?
             </p>
@@ -467,17 +479,18 @@ function Navbar({ light, setLight, user, setUser }) {
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setLogoutDialogOpen(false)}
-                className="rounded-lg border border-gray-400 px-4 py-2 text-sm font-medium cursor-pointer hover:bg-gray-500/10 transition"
+                className={`rounded-xl border px-4 py-2 text-sm font-medium cursor-pointer transition-all hover:scale-[1.02] active:scale-95 ${light ? "border-gray-300 hover:bg-gray-100" : "border-white/10 hover:bg-white/[0.06]"}`}
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleLogout}
-                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold cursor-pointer text-white hover:bg-red-700 transition"
+                className="rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-4 py-2 text-sm font-semibold cursor-pointer text-white hover:from-red-500 hover:to-red-400 transition-all hover:scale-[1.02] active:scale-95 shadow-[0_4px_14px_rgba(220,38,38,0.35)]"
               >
                 Yes, Logout
               </button>
+            </div>
             </div>
           </div>
         </div>

@@ -28,6 +28,7 @@ function App() {
   console.log("APP COMPONENT RENDERS");
 
   const isAuthLocation = location.pathname === "/" || location.pathname === "/signup";
+
   useEffect(() => {
     axios.get(`${API_URL}/api/profile`, {
       withCredentials: true,
@@ -50,6 +51,8 @@ function App() {
     }
   }, [light]);
 
+  const isCoinPage = location.pathname.startsWith('/coin');
+
   return (
     <div
       className={`${light ? "bg-white text-black" : "bg-black text-white"
@@ -62,7 +65,9 @@ function App() {
       {!isAuthLocation && (
         <>
           <Navbar light={light} setLight={setLight} user={user} setUser={setUser} />
-          <Sidebar light={light} setLight={setLight} user={user} setUser={setUser} />
+          {!isCoinPage && (
+            <Sidebar light={light} setLight={setLight} user={user} setUser={setUser} />
+          )}
           <TickerCoin light={light} setLight={setLight} />
         </>
       )}
