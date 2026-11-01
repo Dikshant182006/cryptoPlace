@@ -51,7 +51,7 @@ function App() {
     }
   }, [light]);
 
-  const isCoinPage = location.pathname.startsWith('/coin');
+  const isCoinPage = location.pathname.startsWith('/coin/');
 
   return (
     <div
