@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { CoinContext } from "../../context/coinContext";
 import LineChart from "../../src/linkChart/LineChart";
 import { API_URL } from "../../src/config";
@@ -10,7 +10,22 @@ const Coin = () => {
   const [coinDetails, setCoinDetails] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
 
+  const navigate = useNavigate();
   const { currency } = useContext(CoinContext);
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") {
+        navigate(-1);
+      }
+    }
+
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    }
+  }, [navigate]);
 
   useEffect(() => {
     let ignore = false;
