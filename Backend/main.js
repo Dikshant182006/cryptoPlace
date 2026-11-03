@@ -1,5 +1,10 @@
 // This is for load env variables
 require("dotenv").config();
+
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is missing in environment variables");
+}
+
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -12,7 +17,7 @@ const apiLimiter = require('./middleware/rateLimiter');
 const { connectRedis } = require('./config/redisClient');
 const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 3000;
 
 // Server for local
 if (process.env.NODE_ENV !== "production") {
@@ -213,7 +218,7 @@ app.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET || "secretKey",
+      process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
