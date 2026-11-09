@@ -208,6 +208,12 @@ app.post("/login", async (req, res) => {
       });
     }
 
+    if (!user.password) {
+      return res.status(400).json({
+        message: "Please login using Google",
+      })
+    }
+
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {

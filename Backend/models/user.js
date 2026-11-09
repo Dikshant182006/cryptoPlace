@@ -13,13 +13,35 @@ const connectDB = async () => {
 connectDB().catch((err) => console.log("MongoDB initial connect:", err.message));
 
 const userSchema = new mongoose.Schema({
-  firstname: { type: String, required: false },
-  lastname: { type: String, required: false },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  firstname: {
+    type: String,
+    required: false,
+    minlength: 3,
+    maxlength: 15,
+  },
+  lastname: {
+    type: String,
+    required: false,
+    minlength: 3,
+    maxlength: 15,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: false,
+    validate: {
+      validator: function (value) {
+        return value.length >= 6;
+      },
+      message: "Password should be greater then 6 characters"
+    }
+  },
   favorites: { type: [String], default: [] },
 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
-
 module.exports = { User, connectDB };
