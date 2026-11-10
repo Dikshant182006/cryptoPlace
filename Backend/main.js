@@ -5,6 +5,9 @@ if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is missing in environment variables");
 }
 
+const OAuthAccount = require("./models/oAuthAccount");
+const { verifyGoogleToken } = require("./services/googleAuthService");
+
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -208,6 +211,12 @@ app.post("/login", async (req, res) => {
       });
     }
 
+    if (!user.password) {
+      return res.status(400).json({
+        message: "Please login using Google",
+      })
+    }
+
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
@@ -241,6 +250,95 @@ app.post("/login", async (req, res) => {
     console.error("Login error:", error);
     res.status(500).json({
       message: error.message || "Server error",
+    });
+  }
+});
+
+// Login by Google
+app.post('/auth/google/login', async (req, res) => {
+  try {
+    await connectDB();
+
+    const { credentials } = req.body;
+
+    if (!credentials) {
+      return res.status(400).json({
+        message: "Google credentials is required",
+      });
+    }
+
+    const googleUser = await verifyGoogleToken(credentials);
+    // Normalize email
+    const email = googleUser.email.toLowerCase().trim();
+
+    if (googleUser.emailVerified !== true) {
+      return res.status(401).json({
+        message: "Google email is not verified"
+      });
+    };
+
+    const existingOAuthAccount = await OAuthAccount.findOne({
+      provider: "google",
+      providerId: googleUser.googleId,
+    })
+
+    let user;
+
+    if (existingOAuthAccount) {
+      user = await User.findById(existingOAuthAccount.userId);
+
+      if (!user) {
+        return res.status(401).json({ message: "User associated with this user not found" });
+      };
+    } else {
+      const existingUser = await User.findOne({ email });
+
+      if (existingUser) {
+        return res.status(409).json(
+          { message: "An Account with this user is already exists. Please login using your existing method" }
+        )
+      };
+
+      user = await User.create({
+        firstname: googleUser.firstname || "",
+        lastname: googleUser.lastname || "",
+        email,
+      });
+
+      await OAuthAccount.create({
+        provider: "google",
+        providerId: googleUser.googleId,
+        userId: user._id
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    const isProduction = process.env.NODE_ENV === "production";
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    const userData = await User.findById(user.id).select("-password");
+
+    return res.json({
+      message: "Google login successfull",
+      userData
+    })
+
+  } catch (error) {
+    console.error("Google Login Error", error.message);
+
+    res.status(500).json({
+      message: "Google authentication error"
     });
   }
 });

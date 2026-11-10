@@ -11,9 +11,13 @@ const authMiddleware = (req, res, next) => {
       return res.status(401).json({ message: "Not logged In" });
     }
 
+<<<<<<< HEAD
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
     // By this we make data available to the next route
+=======
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secretKey");    
+>>>>>>> c412129d990861572089e8b375c96dd162bfd801
     req.user = decoded;
     next();
   } catch (error) {
