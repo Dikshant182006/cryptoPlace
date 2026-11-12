@@ -288,7 +288,11 @@ app.post('/auth/google/login', async (req, res) => {
       user = await User.findById(existingOAuthAccount.userId);
 
       if (!user) {
-        return res.status(401).json({ message: "User associated with this user not found" });
+        user = await User.create({
+          firstname: googleUser.firstname || "",
+          lastname: googleUser.secondname || "",
+          email,
+        })
       };
     } else {
       const existingUser = await User.findOne({ email });
@@ -337,7 +341,7 @@ app.post('/auth/google/login', async (req, res) => {
   } catch (error) {
     console.error("Google Login Error", error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: "Google authentication error"
     });
   }
