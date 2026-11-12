@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-if(!process.env.JWT_SECRET) {
+if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is missing in environment variables")
 }
 
@@ -11,17 +11,11 @@ const authMiddleware = (req, res, next) => {
       return res.status(401).json({ message: "Not logged In" });
     }
 
-<<<<<<< HEAD
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // By this we make data available to the next route
-=======
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secretKey");    
->>>>>>> c412129d990861572089e8b375c96dd162bfd801
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secretKey");
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(400).json( {message: 'Invalid token'} )
+    return res.status(400).json({ message: 'Invalid token' })
   }
 };
 
