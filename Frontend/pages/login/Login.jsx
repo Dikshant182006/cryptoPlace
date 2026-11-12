@@ -9,11 +9,12 @@ import {
   FaBolt,
   FaBrain,
   FaShieldAlt,
-  FaGoogle,
+
   FaGithub,
 } from "react-icons/fa";
 import axios from "axios";
 import { API_URL } from "../../src/config";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = ({ light, user, setUser }) => {
   const [formData, setFormData] = useState({
@@ -99,6 +100,33 @@ const Login = ({ light, user, setUser }) => {
       setIsLoading(false);
     }
   };
+
+  const handleLogin = async (credentialResponse) => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const res = await axios.post(
+        `${API_URL}/auth/google/login`,
+        {
+          credentials: credentialResponse.credential,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+
+      if (setUser) {
+        setUser(res.data.userData || res.data);
+      }
+
+      navigate('/home');
+    } catch (error) {
+      setError(error.response?.data?.message || "Google Login Failed");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div
@@ -342,16 +370,14 @@ const Login = ({ light, user, setUser }) => {
 
                 {/* Social Quick Login */}
                 <div className="grid grid-cols-2 gap-2 mb-2 xl:mb-3">
-                  <button
-                    type="button"
-                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${light
-                      ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
-                      : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
-                      }`}
-                  >
-                    <FaGoogle className="text-red-400 text-xs sm:text-sm" />
-                    <span>Google</span>
-                  </button>
+                  <GoogleLogin
+                    onSuccess={handleLogin}
+                    onError={() => setError("Google login failed")}
+                    theme="outline"
+                    size="large"
+                    text="signin_with"
+                    shape="rectangular"
+                  />
 
                   <button
                     type="button"
