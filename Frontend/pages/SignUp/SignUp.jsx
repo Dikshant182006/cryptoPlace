@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import {
   FaEye,
   FaEyeSlash,
@@ -10,13 +10,13 @@ import {
   FaBolt,
   FaBrain,
   FaShieldAlt,
-  FaGoogle,
   FaGithub,
 } from "react-icons/fa";
 import axios from "axios";
 import { API_URL } from "../../src/config";
+import { GoogleLogin } from "@react-oauth/google";
 
-const SignUp = ({ light }) => {
+const SignUp = ({ light, setUser }) => {
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -156,19 +156,43 @@ const SignUp = ({ light }) => {
     }
   };
 
+  const handleLogin = async (credentialResponse) => {
+    try {
+      setIsLoading(true);
+
+      const res = await axios.post(
+        `${API_URL}/auth/google/login`,
+        {
+          credentials: credentialResponse.credential,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+
+      if (setUser) {
+        setUser(res.data.userData || res.data);
+      }
+
+      navigate("/home");
+    } catch (error) {
+      setError(error.response?.data?.message || "Google Login Failed")
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div
-      className={`w-full min-h-screen lg:h-screen lg:overflow-hidden py-4 sm:py-6 lg:py-0 flex flex-col justify-center relative overflow-x-hidden no-scrollbar transition-colors duration-300 ${
-        light ? "bg-[#f8fafc] text-slate-900" : "bg-[#070709] text-white"
-      }`}
+      className={`w-full min-h-screen lg:h-screen lg:overflow-hidden py-4 sm:py-6 lg:py-0 flex flex-col justify-center relative overflow-x-hidden no-scrollbar transition-colors duration-300 ${light ? "bg-[#f8fafc] text-slate-900" : "bg-[#070709] text-white"
+        }`}
     >
       {/* Background Matrix & Tech Grid */}
       <div
-        className={`absolute inset-0 pointer-events-none ${
-          light
-            ? "bg-[radial-gradient(#0000000a_1px,transparent_1px)]"
-            : "bg-[radial-gradient(#ffffff0a_1px,transparent_1px)]"
-        } [background-size:32px_32px]`}
+        className={`absolute inset-0 pointer-events-none ${light
+          ? "bg-[radial-gradient(#0000000a_1px,transparent_1px)]"
+          : "bg-[radial-gradient(#ffffff0a_1px,transparent_1px)]"
+          } [background-size:32px_32px]`}
       />
 
       {/* Radiant Ambient Glow Elements */}
@@ -203,9 +227,8 @@ const SignUp = ({ light }) => {
                 </span>
               </h1>
               <p
-                className={`text-xs xl:text-sm max-w-xl leading-relaxed ${
-                  light ? "text-slate-600" : "text-white/70"
-                }`}
+                className={`text-xs xl:text-sm max-w-xl leading-relaxed ${light ? "text-slate-600" : "text-white/70"
+                  }`}
               >
                 Join over 180,000+ traders accessing institutional-grade price feeds,
                 predictive AI sentiment, and ultra-fast portfolio tracking — all inside one unified terminal.
@@ -216,11 +239,10 @@ const SignUp = ({ light }) => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 xl:gap-3.5 pt-0.5">
               {/* Bitcoin Card */}
               <div
-                className={`p-3 xl:p-4 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${
-                  light
-                    ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
-                    : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
-                }`}
+                className={`p-3 xl:p-4 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
+                  ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
+                  : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -248,11 +270,10 @@ const SignUp = ({ light }) => {
 
               {/* Ethereum Card */}
               <div
-                className={`p-3 xl:p-4 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${
-                  light
-                    ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
-                    : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
-                }`}
+                className={`p-3 xl:p-4 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
+                  ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
+                  : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -279,11 +300,10 @@ const SignUp = ({ light }) => {
 
               {/* Solana Card */}
               <div
-                className={`p-3 xl:p-4 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${
-                  light
-                    ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
-                    : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
-                }`}
+                className={`p-3 xl:p-4 rounded-2xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] ${light
+                  ? "bg-white/80 border-slate-200/80 shadow-md shadow-slate-200/50"
+                  : "bg-white/[0.04] border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/40"
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -312,11 +332,10 @@ const SignUp = ({ light }) => {
             {/* Core Feature Badges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 xl:gap-4 pt-1">
               <div
-                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${
-                  light
-                    ? "bg-white/60 border-slate-200/60"
-                    : "bg-white/[0.02] border-white/[0.08]"
-                }`}
+                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
+                  ? "bg-white/60 border-slate-200/60"
+                  : "bg-white/[0.02] border-white/[0.08]"
+                  }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-orange-500/10 text-orange-400 text-base xl:text-lg shrink-0">
                   <FaBolt />
@@ -324,9 +343,8 @@ const SignUp = ({ light }) => {
                 <div>
                   <h4 className="font-bold text-xs xl:text-sm">Zero Latency</h4>
                   <p
-                    className={`text-[11px] xl:text-xs mt-0.5 ${
-                      light ? "text-slate-500" : "text-white/50"
-                    }`}
+                    className={`text-[11px] xl:text-xs mt-0.5 ${light ? "text-slate-500" : "text-white/50"
+                      }`}
                   >
                     Direct WebSocket price tickers with 0ms delay.
                   </p>
@@ -334,11 +352,10 @@ const SignUp = ({ light }) => {
               </div>
 
               <div
-                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${
-                  light
-                    ? "bg-white/60 border-slate-200/60"
-                    : "bg-white/[0.02] border-white/[0.08]"
-                }`}
+                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
+                  ? "bg-white/60 border-slate-200/60"
+                  : "bg-white/[0.02] border-white/[0.08]"
+                  }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-amber-500/10 text-amber-400 text-base xl:text-lg shrink-0">
                   <FaBrain />
@@ -346,9 +363,8 @@ const SignUp = ({ light }) => {
                 <div>
                   <h4 className="font-bold text-xs xl:text-sm">Smart AI Insights</h4>
                   <p
-                    className={`text-[11px] xl:text-xs mt-0.5 ${
-                      light ? "text-slate-500" : "text-white/50"
-                    }`}
+                    className={`text-[11px] xl:text-xs mt-0.5 ${light ? "text-slate-500" : "text-white/50"
+                      }`}
                   >
                     Algorithmic trend forecasts and social sentiment.
                   </p>
@@ -356,11 +372,10 @@ const SignUp = ({ light }) => {
               </div>
 
               <div
-                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${
-                  light
-                    ? "bg-white/60 border-slate-200/60"
-                    : "bg-white/[0.02] border-white/[0.08]"
-                }`}
+                className={`flex items-start gap-2.5 xl:gap-3.5 p-3 xl:p-4 rounded-2xl border backdrop-blur-sm ${light
+                  ? "bg-white/60 border-slate-200/60"
+                  : "bg-white/[0.02] border-white/[0.08]"
+                  }`}
               >
                 <div className="p-2 xl:p-2.5 rounded-xl bg-yellow-500/10 text-yellow-400 text-base xl:text-lg shrink-0">
                   <FaShieldAlt />
@@ -368,9 +383,8 @@ const SignUp = ({ light }) => {
                 <div>
                   <h4 className="font-bold text-xs xl:text-sm">Bank-Grade Privacy</h4>
                   <p
-                    className={`text-[11px] xl:text-xs mt-0.5 ${
-                      light ? "text-slate-500" : "text-white/50"
-                    }`}
+                    className={`text-[11px] xl:text-xs mt-0.5 ${light ? "text-slate-500" : "text-white/50"
+                      }`}
                   >
                     Encrypted storage with decentralized access tokens.
                   </p>
@@ -388,11 +402,10 @@ const SignUp = ({ light }) => {
 
               {/* Glass Auth Card */}
               <div
-                className={`relative rounded-[22px] xl:rounded-[28px] backdrop-blur-2xl p-4 sm:p-5 lg:p-4.5 xl:p-6 border transition-all duration-300 shadow-2xl ${
-                  light
-                    ? "bg-white/95 border-slate-200 shadow-orange-500/10 text-slate-900"
-                    : "bg-[#111115]/95 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.7)] text-white"
-                }`}
+                className={`relative rounded-[22px] xl:rounded-[28px] backdrop-blur-2xl p-4 sm:p-5 lg:p-4.5 xl:p-6 border transition-all duration-300 shadow-2xl ${light
+                  ? "bg-white/95 border-slate-200 shadow-orange-500/10 text-slate-900"
+                  : "bg-[#111115]/95 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.7)] text-white"
+                  }`}
               >
                 {/* Header */}
                 <div className="mb-2 xl:mb-3">
@@ -403,9 +416,8 @@ const SignUp = ({ light }) => {
                     Create Your Account
                   </h2>
                   <p
-                    className={`mt-0.5 text-xs sm:text-xs xl:text-sm ${
-                      light ? "text-slate-500" : "text-white/60"
-                    }`}
+                    className={`mt-0.5 text-xs sm:text-xs xl:text-sm ${light ? "text-slate-500" : "text-white/60"
+                      }`}
                   >
                     Start tracking crypto assets in under 30 seconds.
                   </p>
@@ -413,25 +425,21 @@ const SignUp = ({ light }) => {
 
                 {/* Social Quick Sign-Up */}
                 <div className="grid grid-cols-2 gap-2 mb-2 xl:mb-3">
-                  <button
-                    type="button"
-                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${
-                      light
-                        ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
-                        : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
-                    }`}
-                  >
-                    <FaGoogle className="text-red-400 text-xs sm:text-sm" />
-                    <span>Google</span>
-                  </button>
+                  <GoogleLogin
+                    onSuccess={handleLogin}
+                    onError={() => setError("Google login failed")}
+                    theme="outline"
+                    size="large"
+                    text="signup_with"
+                    shape="rectangular"
+                  />
 
                   <button
                     type="button"
-                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${
-                      light
-                        ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
-                        : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
-                    }`}
+                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${light
+                      ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
+                      : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
+                      }`}
                   >
                     <FaGithub className="text-xs sm:text-sm" />
                     <span>GitHub</span>
@@ -441,14 +449,12 @@ const SignUp = ({ light }) => {
                 {/* Divider */}
                 <div className="relative flex items-center justify-center mb-2 xl:mb-3">
                   <div
-                    className={`w-full border-t ${
-                      light ? "border-slate-200" : "border-white/10"
-                    }`}
+                    className={`w-full border-t ${light ? "border-slate-200" : "border-white/10"
+                      }`}
                   />
                   <span
-                    className={`absolute px-2 text-[10px] xl:text-xs uppercase tracking-wider font-semibold ${
-                      light ? "bg-white text-slate-400" : "bg-[#111115] text-white/40"
-                    }`}
+                    className={`absolute px-2 text-[10px] xl:text-xs uppercase tracking-wider font-semibold ${light ? "bg-white text-slate-400" : "bg-[#111115] text-white/40"
+                      }`}
                   >
                     Or register with email
                   </span>
@@ -468,18 +474,16 @@ const SignUp = ({ light }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {/* First Name */}
                     <div>
-                      <label 
-                        className={`block text-[11px] xl:text-xs font-semibold mb-1 ${
-                          light ? "text-slate-700" : "text-white/80"
-                        }`}
+                      <label
+                        className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                          }`}
                       >
                         First Name
                       </label>
                       <div className="relative">
                         <span
-                          className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${
-                            light ? "text-slate-400" : "text-white/40"
-                          }`}
+                          className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                            }`}
                         >
                           <FaUser />
                         </span>
@@ -490,17 +494,16 @@ const SignUp = ({ light }) => {
                           name="firstname"
                           type="text"
                           onKeyDown={(e) => {
-                            if(e.key === "Enter") {
+                            if (e.key === "Enter") {
                               e.preventDefault();
                               document.querySelector('input[name="lastname"]')?.focus();
                             }
                           }}
                           placeholder="e.g. Dikshant"
-                          className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
-                            light
-                              ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                              : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                          }`}
+                          className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
+                            ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                            }`}
                         />
                       </div>
                     </div>
@@ -508,17 +511,15 @@ const SignUp = ({ light }) => {
                     {/* Last Name */}
                     <div>
                       <label
-                        className={`block text-[11px] xl:text-xs font-semibold mb-1 ${
-                          light ? "text-slate-700" : "text-white/80"
-                        }`}
+                        className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                          }`}
                       >
                         Last Name
                       </label>
                       <div className="relative">
                         <span
-                          className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${
-                            light ? "text-slate-400" : "text-white/40"
-                          }`}
+                          className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                            }`}
                         >
                           <FaUser />
                         </span>
@@ -530,17 +531,16 @@ const SignUp = ({ light }) => {
                           type="text"
                           placeholder="e.g. Nakamoto"
                           onKeyDown={(e) => {
-                            
-                            if(e.key === "Enter") {
+
+                            if (e.key === "Enter") {
                               e.preventDefault();
                               document.querySelector('input[name="email"]')?.focus();
                             }
                           }}
-                          className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
-                            light
-                              ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                              : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                          }`}
+                          className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
+                            ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                            }`}
                         />
                       </div>
                     </div>
@@ -549,17 +549,15 @@ const SignUp = ({ light }) => {
                   {/* Email Field */}
                   <div>
                     <label
-                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${
-                        light ? "text-slate-700" : "text-white/80"
-                      }`}
+                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                        }`}
                     >
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <span
-                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${
-                          light ? "text-slate-400" : "text-white/40"
-                        }`}
+                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                          }`}
                       >
                         <FaEnvelope />
                       </span>
@@ -570,16 +568,15 @@ const SignUp = ({ light }) => {
                         type="email"
                         placeholder="satoshi@cryptoplace.io"
                         onKeyDown={(e) => {
-                          if(e.key === "Enter") {
+                          if (e.key === "Enter") {
                             e.preventDefault();
                             document.querySelector('input[name="password"]')?.focus();
                           }
                         }}
-                        className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
-                          light
-                            ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                        }`}
+                        className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
+                          ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          }`}
                       />
                     </div>
                     {error.email && (
@@ -590,17 +587,15 @@ const SignUp = ({ light }) => {
                   {/* Password Field */}
                   <div>
                     <label
-                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${
-                        light ? "text-slate-700" : "text-white/80"
-                      }`}
+                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                        }`}
                     >
                       Password <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <span
-                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${
-                          light ? "text-slate-400" : "text-white/40"
-                        }`}
+                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                          }`}
                       >
                         <FaLock />
                       </span>
@@ -610,26 +605,24 @@ const SignUp = ({ light }) => {
                         name="password"
                         type={showPassword ? "text" : "password"}
                         onKeyDown={(e) => {
-                          if(e.key === "Enter") {
+                          if (e.key === "Enter") {
                             e.preventDefault();
                             submitData(e);
                           }
                         }}
                         placeholder="••••••••••••"
-                        className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${
-                          light
-                            ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                        }`}
+                        className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
+                          ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          }`}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs transition cursor-pointer ${
-                          light
-                            ? "text-slate-400 hover:text-slate-700"
-                            : "text-white/40 hover:text-white"
-                        }`}
+                        className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs transition cursor-pointer ${light
+                          ? "text-slate-400 hover:text-slate-700"
+                          : "text-white/40 hover:text-white"
+                          }`}
                       >
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                       </button>
@@ -640,29 +633,26 @@ const SignUp = ({ light }) => {
                       <div className="mt-1 space-y-0.5">
                         <div className="flex gap-1.5 h-1 w-full">
                           <div
-                            className={`h-full flex-1 rounded-full transition-all duration-300 ${
-                              passwordStrength >= 1
-                                ? passwordStrength === 1
-                                  ? "bg-red-500"
-                                  : passwordStrength === 2
-                                    ? "bg-amber-500"
-                                    : "bg-emerald-500"
-                                : "bg-white/10"
-                            }`}
-                          />
-                          <div
-                            className={`h-full flex-1 rounded-full transition-all duration-300 ${
-                              passwordStrength >= 2
-                                ? passwordStrength === 2
+                            className={`h-full flex-1 rounded-full transition-all duration-300 ${passwordStrength >= 1
+                              ? passwordStrength === 1
+                                ? "bg-red-500"
+                                : passwordStrength === 2
                                   ? "bg-amber-500"
                                   : "bg-emerald-500"
-                                : "bg-white/10"
-                            }`}
+                              : "bg-white/10"
+                              }`}
                           />
                           <div
-                            className={`h-full flex-1 rounded-full transition-all duration-300 ${
-                              passwordStrength >= 3 ? "bg-emerald-500" : "bg-white/10"
-                            }`}
+                            className={`h-full flex-1 rounded-full transition-all duration-300 ${passwordStrength >= 2
+                              ? passwordStrength === 2
+                                ? "bg-amber-500"
+                                : "bg-emerald-500"
+                              : "bg-white/10"
+                              }`}
+                          />
+                          <div
+                            className={`h-full flex-1 rounded-full transition-all duration-300 ${passwordStrength >= 3 ? "bg-emerald-500" : "bg-white/10"
+                              }`}
                           />
                         </div>
                         <div className="flex justify-between items-center text-[10px]">
@@ -704,9 +694,8 @@ const SignUp = ({ light }) => {
                     />
                     <label
                       htmlFor="termsCheckbox"
-                      className={`text-[11px] leading-tight cursor-pointer ${
-                        light ? "text-slate-600" : "text-white/60"
-                      }`}
+                      className={`text-[11px] leading-tight cursor-pointer ${light ? "text-slate-600" : "text-white/60"
+                        }`}
                     >
                       I agree to the{" "}
                       <span className="text-orange-400 hover:underline">
@@ -744,9 +733,8 @@ const SignUp = ({ light }) => {
                   {/* Already have an account link */}
                   <div className="text-center pt-0.5 xl:pt-1">
                     <p
-                      className={`text-xs ${
-                        light ? "text-slate-600" : "text-white/60"
-                      }`}
+                      className={`text-xs ${light ? "text-slate-600" : "text-white/60"
+                        }`}
                     >
                       Already have an account?{" "}
                       <Link
@@ -760,11 +748,10 @@ const SignUp = ({ light }) => {
 
                   {/* Security Badge Footnote */}
                   <div
-                    className={`mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] ${
-                      light
-                        ? "border-slate-100 text-slate-400"
-                        : "border-white/5 text-white/40"
-                    }`}
+                    className={`mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] ${light
+                      ? "border-slate-100 text-slate-400"
+                      : "border-white/5 text-white/40"
+                      }`}
                   >
                     <FaShieldAlt className="text-orange-400 text-xs" />
                     <span>256-Bit SSL Encrypted & Decentralized Security</span>

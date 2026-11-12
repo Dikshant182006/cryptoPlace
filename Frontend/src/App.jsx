@@ -74,7 +74,7 @@ function App() {
 
       <main className={!isAuthLocation ? "pt-[108px] md:pl-[72px]" : ""}>
         <Routes>
-          <Route path="/signup" element={<SignUp light={light} />} />
+          <Route path="/signup" element={<SignUp light={light} setUser={setUser} />} />
           <Route path="/" element={<Login light={light} user={user} setUser={setUser} />} />
 
           {/* Protected Routes */}
