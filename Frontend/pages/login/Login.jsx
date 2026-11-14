@@ -369,7 +369,7 @@ const Login = ({ light, user, setUser }) => {
                 </div>
 
                 {/* Social Quick Login */}
-                <div className="grid grid-cols-2 gap-2 mb-2 xl:mb-3">
+                <div className="mb-2 xl:mb-3">
                   <GoogleLogin
                     onSuccess={handleLogin}
                     onError={() => setError("Google login failed")}
@@ -378,17 +378,6 @@ const Login = ({ light, user, setUser }) => {
                     text="signin_with"
                     shape="rectangular"
                   />
-
-                  <button
-                    type="button"
-                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${light
-                      ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
-                      : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
-                      }`}
-                  >
-                    <FaGithub className="text-xs sm:text-sm" />
-                    <span>GitHub</span>
-                  </button>
                 </div>
 
                 {/* Divider */}

@@ -402,29 +402,23 @@ const SignUp = ({ light, setUser }) => {
 
               {/* Glass Auth Card */}
               <div
-                className={`relative rounded-[22px] xl:rounded-[28px] backdrop-blur-2xl p-4 sm:p-5 lg:p-4.5 xl:p-6 border transition-all duration-300 shadow-2xl ${light
-                  ? "bg-white/95 border-slate-200 shadow-orange-500/10 text-slate-900"
-                  : "bg-[#111115]/95 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.7)] text-white"
-                  }`}
+                className="relative rounded-[22px] xl:rounded-[28px] bg-white border border-slate-200/90 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] p-4 sm:p-5 lg:p-4.5 xl:p-6 transition-all duration-300 text-slate-900"
               >
                 {/* Header */}
                 <div className="mb-2 xl:mb-3">
-                  <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] xl:text-[11px] font-semibold uppercase tracking-wider mb-1 bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                  <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] xl:text-[11px] font-semibold uppercase tracking-wider mb-1 bg-orange-500/10 text-orange-600 border border-orange-500/20">
                     Get Started Free
                   </div>
-                  <h2 className="text-lg sm:text-xl xl:text-2xl font-extrabold tracking-tight">
+                  <h2 className="text-lg sm:text-xl xl:text-2xl font-extrabold tracking-tight text-slate-900">
                     Create Your Account
                   </h2>
-                  <p
-                    className={`mt-0.5 text-xs sm:text-xs xl:text-sm ${light ? "text-slate-500" : "text-white/60"
-                      }`}
-                  >
+                  <p className="mt-0.5 text-xs sm:text-xs xl:text-sm text-slate-500">
                     Start tracking crypto assets in under 30 seconds.
                   </p>
                 </div>
 
                 {/* Social Quick Sign-Up */}
-                <div className="grid grid-cols-2 gap-2 mb-2 xl:mb-3">
+                <div className="mb-2 xl:mb-3 flex justify-center w-full">
                   <GoogleLogin
                     onSuccess={handleLogin}
                     onError={() => setError("Google login failed")}
@@ -433,36 +427,19 @@ const SignUp = ({ light, setUser }) => {
                     text="signup_with"
                     shape="rectangular"
                   />
-
-                  <button
-                    type="button"
-                    className={`flex items-center justify-center gap-2 py-1.5 px-3 rounded-xl border text-xs font-semibold transition-all duration-200 hover:scale-[1.02] cursor-pointer ${light
-                      ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
-                      : "bg-white/[0.04] hover:bg-white/[0.08] border-white/10 text-white"
-                      }`}
-                  >
-                    <FaGithub className="text-xs sm:text-sm" />
-                    <span>GitHub</span>
-                  </button>
                 </div>
 
                 {/* Divider */}
                 <div className="relative flex items-center justify-center mb-2 xl:mb-3">
-                  <div
-                    className={`w-full border-t ${light ? "border-slate-200" : "border-white/10"
-                      }`}
-                  />
-                  <span
-                    className={`absolute px-2 text-[10px] xl:text-xs uppercase tracking-wider font-semibold ${light ? "bg-white text-slate-400" : "bg-[#111115] text-white/40"
-                      }`}
-                  >
+                  <div className="w-full border-t border-slate-200" />
+                  <span className="absolute px-2 text-[10px] xl:text-xs uppercase tracking-wider font-semibold bg-white text-slate-400">
                     Or register with email
                   </span>
                 </div>
 
                 {/* Server Error Alert */}
                 {serverError && (
-                  <div className="mb-2 p-2 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-xs flex items-center gap-2 animate-fadeIn">
+                  <div className="mb-2 p-2 rounded-xl border border-red-500/30 bg-red-50 text-red-600 text-xs flex items-center gap-2 animate-fadeIn">
                     <span className="font-bold">⚠️</span>
                     <span>{serverError}</span>
                   </div>
@@ -474,17 +451,11 @@ const SignUp = ({ light, setUser }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {/* First Name */}
                     <div>
-                      <label
-                        className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
-                          }`}
-                      >
+                      <label className="block text-[11px] xl:text-xs font-semibold mb-1 text-slate-700">
                         First Name
                       </label>
                       <div className="relative">
-                        <span
-                          className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
-                            }`}
-                        >
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
                           <FaUser />
                         </span>
                         <input
@@ -500,27 +471,18 @@ const SignUp = ({ light, setUser }) => {
                             }
                           }}
                           placeholder="e.g. Dikshant"
-                          className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
-                            ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                            }`}
+                          className="w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                         />
                       </div>
                     </div>
 
                     {/* Last Name */}
                     <div>
-                      <label
-                        className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
-                          }`}
-                      >
+                      <label className="block text-[11px] xl:text-xs font-semibold mb-1 text-slate-700">
                         Last Name
                       </label>
                       <div className="relative">
-                        <span
-                          className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
-                            }`}
-                        >
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
                           <FaUser />
                         </span>
                         <input
@@ -531,16 +493,12 @@ const SignUp = ({ light, setUser }) => {
                           type="text"
                           placeholder="e.g. Nakamoto"
                           onKeyDown={(e) => {
-
                             if (e.key === "Enter") {
                               e.preventDefault();
                               document.querySelector('input[name="email"]')?.focus();
                             }
                           }}
-                          className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
-                            ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                            }`}
+                          className="w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                         />
                       </div>
                     </div>
@@ -548,17 +506,11 @@ const SignUp = ({ light, setUser }) => {
 
                   {/* Email Field */}
                   <div>
-                    <label
-                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
-                        }`}
-                    >
+                    <label className="block text-[11px] xl:text-xs font-semibold mb-1 text-slate-700">
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <span
-                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
-                          }`}
-                      >
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
                         <FaEnvelope />
                       </span>
                       <input
@@ -573,10 +525,7 @@ const SignUp = ({ light, setUser }) => {
                             document.querySelector('input[name="password"]')?.focus();
                           }
                         }}
-                        className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
-                          ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                          : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                          }`}
+                        className="w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                       />
                     </div>
                     {error.email && (
@@ -586,17 +535,11 @@ const SignUp = ({ light, setUser }) => {
 
                   {/* Password Field */}
                   <div>
-                    <label
-                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
-                        }`}
-                    >
+                    <label className="block text-[11px] xl:text-xs font-semibold mb-1 text-slate-700">
                       Password <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <span
-                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
-                          }`}
-                      >
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
                         <FaLock />
                       </span>
                       <input
@@ -611,18 +554,12 @@ const SignUp = ({ light, setUser }) => {
                           }
                         }}
                         placeholder="••••••••••••"
-                        className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
-                          ? "bg-slate-50/80 border-slate-200 text-slate-900 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                          : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-                          }`}
+                        className="w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs transition cursor-pointer ${light
-                          ? "text-slate-400 hover:text-slate-700"
-                          : "text-white/40 hover:text-white"
-                          }`}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-700 transition cursor-pointer"
                       >
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                       </button>
@@ -639,7 +576,7 @@ const SignUp = ({ light, setUser }) => {
                                 : passwordStrength === 2
                                   ? "bg-amber-500"
                                   : "bg-emerald-500"
-                              : "bg-white/10"
+                              : "bg-slate-200"
                               }`}
                           />
                           <div
@@ -647,11 +584,11 @@ const SignUp = ({ light, setUser }) => {
                               ? passwordStrength === 2
                                 ? "bg-amber-500"
                                 : "bg-emerald-500"
-                              : "bg-white/10"
+                              : "bg-slate-200"
                               }`}
                           />
                           <div
-                            className={`h-full flex-1 rounded-full transition-all duration-300 ${passwordStrength >= 3 ? "bg-emerald-500" : "bg-white/10"
+                            className={`h-full flex-1 rounded-full transition-all duration-300 ${passwordStrength >= 3 ? "bg-emerald-500" : "bg-slate-200"
                               }`}
                           />
                         </div>
@@ -659,19 +596,17 @@ const SignUp = ({ light, setUser }) => {
                           <span
                             className={
                               passwordStrength === 1
-                                ? "text-red-400 font-medium"
+                                ? "text-red-500 font-medium"
                                 : passwordStrength === 2
-                                  ? "text-amber-400 font-medium"
-                                  : "text-emerald-400 font-medium"
+                                  ? "text-amber-500 font-medium"
+                                  : "text-emerald-500 font-medium"
                             }
                           >
                             {passwordStrength === 1 && "Weak password"}
                             {passwordStrength === 2 && "Good password"}
                             {passwordStrength === 3 && "Strong password"}
                           </span>
-                          <span
-                            className={light ? "text-slate-400" : "text-white/40"}
-                          >
+                          <span className="text-slate-400">
                             Min 6 characters
                           </span>
                         </div>
@@ -694,15 +629,14 @@ const SignUp = ({ light, setUser }) => {
                     />
                     <label
                       htmlFor="termsCheckbox"
-                      className={`text-[11px] leading-tight cursor-pointer ${light ? "text-slate-600" : "text-white/60"
-                        }`}
+                      className="text-[11px] leading-tight cursor-pointer text-slate-600"
                     >
                       I agree to the{" "}
-                      <span className="text-orange-400 hover:underline">
+                      <span className="text-orange-600 hover:underline font-medium">
                         Terms of Service
                       </span>{" "}
                       and{" "}
-                      <span className="text-orange-400 hover:underline">
+                      <span className="text-orange-600 hover:underline font-medium">
                         Privacy Policy
                       </span>
                       .
@@ -713,7 +647,7 @@ const SignUp = ({ light, setUser }) => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="relative w-full group overflow-hidden rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 p-[1px] font-semibold text-white shadow-[0_0_20px_rgba(255,115,0,0.3)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,115,0,0.5)] hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed mt-1"
+                    className="relative w-full group overflow-hidden rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 p-[1px] font-semibold text-white shadow-[0_4px_20px_rgba(255,115,0,0.35)] transition-all duration-300 hover:shadow-[0_6px_25px_rgba(255,115,0,0.5)] hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed mt-1"
                   >
                     <div className="flex items-center justify-center gap-2 rounded-xl bg-transparent py-2 xl:py-2.5 px-4 text-xs xl:text-sm font-bold tracking-wide">
                       {isLoading ? (
@@ -732,14 +666,11 @@ const SignUp = ({ light, setUser }) => {
 
                   {/* Already have an account link */}
                   <div className="text-center pt-0.5 xl:pt-1">
-                    <p
-                      className={`text-xs ${light ? "text-slate-600" : "text-white/60"
-                        }`}
-                    >
+                    <p className="text-xs text-slate-600">
                       Already have an account?{" "}
                       <Link
                         to="/"
-                        className="font-bold text-orange-400 hover:text-orange-300 hover:underline transition ml-1"
+                        className="font-bold text-orange-600 hover:text-orange-500 hover:underline transition ml-1"
                       >
                         Log In
                       </Link>
@@ -747,13 +678,8 @@ const SignUp = ({ light, setUser }) => {
                   </div>
 
                   {/* Security Badge Footnote */}
-                  <div
-                    className={`mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] ${light
-                      ? "border-slate-100 text-slate-400"
-                      : "border-white/5 text-white/40"
-                      }`}
-                  >
-                    <FaShieldAlt className="text-orange-400 text-xs" />
+                  <div className="mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t border-slate-100 text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] text-slate-400">
+                    <FaShieldAlt className="text-orange-500 text-xs" />
                     <span>256-Bit SSL Encrypted & Decentralized Security</span>
                   </div>
                 </form>
