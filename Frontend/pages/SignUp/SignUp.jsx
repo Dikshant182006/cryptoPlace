@@ -10,13 +10,12 @@ import {
   FaBolt,
   FaBrain,
   FaShieldAlt,
-  FaGithub,
 } from "react-icons/fa";
 import axios from "axios";
 import { API_URL } from "../../src/config";
 import { GoogleLogin } from "@react-oauth/google";
 
-const SignUp = ({ light, setUser }) => {
+const SignUp = ({ light, user, setUser }) => {
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -26,6 +25,7 @@ const SignUp = ({ light, setUser }) => {
 
   const [error, setError] = useState({
     firstname: "",
+    lastname: "",
     email: "",
     password: "",
   });
@@ -36,6 +36,10 @@ const SignUp = ({ light, setUser }) => {
   const [agreedToTerms, setAgreedToTerms] = useState(true);
 
   const navigate = useNavigate();
+
+  if (user) {
+    return <Navigate to="/home" replace />;
+  }
 
   const validationName = (name) => {
     if (!name.trim()) {
@@ -124,11 +128,14 @@ const SignUp = ({ light, setUser }) => {
     e.preventDefault();
     setServerError("");
 
+    const fnError = validationName(formData.firstname);
     const emError = validationEmail(formData.email);
     const pwError = validationPassword(formData.password);
 
-    if (emError || pwError) {
+    if (fnError || emError || pwError) {
       setError({
+        firstname: fnError,
+        lastname: formData.lastname ? validationName(formData.lastname) : "",
         email: emError,
         password: pwError,
       });
@@ -159,6 +166,7 @@ const SignUp = ({ light, setUser }) => {
   const handleLogin = async (credentialResponse) => {
     try {
       setIsLoading(true);
+      setServerError("");
 
       const res = await axios.post(
         `${API_URL}/auth/google/login`,
@@ -176,11 +184,11 @@ const SignUp = ({ light, setUser }) => {
 
       navigate("/home");
     } catch (error) {
-      setError(error.response?.data?.message || "Google Login Failed")
+      setServerError(error.response?.data?.message || "Google Login Failed");
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div
@@ -402,17 +410,28 @@ const SignUp = ({ light, setUser }) => {
 
               {/* Glass Auth Card */}
               <div
-                className="relative rounded-[22px] xl:rounded-[28px] bg-white border border-slate-200/90 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] p-4 sm:p-5 lg:p-4.5 xl:p-6 transition-all duration-300 text-slate-900"
+                className={`relative rounded-[22px] xl:rounded-[28px] backdrop-blur-2xl p-4 sm:p-5 lg:p-4.5 xl:p-6 border transition-all duration-300 shadow-2xl ${light
+                  ? "bg-white/95 border-slate-200 shadow-orange-500/10 text-slate-900"
+                  : "bg-[#111115]/95 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.7)] text-white"
+                  }`}
               >
                 {/* Header */}
                 <div className="mb-2 xl:mb-3">
-                  <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] xl:text-[11px] font-semibold uppercase tracking-wider mb-1 bg-orange-500/10 text-orange-600 border border-orange-500/20">
+                  <div
+                    className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] xl:text-[11px] font-semibold uppercase tracking-wider mb-1 ${light
+                      ? "bg-orange-500/10 text-orange-600 border border-orange-500/20"
+                      : "bg-orange-500/10 text-orange-400 border border-orange-500/20"
+                      }`}
+                  >
                     Get Started Free
                   </div>
-                  <h2 className="text-lg sm:text-xl xl:text-2xl font-extrabold tracking-tight text-slate-900">
+                  <h2 className="text-lg sm:text-xl xl:text-2xl font-extrabold tracking-tight">
                     Create Your Account
                   </h2>
-                  <p className="mt-0.5 text-xs sm:text-xs xl:text-sm text-slate-500">
+                  <p
+                    className={`mt-0.5 text-xs sm:text-xs xl:text-sm ${light ? "text-slate-500" : "text-white/60"
+                      }`}
+                  >
                     Start tracking crypto assets in under 30 seconds.
                   </p>
                 </div>
@@ -421,8 +440,8 @@ const SignUp = ({ light, setUser }) => {
                 <div className="mb-2 xl:mb-3 flex justify-center w-full">
                   <GoogleLogin
                     onSuccess={handleLogin}
-                    onError={() => setError("Google login failed")}
-                    theme="outline"
+                    onError={() => setServerError("Google login failed")}
+                    theme={light ? "outline" : "filled_black"}
                     size="large"
                     text="signup_with"
                     shape="rectangular"
@@ -431,15 +450,26 @@ const SignUp = ({ light, setUser }) => {
 
                 {/* Divider */}
                 <div className="relative flex items-center justify-center mb-2 xl:mb-3">
-                  <div className="w-full border-t border-slate-200" />
-                  <span className="absolute px-2 text-[10px] xl:text-xs uppercase tracking-wider font-semibold bg-white text-slate-400">
+                  <div
+                    className={`w-full border-t ${light ? "border-slate-200" : "border-white/10"
+                      }`}
+                  />
+                  <span
+                    className={`absolute px-2 text-[10px] xl:text-xs uppercase tracking-wider font-semibold ${light ? "bg-white text-slate-400" : "bg-[#111115] text-white/40"
+                      }`}
+                  >
                     Or register with email
                   </span>
                 </div>
 
                 {/* Server Error Alert */}
                 {serverError && (
-                  <div className="mb-2 p-2 rounded-xl border border-red-500/30 bg-red-50 text-red-600 text-xs flex items-center gap-2 animate-fadeIn">
+                  <div
+                    className={`mb-2 p-2 rounded-xl border text-xs flex items-center gap-2 animate-fadeIn ${light
+                      ? "border-red-500/30 bg-red-50 text-red-600"
+                      : "border-red-500/30 bg-red-500/10 text-red-400"
+                      }`}
+                  >
                     <span className="font-bold">⚠️</span>
                     <span>{serverError}</span>
                   </div>
@@ -451,11 +481,17 @@ const SignUp = ({ light, setUser }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {/* First Name */}
                     <div>
-                      <label className="block text-[11px] xl:text-xs font-semibold mb-1 text-slate-700">
-                        First Name
+                      <label
+                        className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                          }`}
+                      >
+                        First Name <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+                        <span
+                          className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                            }`}
+                        >
                           <FaUser />
                         </span>
                         <input
@@ -471,18 +507,30 @@ const SignUp = ({ light, setUser }) => {
                             }
                           }}
                           placeholder="e.g. Dikshant"
-                          className="w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
+                            ? "bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                            }`}
                         />
                       </div>
+                      {error.firstname && (
+                        <p className="mt-0.5 text-[11px] text-red-500">{error.firstname}</p>
+                      )}
                     </div>
 
                     {/* Last Name */}
                     <div>
-                      <label className="block text-[11px] xl:text-xs font-semibold mb-1 text-slate-700">
+                      <label
+                        className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                          }`}
+                      >
                         Last Name
                       </label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+                        <span
+                          className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                            }`}
+                        >
                           <FaUser />
                         </span>
                         <input
@@ -498,19 +546,31 @@ const SignUp = ({ light, setUser }) => {
                               document.querySelector('input[name="email"]')?.focus();
                             }
                           }}
-                          className="w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
+                            ? "bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                            : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                            }`}
                         />
                       </div>
+                      {error.lastname && (
+                        <p className="mt-0.5 text-[11px] text-red-500">{error.lastname}</p>
+                      )}
                     </div>
                   </div>
 
                   {/* Email Field */}
                   <div>
-                    <label className="block text-[11px] xl:text-xs font-semibold mb-1 text-slate-700">
+                    <label
+                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                        }`}
+                    >
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+                      <span
+                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                          }`}
+                      >
                         <FaEnvelope />
                       </span>
                       <input
@@ -525,7 +585,10 @@ const SignUp = ({ light, setUser }) => {
                             document.querySelector('input[name="password"]')?.focus();
                           }
                         }}
-                        className="w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                        className={`w-full rounded-xl pl-8.5 pr-3 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
+                          ? "bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          }`}
                       />
                     </div>
                     {error.email && (
@@ -535,11 +598,17 @@ const SignUp = ({ light, setUser }) => {
 
                   {/* Password Field */}
                   <div>
-                    <label className="block text-[11px] xl:text-xs font-semibold mb-1 text-slate-700">
+                    <label
+                      className={`block text-[11px] xl:text-xs font-semibold mb-1 ${light ? "text-slate-700" : "text-white/80"
+                        }`}
+                    >
                       Password <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
+                      <span
+                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-xs ${light ? "text-slate-400" : "text-white/40"
+                          }`}
+                      >
                         <FaLock />
                       </span>
                       <input
@@ -554,12 +623,18 @@ const SignUp = ({ light, setUser }) => {
                           }
                         }}
                         placeholder="••••••••••••"
-                        className="w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                        className={`w-full rounded-xl pl-8.5 pr-9 py-1.5 xl:py-2 text-xs xl:text-sm outline-none transition-all duration-200 border ${light
+                          ? "bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          : "bg-white/[0.04] border-white/10 text-white placeholder:text-white/30 focus:bg-white/[0.07] focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                          }`}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-700 transition cursor-pointer"
+                        className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs transition cursor-pointer ${light
+                          ? "text-slate-400 hover:text-slate-700"
+                          : "text-white/40 hover:text-white"
+                          }`}
                       >
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                       </button>
@@ -576,7 +651,7 @@ const SignUp = ({ light, setUser }) => {
                                 : passwordStrength === 2
                                   ? "bg-amber-500"
                                   : "bg-emerald-500"
-                              : "bg-slate-200"
+                              : light ? "bg-slate-200" : "bg-white/10"
                               }`}
                           />
                           <div
@@ -584,11 +659,13 @@ const SignUp = ({ light, setUser }) => {
                               ? passwordStrength === 2
                                 ? "bg-amber-500"
                                 : "bg-emerald-500"
-                              : "bg-slate-200"
+                              : light ? "bg-slate-200" : "bg-white/10"
                               }`}
                           />
                           <div
-                            className={`h-full flex-1 rounded-full transition-all duration-300 ${passwordStrength >= 3 ? "bg-emerald-500" : "bg-slate-200"
+                            className={`h-full flex-1 rounded-full transition-all duration-300 ${passwordStrength >= 3
+                              ? "bg-emerald-500"
+                              : light ? "bg-slate-200" : "bg-white/10"
                               }`}
                           />
                         </div>
@@ -606,7 +683,7 @@ const SignUp = ({ light, setUser }) => {
                             {passwordStrength === 2 && "Good password"}
                             {passwordStrength === 3 && "Strong password"}
                           </span>
-                          <span className="text-slate-400">
+                          <span className={light ? "text-slate-400" : "text-white/40"}>
                             Min 6 characters
                           </span>
                         </div>
@@ -629,14 +706,15 @@ const SignUp = ({ light, setUser }) => {
                     />
                     <label
                       htmlFor="termsCheckbox"
-                      className="text-[11px] leading-tight cursor-pointer text-slate-600"
+                      className={`text-[11px] leading-tight cursor-pointer ${light ? "text-slate-600" : "text-white/70"
+                        }`}
                     >
                       I agree to the{" "}
-                      <span className="text-orange-600 hover:underline font-medium">
+                      <span className="text-orange-400 hover:text-orange-300 hover:underline font-medium">
                         Terms of Service
                       </span>{" "}
                       and{" "}
-                      <span className="text-orange-600 hover:underline font-medium">
+                      <span className="text-orange-400 hover:text-orange-300 hover:underline font-medium">
                         Privacy Policy
                       </span>
                       .
@@ -647,7 +725,7 @@ const SignUp = ({ light, setUser }) => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="relative w-full group overflow-hidden rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 p-[1px] font-semibold text-white shadow-[0_4px_20px_rgba(255,115,0,0.35)] transition-all duration-300 hover:shadow-[0_6px_25px_rgba(255,115,0,0.5)] hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed mt-1"
+                    className="relative w-full group overflow-hidden rounded-xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 p-[1px] font-semibold text-white shadow-[0_0_20px_rgba(255,115,0,0.35)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,115,0,0.5)] hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed mt-1"
                   >
                     <div className="flex items-center justify-center gap-2 rounded-xl bg-transparent py-2 xl:py-2.5 px-4 text-xs xl:text-sm font-bold tracking-wide">
                       {isLoading ? (
@@ -666,11 +744,14 @@ const SignUp = ({ light, setUser }) => {
 
                   {/* Already have an account link */}
                   <div className="text-center pt-0.5 xl:pt-1">
-                    <p className="text-xs text-slate-600">
+                    <p
+                      className={`text-xs ${light ? "text-slate-600" : "text-white/60"
+                        }`}
+                    >
                       Already have an account?{" "}
                       <Link
                         to="/"
-                        className="font-bold text-orange-600 hover:text-orange-500 hover:underline transition ml-1"
+                        className="font-bold text-orange-400 hover:text-orange-300 hover:underline transition ml-1"
                       >
                         Log In
                       </Link>
@@ -678,8 +759,13 @@ const SignUp = ({ light, setUser }) => {
                   </div>
 
                   {/* Security Badge Footnote */}
-                  <div className="mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t border-slate-100 text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] text-slate-400">
-                    <FaShieldAlt className="text-orange-500 text-xs" />
+                  <div
+                    className={`mt-1.5 xl:mt-2.5 pt-1.5 xl:pt-2 border-t text-center flex items-center justify-center gap-1.5 text-[10px] xl:text-[11px] ${light
+                      ? "border-slate-100 text-slate-400"
+                      : "border-white/5 text-white/40"
+                      }`}
+                  >
+                    <FaShieldAlt className="text-orange-400 text-xs" />
                     <span>256-Bit SSL Encrypted & Decentralized Security</span>
                   </div>
                 </form>

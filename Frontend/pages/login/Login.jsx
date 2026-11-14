@@ -369,11 +369,11 @@ const Login = ({ light, user, setUser }) => {
                 </div>
 
                 {/* Social Quick Login */}
-                <div className="mb-2 xl:mb-3">
+                <div className="mb-2 xl:mb-3 flex justify-center w-full">
                   <GoogleLogin
                     onSuccess={handleLogin}
                     onError={() => setError("Google login failed")}
-                    theme="outline"
+                    theme={light ? "outline" : "filled_black"}
                     size="large"
                     text="signin_with"
                     shape="rectangular"
