@@ -24,6 +24,7 @@ function App() {
   const [light, setLight] = useState(false);
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [themeLoaded, setThemeLoaded] = useState(false);
   const location = useLocation();
   console.log("APP COMPONENT RENDERS");
 
@@ -34,10 +35,13 @@ function App() {
       withCredentials: true,
     }).then((res) => {
       setUser(res.data);
+      setLight(res.data.light ?? false);
     }).catch(() => {
       setUser(null);
+      setLight(false);
     }).finally(() => {
       setAuthLoading(false);
+      setThemeLoaded(true);
     })
   }, []);
 
@@ -50,6 +54,17 @@ function App() {
       document.body.style.color = "#ffffff";
     }
   }, [light]);
+
+  useEffect(() => {
+    if (!user || !setThemeLoaded) return;
+
+    axios.patch(`${API_URL}/api/profile/theme`,
+      { light },
+      { withCredentials: true }
+    ).catch((error) => {
+      console.error("Failed to save theme:", error);
+    });
+  }, [user, light])
 
   const isCoinPage = location.pathname.startsWith('/coin/');
 

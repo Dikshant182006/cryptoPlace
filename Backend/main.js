@@ -255,8 +255,6 @@ app.post("/login", async (req, res) => {
 });
 
 // Login by Google
-
-// Login by Google
 app.post('/auth/google/login', async (req, res) => {
   try {
     await connectDB();
@@ -270,70 +268,54 @@ app.post('/auth/google/login', async (req, res) => {
     }
 
     const googleUser = await verifyGoogleToken(credentials);
-
+    // Normalize email
     const email = googleUser.email.toLowerCase().trim();
 
     if (googleUser.emailVerified !== true) {
       return res.status(401).json({
-        message: "Google email is not verified",
+        message: "Google email is not verified"
       });
-    }
+    };
 
-    // Check whether this Google account is already linked
     const existingOAuthAccount = await OAuthAccount.findOne({
       provider: "google",
       providerId: googleUser.googleId,
-    });
+    })
 
     let user;
 
     if (existingOAuthAccount) {
-
-      // Find the user connected to this Google account
       user = await User.findById(existingOAuthAccount.userId);
 
-      // Do not create another user if the relationship is broken
       if (!user) {
-        return res.status(404).json({
-          message: "Linked user account not found. Please contact support.",
-        });
-      }
-
+        user = await User.create({
+          firstname: googleUser.firstname || "",
+          lastname: googleUser.secondname || "",
+          email,
+        })
+      };
     } else {
-
-      // Check whether a user with this email already exists
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
+        return res.status(409).json(
+          { message: "An Account with this user is already exists. Please login using your existing method" }
+        )
+      };
 
-        // Link Google to the existing user
-        user = existingUser;
+      user = await User.create({
+        firstname: googleUser.firstname || "",
+        lastname: googleUser.lastname || "",
+        email,
+      });
 
-        await OAuthAccount.create({
-          provider: "google",
-          providerId: googleUser.googleId,
-          userId: user._id,
-        });
-
-      } else {
-
-        // Create a new user if the email does not exist
-        user = await User.create({
-          firstname: googleUser.firstname || "",
-          lastname: googleUser.lastname || "",
-          email,
-        });
-
-        // Link the newly created user to Google
-        await OAuthAccount.create({
-          provider: "google",
-          providerId: googleUser.googleId,
-          userId: user._id,
-        });
-      }
+      await OAuthAccount.create({
+        provider: "google",
+        providerId: googleUser.googleId,
+        userId: user._id
+      });
     }
 
-    // Generate JWT
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
@@ -349,22 +331,21 @@ app.post('/auth/google/login', async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    const userData = await User.findById(user._id).select("-password");
+    const userData = await User.findById(user.id).select("-password");
 
     return res.json({
-      message: "Google login successful",
-      userData,
-    });
+      message: "Google login successfull",
+      userData
+    })
 
   } catch (error) {
-    console.error("Google Login Error:", error);
+    console.error("Google Login Error", error.message);
 
     return res.status(500).json({
-      message: "Google authentication error",
+      message: "Google authentication error"
     });
   }
 });
-
 
 // Profile
 app.get("/api/profile", authMiddleware, async (req, res) => {
@@ -437,6 +418,45 @@ app.get("/api/favorites/coins", authMiddleware, async (req, res) => {
     });
   }
 });
+
+// For theme
+app.patch("/api/profile/theme", authMiddleware, async (req, res) => {
+  try {
+    await connectDB();
+
+    const { light } = req.body;
+
+    if (typeof light !== "boolean") {
+      return res.status(400).json({
+        message: "Light must be in the boolean value"
+      })
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { light },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found"
+      });
+    }
+
+    return res.status(200).json({
+      message: "Theme updated successfully",
+      light: user.light,
+    })
+
+  } catch (error) {
+    console.error("Theme update error", error);
+
+    return res.status(500).json({
+      message: "Failed to update theme"
+    });
+  }
+})
 
 // Add new favorites
 app.post("/api/favorites", authMiddleware, async (req, res) => {

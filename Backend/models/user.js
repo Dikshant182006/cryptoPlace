@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema({
     }
   },
   favorites: { type: [String], default: [] },
+  light: { type: Boolean, default: false },
 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
