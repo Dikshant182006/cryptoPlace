@@ -56,7 +56,7 @@ function App() {
   }, [light]);
 
   useEffect(() => {
-    if (!user || !setThemeLoaded) return;
+    if (!user || !themeLoaded) return;
 
     axios.patch(`${API_URL}/api/profile/theme`,
       { light },

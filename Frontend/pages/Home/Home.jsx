@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useMemo } from "react";
 import { CoinContext } from "../../context/coinContext";
 import chatgpt from "../../src/assets/chatgpt.svg";
 import gemini from "../../src/assets/gemini.svg";
@@ -11,14 +11,11 @@ const EMPTY_COINS = [];
 
 const Home = ({ light }) => {
   const { currency } = useContext(CoinContext);
-  const [displayCoin, setDisplayCoin] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 6;
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
-  const currentCoins = displayCoin.slice(firstIndex, lastIndex);
-  const totalPages = Math.ceil(displayCoin.length / itemsPerPage);
 
   const {
     data: coinData,
@@ -138,11 +135,11 @@ const Home = ({ light }) => {
   }, []);
 
   // Filter and sort displayCoin
-  useEffect(() => {
+  const displayCoin = useMemo(() => {
     let coins = [...allCoin];
 
     if (debouncedSearch.trim().length >= 2) {
-      const q = tableSearch.toLowerCase().trim();
+      const q = debouncedSearch.toLowerCase().trim();
       coins = coins.filter(
         (coin) =>
           coin.name.toLowerCase().includes(q) ||
@@ -160,8 +157,11 @@ const Home = ({ light }) => {
       coins = coins.filter((c) => DEFI_SYMBOLS.includes(c.symbol?.toLowerCase()));
     }
 
-    setDisplayCoin(coins);
+    return coins;
   }, [allCoin, debouncedSearch, selectedCategory]);
+
+  const currentCoins = displayCoin.slice(firstIndex, lastIndex);
+  const totalPages = Math.ceil(displayCoin.length / itemsPerPage);
 
   if (isLoading) return <p className="p-8 text-center text-gray-400">Loading market assets...</p>;
   if (isError) return <p className="p-8 text-center text-red-500">Error: {error.message} </p>;
