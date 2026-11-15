@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useFearGreedIndex } from "../../hooks/UseFearAndGreed";
 
 function describeArc(cx, cy, r, startAngle, endAngle) {
