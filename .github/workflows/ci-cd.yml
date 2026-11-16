@@ -65,3 +65,6 @@ jobs:
 
       - name: Check JavaScript syntax
         run: node --check main.js
+
+      - name: Run Backend Tests
+        run: npm run test:ci
