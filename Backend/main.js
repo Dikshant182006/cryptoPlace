@@ -206,7 +206,7 @@ app.post("/login", async (req, res) => {
 
     if (!match) {
       return res.status(400).json({
-        message: "Wrong password",
+        message: "Wrong Password",
       });
     }
 
