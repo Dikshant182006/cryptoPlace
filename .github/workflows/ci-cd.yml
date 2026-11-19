@@ -45,9 +45,24 @@ jobs:
     name: Backend Checks
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     defaults:
       run:
         working-directory: Backend
+
+    env:
+      MONGODB_URI: mongodb://127.0.0.1:27017/cryptoplace_test
+      JWT_SECRET: test-only-secret
 
     steps:
       - name: Checkout repository
