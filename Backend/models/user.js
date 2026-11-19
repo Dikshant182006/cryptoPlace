@@ -1,16 +1,25 @@
 const mongoose = require('mongoose');
 const connectDB = async () => {
-  if (mongoose.connection.readyState >= 1) {
+  if (mongoose.connection.readyState === 1) {
     return;
   }
+
+  if (mongoose.connection.readyState === 2) {
+    return mongoose.connection.asPromise();
+  }
+
   const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/crypto";
+  if (!uri) {
+    throw new Error("MONGODB_URI is not configured");
+  }
+
   await mongoose.connect(uri, {
     serverSelectionTimeoutMS: 5000,
   });
 };
 
 // Initial connection attempt
-connectDB().catch((err) => console.log("MongoDB initial connect:", err.message));
+// connectDB().catch((err) => console.log("MongoDB initial connect:", err.message));
 
 const userSchema = new mongoose.Schema({
   firstname: {
