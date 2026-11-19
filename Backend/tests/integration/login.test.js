@@ -24,7 +24,7 @@ describe("Check Login", () => {
         });
 
         expect(response.status).toBe(400);
-        expect(response.body.message).toBe("User not found");
+        expect(response.body.message).toBe("Wrong Password");
     })
 
     it("Should reject if the password is wrong", async () => {
