@@ -31,10 +31,11 @@ describe("Check Register", () => {
         const response = await request(app).post("/register").send({
             firstname: "dikshat",
             lastname: "Sharma",
-            email: "notexistsuser@gmail.com",
+            email: `test-${Date.now()}@gmail.com`,
             password: "abcd123"
         });
 
+        console.log("Register response", response.status, response.body);
         expect(response.status).toBe(201);
         expect(response.body.message).toBe("User created successfully")
     })

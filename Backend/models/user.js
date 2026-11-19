@@ -8,7 +8,7 @@ const connectDB = async () => {
     return mongoose.connection.asPromise();
   }
 
-  const uri = process.env.MONGODB_URI;
+  const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/crypto";
   if (!uri) {
     throw new Error("MONGODB_URI is not configured");
   }
