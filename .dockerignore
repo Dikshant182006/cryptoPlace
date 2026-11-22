@@ -1,0 +1,9 @@
+# which is not the part of the image
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.example
+**/*.pem
+.git
+.github
+Frontend
