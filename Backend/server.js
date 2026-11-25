@@ -3,14 +3,19 @@ require("dotenv").config();
 const app = require("./main");
 const { connectRedis } = require("./config/redisClient");
 
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-connectRedis()
-    .then(() => {
-        app.listen(port, () => {
-            console.log(`Server running on port ${port}`);
+const startServer = async () => {
+    try {
+        await connectRedis();
+
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`CryptoPlace API running on port ${PORT}`);
         });
-    })
-    .catch((error) => {
+    } catch (error) {
         console.error("Redis connection failed:", error);
-    });
+        process.exit(1);
+    }
+};
+
+startServer();

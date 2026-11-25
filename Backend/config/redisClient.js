@@ -10,21 +10,21 @@ if (process.env.NODE_ENV === "production") {
         url: process.env.UPSTASH_REDIS_REST_URL,
         token: process.env.UPSTASH_REDIS_REST_TOKEN,
     })
-} else{
+} else {
     redisClient = createClient({
         url: process.env.REDIS_URL,
     })
 }
 
 // Redis Error Listener
-if(process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production") {
     redisClient.on("error", (error) => {
         console.error("Redis Error", error);
     })
 }
 
 const connectRedis = async () => {
-    if(process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "production") {
         console.log("Using upstash Redis");
         return;
     }
