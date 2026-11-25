@@ -8,6 +8,7 @@ if (!process.env.JWT_SECRET) {
 const OAuthAccount = require("./models/oAuthAccount");
 const { verifyGoogleToken } = require("./services/googleAuthService");
 
+const path = require("path");
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
@@ -16,6 +17,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { getCoins, getGlobal, getCoinDetails, getCoinChart, getFavoriteCoins } = require('./services/coinGeckoService');
 const apiLimiter = require('./middleware/rateLimiter');
+const publicDir = path.join(__dirname, 'public');
 
 const { User, connectDB } = require("./models/user");
 const authMiddleware = require("./middleware/authMiddleware");
@@ -23,11 +25,14 @@ const authMiddleware = require("./middleware/authMiddleware");
 // middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static(publicDir));
 app.use('/api', apiLimiter); // It means that if request starting from the /api implement rate limiter in that.
 
 const allowedOrigins = [
   "http://localhost:5173",
   process.env.FRONTEND_URL,
+  "http://localhost:4000",
+  'http://13.210.186.129:4000',
 ].filter(Boolean);
 
 app.use(
@@ -43,12 +48,17 @@ app.use(
   }),
 );
 
+// Health API
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "CryptoPlace API is running",
+  })
+});
+
 // Root route
 app.get("/", (req, res) => {
-  res.json({
-    status: "success",
-    message: "CryptoPlace Backend API is running successfully! 🚀",
-  });
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // Coins API
@@ -537,6 +547,15 @@ app.get("/api/logout", (req, res) => {
   res.json({
     message: "Logged out",
   });
+});
+
+// React Route Fallback
+app.get("*", (req, res, next) => {
+  if (req.path === "/api" || req.path.startsWith('/api')) {
+    return next();
+  }
+
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 module.exports = app;

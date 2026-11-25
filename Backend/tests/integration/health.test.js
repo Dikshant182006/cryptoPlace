@@ -12,9 +12,10 @@ const app = require("../../main");
 describe("CryptoPlace Backend Health API", () => {
 
     it("should return successful response from root endpoint", async () => {
-        const response = await request(app).get("/");
+        const response = await request(app).get("/api/health");
 
         expect(response.status).toBe(200);
         expect(response.body.status).toBe("success");
+        expect(response.body.message).toBe("CryptoPlace API is running");
     });
 });
