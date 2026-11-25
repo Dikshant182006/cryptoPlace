@@ -32,6 +32,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   process.env.FRONTEND_URL,
   "http://localhost:4000",
+  'http://13.210.186.129:4000',
 ].filter(Boolean);
 
 app.use(
@@ -540,8 +541,13 @@ app.get("/api/logout", (req, res) => {
   });
 });
 
-app.get("*name", (req, res) => {
+// React Route Fallback
+app.get("*", (req, res, next) => {
+  if (req.path === "/api" || req.path.startsWith('/api')) {
+    return next();
+  }
+
   res.sendFile(path.join(publicDir, 'index.html'));
-})
+});
 
 module.exports = app;

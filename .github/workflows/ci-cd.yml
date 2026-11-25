@@ -1,5 +1,4 @@
-
-name: CryptoPlace CI
+name: CryptoPlace CI/CD
 
 on:
   push:
@@ -13,6 +12,10 @@ on:
       - development
 
 jobs:
+
+  # ==========================================
+  # 1. FRONTEND CI
+  # ==========================================
   frontend:
     name: Frontend Checks
     runs-on: ubuntu-latest
@@ -22,25 +25,29 @@ jobs:
         working-directory: Frontend
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.`
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: Frontend/package-lock.json
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
 
       - name: Run ESLint
         run: npm run lint
 
-      - name: Build frontend
+      - name: Build Frontend
         run: npm run build
 
+
+  # ==========================================
+  # 2. BACKEND CI
+  # ==========================================
   backend:
     name: Backend Checks
     runs-on: ubuntu-latest
@@ -65,60 +72,86 @@ jobs:
       JWT_SECRET: test-only-secret
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.`
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: Backend/package-lock.json
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
 
-      - name: Check JavaScript syntax
-        run: node --check main.`
+      - name: Check JavaScript Syntax
+        run: node --check main.js
 
       - name: Run Backend Tests
         run: npm run test:ci
 
+
+  # ==========================================
+  # 3. BUILD AND DEPLOY TO AWS EC2
+  # ==========================================
   deploy:
     name: Build and Deploy to EC2
-    needs: [frontend, backend]
+
+    needs:
+      - frontend
+      - backend
+
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+
+      # Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.`
+
+      # Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: Frontend/package-lock.json
 
-      - name: Build React frontend
+
+      # Build frontend for AWS
+      - name: Build Frontend for AWS
         working-directory: Frontend
         run: |
           npm ci
-          npm run build
+          npm run build:aws
 
-      - name: Copy frontend build to Backend public
+
+      # Copy frontend build into backend public folder
+      - name: Copy Frontend Build
         run: |
           mkdir -p Backend/public
           rm -rf Backend/public/*
           cp -r Frontend/dist/. Backend/public/
 
+
+      # Docker Hub authentication
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+
+      # Setup Docker Buildx
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+
+      # Build and push Docker image
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
@@ -126,3 +159,43 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: dikshant2006/deployment-cryptoplace:latest
+
+
+      # Deploy to EC2 using SSH
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Pulling latest Docker image..."
+
+            sudo docker pull dikshant2006/deployment-cryptoplace:latest
+
+            echo "Stopping old container..."
+
+            sudo docker stop cryptoplace || true
+
+            echo "Removing old container..."
+
+            sudo docker rm cryptoplace || true
+
+            echo "Starting updated container..."
+
+            sudo docker run -d \
+              --name cryptoplace \
+              --restart unless-stopped \
+              -p 4000:4000 \
+              --env-file /home/ec2-user/.env \
+              dikshant2006/deployment-cryptoplace:latest
+
+            echo "Checking container status..."
+
+            sudo docker ps
+
+            echo "Checking application logs..."
+
+            sudo docker logs --tail 30 cryptoplace
+
+            echo "Deployment completed successfully!"
