@@ -48,6 +48,14 @@ app.use(
   }),
 );
 
+// Health API
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "CryptoPlace API is running",
+  })
+});
+
 // Root route
 app.get("/", (req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
