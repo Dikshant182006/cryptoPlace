@@ -32,7 +32,8 @@ const allowedOrigins = [
   "http://localhost:5173",
   process.env.FRONTEND_URL,
   "http://localhost:4000",
-  'http://13.210.186.129:4000',
+  'https://13.210.186.129:4000',
+  "https://cryptoplace.duckdns.org",
 ].filter(Boolean);
 
 app.use(
