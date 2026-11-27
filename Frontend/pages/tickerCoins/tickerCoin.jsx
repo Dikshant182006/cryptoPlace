@@ -38,14 +38,14 @@ const TickerCoin = ({ light }) => {
 
   return (
     <div
-      className={`w-full h-10 overflow-hidden border-b fixed top-[68px] z-50 backdrop-blur-md transition-colors duration-200 flex items-center md:pl-24 ${
+      className={`w-full h-10 overflow-hidden border-b fixed top-[65px] z-50 backdrop-blur-md transition-colors duration-200 flex items-center md:pl-24 ${
         light
           ? "bg-slate-50/90 border-slate-200/80 text-gray-900 shadow-xs"
           : "bg-slate-900/40 border-white/5 text-white backdrop-blur-xl shadow-xs"
       }`}
     >
       <div
-        className="flex gap-10 w-max"
+        className="flex gap-20 w-max"
         style={{ animation: "tickerScroll 30s linear infinite" }}
       >
         {tickerCoins.map((item, index) => (
