@@ -237,7 +237,7 @@ const CryptoList = ({ light }) => {
           </div>
         </div>
 
-        <div className="market-cap flex flex-col md:flex-row gap-4 md:gap-7 justify-center mt-8 px-4">
+        <div className="market-cap flex flex-col md:flex-row gap-4 md:gap-7 justify-center mt-10 px-4">
           <div
             className={`w-full md:w-[30vw] lg:w-[27vw] min-h-[120px] text-white/70 rounded-lg p-4 ${marketCapChange > 0
               ? "bg-green-950"
